@@ -8,23 +8,7 @@ export default new Vuex.Store({
   state: {
     count:0,
     url:'',
-    resultPD:'',
-    mixData:[
-      {
-        timestamp:'',
-        type:''
-      }
-    ],
-    filterInput:[
-      {
-        startdate:'',
-        enddate:'',
-        prodid:'',
-        batchno:'',
-        itemno:'',
-        worktype:[]
-      }
-    ]
+    datetimeNow:''
   },
   mutations: {
     setCount(state , value){
@@ -33,8 +17,8 @@ export default new Vuex.Store({
     setUrl(state , value){
       state.url = value
     },
-    setData(state , newData){
-      state.resultPD = newData
+    setDatetimeNow(state , datetime){
+      state.datetimeNow = datetime
     }
   },
   getters:{
@@ -44,34 +28,18 @@ export default new Vuex.Store({
     getUrl(state){
       if(typeof window !== "undefined"){
         return state.url = window.location.protocol+"//"+window.location.hostname+"/";
-      }else{
-        return state.url = 'test';
       }
     },
-    getResultPd(state){
-      return state.resultPD
-    },
+    get_datetimeNow(state){
+      return state.datetimeNow;
+    }
   },
   actions: {
-    fetchDataFromDatabase(context){
-      const url = context.getters.getUrl + 'intsys/pdl/pdl_backend/mainapi/checkdataworkplan';
+    getdata_datetimenow(context)
+    {
+      const url = context.getters.getUrl + 'intsys/purchaseplus/purchaseplus_backend/mainapi/getNowdate';
       axios.get(url).then(res=>{
-        let rsdata = [];
-        // let waittime = [];
-      
-
-        if(res.data.status == "Select Data Success"){
-          rsdata = res.data;
-
-          // check Mix data
-          console.log(res.data.result);
-          let result = res.data.result;
-          for(let i = 0; i < result.length; i++){
-            console.log(result[i].resultData);
-          }
-          
-        }
-        context.commit('setData', rsdata);
+        context.commit('setDatetimeNow' , res.data);
       });
     }
     
@@ -81,6 +49,6 @@ export default new Vuex.Store({
   modules: {
   }
 
-})
+});
 
 

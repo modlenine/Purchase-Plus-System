@@ -1,5 +1,5 @@
 <template>
-  <div id="filter">
+  <div id="filter_prlist">
     <div class="row mt-3">
         <div class="col-md-12">
             <div class="card-box height-100-p pd-20">
@@ -32,6 +32,7 @@
             </div>
         </div>
     </div>
+    <hr>
   </div>
 </template>
 

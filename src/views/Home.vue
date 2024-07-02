@@ -7,11 +7,16 @@
                 <div class="col-xl-12 mb-30">
                   <div class="card-box height-100-p pd-20">
                     <div class="mt-2"></div>
-                      <h4 style="text-align:center;">รายการ</h4>
+                      <h4 style="text-align:center;">หน้าหลักโปรแกรม Purchase Plus</h4>
                       <div>
                         <div class="mt-3"></div>
                       </div>
                       <hr>
+                      <div class="row form-group">
+                        <div class="col-md-12">
+                          <h2 class="text-center">ยินดีต้อนรับเข้าสู่โปรแกรม PR&PO</h2>
+                        </div>
+                      </div>
                   </div>
                 </div>
               </div>

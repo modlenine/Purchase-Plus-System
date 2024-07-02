@@ -6,14 +6,17 @@ import store from './store'
 import VueSweetalert2 from 'vue-sweetalert2';
 import 'sweetalert2/dist/sweetalert2.min.css';
 
-import 'popper.js';
-import 'bootstrap';
+// import 'popper.js';
+// import 'bootstrap';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 
 import 'datatables.net-bs4';
 import 'moment';
 
 import "zebra_datepicker/dist/css/default/zebra_datepicker.min.css";
 import "zebra_datepicker/dist/zebra_datepicker.min.js";
+
 
 
 
@@ -124,6 +127,136 @@ Vue.mixin({
 
         return fullname;
       }
+    },
+    numberToThaiText(number) {
+      // ข้อความของตัวเลขภาษาไทย
+      const thaiNumberText = ["", "หนึ่ง", "สอง", "สาม", "สี่", "ห้า", "หก", "เจ็ด", "แปด", "เก้า"];
+      // หน่วยของตัวเลขภาษาไทย
+      const thaiUnitText = ["", "สิบ", "ร้อย", "พัน", "หมื่น", "แสน", "ล้าน"];
+
+      // แปลงตัวเลขเป็นสตริง
+      let numberStr = number.toFixed(2).toString();
+
+      // แยกส่วนที่เป็นบาทและสตางค์
+      let [baht, satang] = numberStr.split(".");
+
+      let thaiText = '';
+
+      // แปลงส่วนที่เป็นบาท
+      for (let i = 0; i < baht.length; i++) {
+          let digit = parseInt(baht.charAt(i));
+          if (digit !== 0) {
+              if (i === baht.length - 1 && digit === 1 && baht.length > 1 && baht.charAt(baht.length - 2) !== '0') {
+                  thaiText += "เอ็ด";
+              } else if (i === baht.length - 2 && digit === 2) {
+                  thaiText += "ยี่";
+              } else if (i === baht.length - 2 && digit === 1) {
+                  thaiText += "";
+              } else {
+                  thaiText += thaiNumberText[digit];
+              }
+              thaiText += thaiUnitText[baht.length - i - 1];
+          }
+      }
+
+      // เพิ่ม "บาท" หลังจากแปลงส่วนที่เป็นบาทแล้ว
+      thaiText += "บาท";
+
+      // แปลงส่วนที่เป็นสตางค์
+      if (satang && parseInt(satang) > 0) {
+          let satangText = '';
+          for (let i = 0; i < satang.length; i++) {
+              let digit = parseInt(satang.charAt(i));
+              if (digit !== 0) {
+                  if (i === satang.length - 1 && digit === 1 && satang.length > 1 && satang.charAt(satang.length - 2) !== '0') {
+                      satangText += "เอ็ด";
+                  } else if (i === satang.length - 2 && digit === 2) {
+                      satangText += "ยี่";
+                  } else if (i === satang.length - 2 && digit === 1) {
+                      satangText += "";
+                  } else {
+                      satangText += thaiNumberText[digit];
+                  }
+                  satangText += thaiUnitText[satang.length - i - 1];
+              }
+          }
+          thaiText += satangText + "สตางค์";
+      } else {
+          thaiText += "ถ้วน";
+      }
+
+      return thaiText.trim();
+    },
+  //   numberToThaiText(number) {
+  //     const thaiNumberText = ["", "หนึ่ง", "สอง", "สาม", "สี่", "ห้า", "หก", "เจ็ด", "แปด", "เก้า"];
+  //     const thaiUnitText = ["", "สิบ", "ร้อย", "พัน", "หมื่น", "แสน", "ล้าน", "สิบล้าน", "ร้อยล้าน"];
+  
+  //     // แปลงตัวเลขเป็นสตริง
+  //     let numberStr = number.toFixed(2).toString();
+  
+  //     // แยกส่วนที่เป็นบาทและสตางค์
+  //     let [baht, satang] = numberStr.split(".");
+  
+  //     let thaiText = '';
+  
+  //     // แปลงส่วนที่เป็นบาท
+  //     for (let i = 0; i < baht.length; i++) {
+  //         let digit = parseInt(baht.charAt(i));
+  //         let position = baht.length - i - 1;
+  //         if (digit !== 0) {
+  //             if (position === 0 && digit === 1 && baht.length > 1 && baht.charAt(baht.length - 2) !== '0') {
+  //                 thaiText += "เอ็ด";
+  //             } else if (position === 1 && digit === 2) {
+  //                 thaiText += "ยี่";
+  //             } else if (position === 1 && digit === 1) {
+  //                 thaiText += "";
+  //             } else {
+  //                 thaiText += thaiNumberText[digit];
+  //             }
+  
+  //             if (position === 7) {
+  //                 thaiText += "ล้าน";
+  //             } else if (position === 8) {
+  //                 thaiText += "สิบ";
+  //             } else if (position === 9) {
+  //                 thaiText += "ร้อย";
+  //             } else {
+  //                 thaiText += thaiUnitText[position];
+  //             }
+  //         }
+  //     }
+  
+  //     // เพิ่ม "บาท" หลังจากแปลงส่วนที่เป็นบาทแล้ว
+  //     thaiText += "บาท";
+  
+  //     // แปลงส่วนที่เป็นสตางค์
+  //     if (satang && parseInt(satang) > 0) {
+  //         let satangText = '';
+  //         for (let i = 0; i < satang.length; i++) {
+  //             let digit = parseInt(satang.charAt(i));
+  //             if (digit !== 0) {
+  //                 if (i === satang.length - 1 && digit === 1 && satang.length > 1 && satang.charAt(satang.length - 2) !== '0') {
+  //                     satangText += "เอ็ด";
+  //                 } else if (i === satang.length - 2 && digit === 2) {
+  //                     satangText += "ยี่";
+  //                 } else if (i === satang.length - 2 && digit === 1) {
+  //                     satangText += "";
+  //                 } else {
+  //                     satangText += thaiNumberText[digit];
+  //                 }
+  //                 satangText += thaiUnitText[satang.length - i - 1];
+  //             }
+  //         }
+  //         thaiText += satangText + "สตางค์";
+  //     } else {
+  //         thaiText += "ถ้วน";
+  //     }
+  
+  //     return thaiText.trim();
+  // },
+    getSessionStorage(){
+      const getUserData = localStorage.getItem("userData");
+      return JSON.parse(getUserData);
     },
     
   },

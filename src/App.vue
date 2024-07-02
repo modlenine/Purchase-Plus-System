@@ -38,10 +38,7 @@ export default {
 
   },
   methods: {
-    getSessionStorage(){
-      const getUserData = localStorage.getItem("userData");
-      return JSON.parse(getUserData);
-    },
+
   },
 }
 </script>

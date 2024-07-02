@@ -49,7 +49,7 @@
                 <div class="brand-logo">
                     <router-link to='/'>
                         <!-- <img src="production_lead_time.png" alt="" class="light-logo"> -->
-                        <span style="font-size:28px;color:#ef476f;"><b>Purchase Plus</b></span>
+                        <span style="font-size:28px;color:#fff;"><b>Purchase Plus</b></span>
                     </router-link>
                     <div class="close-sidebar" data-toggle="left-sidebar-close">
                         <i class="ion-close-round"></i>
@@ -58,15 +58,31 @@
                 <div class="menu-block customscroll">
                     <div class="sidebar-menu">
                         <ul id="accordion-menu">
+                            <li class="admin-section mt-3">
+                                <div class="sidebar-small-cap mtext">เมนูหลัก</div>
+                            </li>
                             <li class="dropdown">
                                 <router-link to='/' class="dropdown-toggle no-arrow menu">
-                                    <span class="micon dw dw-analytics-3 wdfI1"></span><span class="mtext">หน้าหลัก</span>
+                                    <span class="micon dw dw-home wdfI1"></span><span class="mtext">หน้าหลัก</span>
+                                </router-link>
+                            </li>
+                            <li class="dropdown">
+                                <router-link to='/createpr' class="dropdown-toggle no-arrow menu">
+                                    <span class="micon dw dw-add-file1 wdfI1"></span><span class="mtext">สร้างเอกสาร PR</span>
+                                </router-link>
+                            </li>
+                            <li class="dropdown">
+                                <router-link to='/prlist' class="dropdown-toggle no-arrow menu">
+                                    <span class="micon dw dw-list3 wdfI1"></span><span class="mtext">รายการ PR</span>
                                 </router-link>
                             </li>
 
                             <li class="admin-section">
                                 <div class="dropdown-divider"></div>
                             </li>
+                    <li>
+						<div class="custom-horizontal-line"></div>
+					</li>
                             <!-- <li class="admin-section">
                                 <div class="sidebar-small-cap mtext">ตั้งค่า</div>
                             </li>
@@ -88,7 +104,7 @@
 
 <script>
 import $ from 'jquery';
-// import Swal from 'sweetalert2'
+import Swal from 'sweetalert2'
 // import axios from 'axios'
 export default {
     name:'Header',
@@ -107,14 +123,29 @@ export default {
         this.resultUserData = this.userDataProps;
     },
     mounted() {
-     const proxy = this;
+    //  const proxy = this;
         this.getUserData();
         console.log(this.resultUserData);
         console.log('Public path'+process.env.NODE_ENV);
 
         $('#logoutBtn').click(function(){
-            localStorage.removeItem('userData');
-            location.href = proxy.url+'intsys/pdl/';
+            Swal.fire({
+                title: 'ต้องการออกจากระบบ ใช่หรือไม่',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'ยืนยัน',
+                cancelButtonText: 'ยกเลิก',
+                customClass: {
+                    confirmButton: 'btn btn-success',
+                    cancelButton: 'btn btn-danger'
+                },
+                buttonsStyling: false
+            }).then((result)=>{
+                if(result.value === true){
+                    localStorage.removeItem('userData');
+                    location.reload();
+                }
+            });
         });
 
         // $(document).on('click' , '.header-left' , function(){

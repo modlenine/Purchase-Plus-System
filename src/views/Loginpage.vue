@@ -93,10 +93,9 @@ export default {
         submitLogin(){
             const form = $('#frm_login')[0];
 			const data = new FormData(form);
-			const proxy = this;
 
-			axios.post(this.url+'intsys/purchaseplus/purchaseplus_backend/login' , data,{
-
+			axios.post(this.url+'intsys/purchaseplus/purchaseplus_backend/login/checklogin' , data,{
+				'Content-Type':'multipart/form-data'
 			}).then(res=>{
 				console.log(res.data);
 				if(res.data.status == "Login Successfully"){
@@ -124,18 +123,17 @@ export default {
 						title: 'ลงชื่อเข้าใช้สำเร็จ',
 						icon: 'success',
 						showConfirmButton: false,
-						timer:1000
-					}).then(function(){
-						location.href = window.location.href;
+						timer:700
 					});
+					location.reload();
 				}else if(res.data.status == "Login failed"){
 					Swal.fire({
-						title: 'ลงชื่อเข้าใช้ไม่สำเร็จ',
+						title: 'Username หรือ Password ไม่ถูกต้อง',
 						icon: 'error',
 						showConfirmButton: false,
 						timer:1000
 					}).then(function(){
-						location.href = proxy.url+'intsys/purchaseplus/';
+						location.reload();
 					});
 				}else if(res.data.status == "Login failed please fill username and password"){
 					Swal.fire({
@@ -144,7 +142,7 @@ export default {
 						showConfirmButton: false,
 						timer:1000
 					}).then(function(){
-						location.href = proxy.url+'intsys/purchaseplus/';
+						location.reload();
 					});
 				}else if(res.data.status == "You can not access this program"){
 					Swal.fire({
@@ -153,7 +151,7 @@ export default {
 						showConfirmButton: false,
 						timer:1000
 					}).then(function(){
-						location.href = proxy.url+'intsys/purchaseplus/';
+						location.reload();
 					});
 				}
 			});

@@ -1,3 +1,5 @@
+/* Main css setup */
+/* Main css setup */
 /* thai */
 @font-face {
 	font-family: 'Sarabun';
@@ -59,6 +61,7 @@ label {
 
 body {
 	font-size: .9rem !important;
+	background-color: #efefef !important;
 }
 
 .form-control {
@@ -73,7 +76,9 @@ body {
 	width: 100% !important;
 }
 
-
+a{
+	text-decoration: none !important;
+}
 
 
 .loader{ 
@@ -106,22 +111,28 @@ body {
 	} 
 }
 
-
+.main-container{
+	background-color: #efefef;
+}
 .left-side-bar{
-    background-color:#ffffff !important;
+	background-color: #0093E9;
+    background-image: linear-gradient(160deg, #0093E9 0%, #80D0C7 100%);
+}
+.sidebar-menu ul {
+	padding-left:1rem !important;
 }
 .mtext{
-	color:rgb(38, 37, 37) !important;
+	color:rgb(255, 255, 255) !important;
 	font-size:14px;
 }
 .wdfI1{
-	color:#208bef !important;
+	color:#ffffff !important;
 }
 .hicon{
 	color:rgb(38, 37, 37) !important;
 }
 .wdfI2{
-	color:#ef476f !important;
+	color:#ffffff !important;
 }
 .wdfI3{
 	color:#f4ae2b !important;
@@ -171,6 +182,25 @@ body {
     border-color: #e9b417;
 }
 
+.idel{
+	color:#e20707;
+	font-size:20px;
+	transition:transform .2s;
+}
+.iedit{
+	color:#e9b417;
+	font-size:20px;
+	transition:transform .2s;
+}
+.idel:hover{
+	cursor: pointer;
+	transform: scale(1.1);
+}
+.iedit:hover{
+	cursor: pointer;
+	transform: scale(1.1);
+}
+
 .textRequest{
     color:#e20707;
     font-weight:600;
@@ -212,70 +242,10 @@ body {
 	color:#00c921 !important;
 }
 
-.btnIndex{
-	width:150px;
-}
 
 .dataTables_filter{
 	display:none !important;
 }
-
-
-#tbl_billedlist{
-	width:100% !important;
-}
-
-#tbl_billedreport{
-	width:1500px !important;
-}
-
-.td_formno{
-	width:110px !important;
-}
-.td_venacc{
-	width:80px !important;
-}
-.td_compa{
-	width:100px !important;
-}
-.td_cred{
-	width:80px !important;
-}
-.td_inv{
-	width:100px !important;
-}
-
-.btn-addBilldate{
-	position:absolute !important;
-}
-
-.editAnnSub{
-	font-size:26px;
-	color:#eb4e00;
-}
-.editAnnSub:hover{
-	cursor: pointer;
-	color:#d0c204;
-}
-
-.editAnnMain{
-	font-size:26px;
-	color:#eb4e00;
-}
-.editAnnMain:hover{
-	cursor: pointer;
-	color:#d0c204;
-}
-
-.iconStatusYes{
-    font-size:24px !important;
-	color:#00c921;
-}
-.iconStatusNo{
-    font-size:24px !important;
-	color:#CC0000;
-}
-
 
 
 
@@ -284,133 +254,17 @@ body {
 }
 
 @media (min-width:768px) and (max-width:1023px){
-	#canvas_sign{
-		width:310px !important;
-		height:300px !important;
-	}
+
 }
 
 @media (min-width:320px) and (max-width:767px) {
-	#canvas_sign{
-		width:250px !important;
-		height:300px !important;
-	}
-
 	div.dataTables_wrapper div.dataTables_paginate ul.pagination{
 		width:180px !important;
 		justify-content: center !important;
 	}
 }
-
-
-.selectTaxid{
-	max-height: 250px;
-    margin-bottom: 10px;
-    overflow:scroll;
-    -webkit-overflow-scrolling: touch;
-}
-.selectTaxidLi:hover{
-	cursor:pointer;
-}
-
-.checkPasswordText{
-	font-size:12px;
-	color:#e20707;
-}
-
-
-/* 
-###########################################################
-Control Normal Page
-###########################################################
-*/
-
-
-
-
-
-
-
-
-
-/* Control data table  */
-.buttons-html5{
-	padding:5px !important;
-	border-radius: 18px !important;
-	background-color: #129631 !important;
-	border-color:#129631 !important;
-	width:80px;
-	color:#fff;
-}
-
-.buttons-html5:hover{
-	background-color: #36e25e !important;
-	border-color:#36e25e !important;
-	color:#212529;
-}
-
-
-.mainDataDiv{
-	position:relative;
-}
-.editBtn{
-	position:absolute;
-	top:-15px;
-	right:15px;
-	z-index:100;
-}
-.editIcon{
-	padding-right:4px;
-}
-
-
-
-/* control page billedlist */
-.memovender{
-	font-size:18px;
-	color:#FF6600;
-	transition:transform .2s;
-}
-.memovender:hover{
-	cursor:pointer;
-	transform:scale(1.2);
-}
-
-.iconFiles{
-	font-size:18px;
-	color:#208bef;
-}
-
-.delFileI{
-	font-size:18px;
-	color:#CC0000;
-	background-color: #ffffffa8;
-	position:absolute;
-	bottom:5px;
-	right:15px;
-	transition:transform .2s;
-}
-.delFileI:hover{
-	transform:scale(1.2);
-	cursor:pointer;
-}
-
-.antd1{
-	width:100px !important;
-}
-/* .antd2{
-	width:100% !important;
-} */
-.antd3{
-	width:100px !important;
-}
-.antd4{
-	width:150px !important;
-}
-
-.tox-tinymce{
-	width: 100% !important;
-  }
+/* Main css setup */
+/* Main css setup */
 
   .userinformation{
 	padding:20px;
@@ -424,140 +278,165 @@ Control Normal Page
     object-fit: cover;
   }
 
-  #tbl_scheduleList{
-	width:1500px !important;
-  }
-
-.secAddSchedule{
-	border:1px solid #ccc;
-	border-radius: 15px;
-	padding:25px;
-}
-
-.editSchedule , .delSchedule{
-	font-size:20px;
-}
-.editSchedule{
-	color:#f68f00;
-}
-.editSchedule:hover{
-	color:#cd7904;
-	cursor:pointer;
-}
-.delSchedule{
-	color:#e20707;
-}
-.delSchedule:hover{
-	color:#aa0000;
-	cursor:pointer;
-}
 
 .sidebar-menu .dropdown-toggle:after{
 	color:#45474b !important;
 }
 
 
-/* Control Report Billed Summary Page */
-  #tbl_billedreportsum_admin{
-    width:1600px !important;
-  }
-
   @media (min-width:1440px){
-    #tbl_billedreportsum_admin{
-      width:1800px !important;
-    }
-    .sum-td0{
-        width:80px !important;
-    }
-    .sum-td1 , .sum-td2 , .sum-td3 , .sum-td4 , .sum-td5 , .sum-td6{
-        width:80px !important;
-    }
+
   }
 
   @media (min-width:1024px) and (max-width:1439px){
-    #tbl_billedreportsum_admin{
-		width:1800px !important;
-	  }
-	  .sum-td0{
-		  width:80px !important;
-	  }
-	  .sum-td1 , .sum-td2 , .sum-td3 , .sum-td4 , .sum-td5 , .sum-td6{
-		  width:80px !important;
-	  }
+
   }
 
   @media (min-width:768px) and (max-width:1023px){
-    #tbl_billedreportsum_admin{
-		width:1800px !important;
-	  }
-	  .sum-td0{
-		  width:80px !important;
-	  }
-	  .sum-td1 , .sum-td2 , .sum-td3 , .sum-td4 , .sum-td5 , .sum-td6{
-		  width:50px !important;
-	  }
+
   }
 
   @media (min-width:320px) and (max-width:767px) {
-    #tbl_billedreportsum_admin{
-		width:1800px !important;
-	  }
-	  .sum-td0{
-		  width:50px !important;
-	  }
-	  .sum-td1 , .sum-td2 , .sum-td3 , .sum-td4 , .sum-td5 , .sum-td6{
-		  width:50px !important;
-	  }
+
   }
-  /* Control Report Billed Summary Page */
 
 
 
-.rp-select-period-ul{
+/* .selectUserUl{
 	max-height: 200px;
     margin-bottom: 10px;
     overflow:scroll;
     -webkit-overflow-scrolling: touch;
+} */
+/* create page css */
+/* create page css */
+
+.vendidUl , .itemIDUl{
+	max-height: 250px;
+	margin-bottom: 10px;
+	overflow:scroll;
+	-webkit-overflow-scrolling: touch;
 }
-.rp-select-period:hover{
+.vendidLi:hover , .itemIDLi:hover{
 	cursor: pointer;
+	background-color:#ebebeb;
 }
 
-.blockDataPeriod{
-	border:1px solid #ccc;
-	padding-top:30px;
-	padding-bottom:30px;
-	border-radius:15px;
+.trCenter{
+	text-align: center;
 }
 
-.selectUserUl{
-	max-height: 200px;
-    margin-bottom: 10px;
-    overflow:scroll;
-    -webkit-overflow-scrolling: touch;
+#tbl-itemdataShow{
+	width:100% !important;
+}
+.table-responsive > .table-bordered{
+	border-color:#ccc;
 }
 
-.selectUserLi{
-	cursor:pointer;
+/* #btn-editpr , #btn-backtoView{
+	position:absolute;
+	top:5px;
+	left:10px;
 }
 
-.editUser , .delUser{
-	font-size:20px;
+#btn-printpr{
+	position:absolute;
+	top:5px;
+	left:100px;
+} */
+
+#tbl_prlist{
+	width:1500px !important;
 }
-.editUser{
-	color:#f68f00;
+
+.radio-container{
+    display: grid;
+    grid:auto auto / auto auto auto auto auto auto;
+    grid-gap:10px;
+    padding:10px;
 }
-.editUser:hover{
-	color:#cd7904;
-	cursor:pointer;
+
+.checkbox-container{
+    display: grid;
+    grid:auto auto / auto auto auto auto;
+    grid-gap:3px;
+    padding:3px;
 }
-.delUser{
-	color:#e20707;
+
+.textStatusHead{
+	position:absolute;
+	top:-10px;
+	right:10px;
 }
-.delUser:hover{
-	color:#aa0000;
-	cursor:pointer;
+
+.custom-horizontal-line {
+	width: 90%; /* ความกว้างของเส้น */
+	height: 1px; /* ความหนาของเส้น */
+	background-color: rgb(255, 255, 255); /* สีของเส้น */
+	margin-left: 5px;
+	margin-right: 8px;
+
 }
+
+.poCard {
+	width: 60%;
+	transition: transform .2s, box-shadow .2s;
+	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2); /* เพิ่มเงาเบื้องต้น */
+}
+
+.poCard:hover {
+	cursor: pointer;
+	transform: scale(1.02);
+	box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.3); /* เพิ่มเงาเมื่อ hover */
+}
+
+.highlight-card {
+    background-color: #0093E9 !important;
+    background-image: linear-gradient(160deg, #90d6fe -50%, #ffffff 100%) !important;
+}
+
+@media (min-width:1440px){
+	#tbl_prlist{
+		width:1500px !important;
+	}
+}
+
+@media (min-width:1024px) and (max-width:1439px){
+	#tbl-itemdataShow{
+		width:1200px !important;
+	}
+	#tbl_prlist{
+		width:1200px !important;
+	}
+	.poCard {
+		width: 80%;
+	}
+}
+
+@media (min-width:768px) and (max-width:1023px){
+	#tbl-itemdataShow{
+		width:1200px !important;
+	}
+	.poCard {
+		width: 100%;
+	}
+}
+
+@media (min-width:320px) and (max-width:767px) {
+	.poCard {
+		width: 100%;
+	}
+
+	.textStatusHead{
+		position:relative;
+		top:15px;
+		right:0px;
+	}
+}
+/* create page css */
+/* create page css */
+
+
 
 
 
