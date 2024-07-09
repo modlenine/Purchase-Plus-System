@@ -125,11 +125,11 @@ export default {
                         orderable: false
                       },
                       {
-                        targets: [0 , 1 , 2 , 4 , 5 , 6 , 7 , 9],
+                        targets: [0 , 1 , 2 , 4 , 5 , 7],
                         width: "50px",
                       },
                       {
-                        targets: 3,
+                        targets: [3 , 6 , 9 ],
                         width: "100px",
                       }
                     ],

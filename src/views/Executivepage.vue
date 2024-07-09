@@ -118,37 +118,37 @@
                     <div class="row form-group">
                         <div class="col-md-12 radio-container">
                             <div class="custom-control custom-radio mb-5">
-                                <input type="radio" :id="'ip-exeG2-app-yes-'+index" name="ip-exeG2-app" class="custom-control-input" value="yes" required v-model="item.apv_approve">
+                                <input type="radio" :id="'ip-exeG2-app-yes-'+index" name="ip-exeG2-app" class="custom-control-input" value="yes" required v-model="item.apv_approve" @click="handleClick($event , item.apv_approve_user)">
                                 <label class="custom-control-label" :for="'ip-exeG2-app-yes-'+index">อนุมัติ</label>
                             </div>
                             <div class="custom-control custom-radio mb-5">
-                                <input type="radio" :id="'ip-exeG2-app-no-'+index" name="ip-exeG2-app" class="custom-control-input" value="no" required v-model="item.apv_approve">
+                                <input type="radio" :id="'ip-exeG2-app-no-'+index" name="ip-exeG2-app" class="custom-control-input" value="no" required v-model="item.apv_approve" @click="handleClick($event , item.apv_approve_user)">
                                 <label class="custom-control-label" :for="'ip-exeG2-app-no-'+index">ไม่อนุมัติ</label>
                             </div>
                         </div>
                         
                         <div class="col-md-12 form-group">
                             <label for=""><b>หมายเหตุ</b></label>
-                            <textarea class="form-control" name="ip-exeG2-memo" id="ip-exeG2-memo" cols="30" rows="10" v-model="item.apv_approve_memo"></textarea>
+                            <textarea class="form-control" name="ip-exeG2-memo" id="ip-exeG2-memo" cols="30" rows="10" v-model="item.apv_approve_memo" :disabled="item.apv_approve_user !== null"></textarea>
                         </div>
                         <div class="col-md-4 form-group">
                             <label for=""><b>ผู้อนุมัติ</b></label>
-                            <input type="text" name="ip-exeG2-userpost" id="ip-exeG2-userpost" class="form-control" readonly :value="item.apv_user">
+                            <input type="text" name="ip-exeG2-userpost" id="ip-exeG2-userpost" class="form-control" readonly :value="item.apv_user" :disabled="item.apv_approve_user !== null">
                         </div>
                         <div class="col-md-4 form-group">
                             <label for=""><b>รหัสพนักงาน</b></label>
-                            <input type="text" name="ip-exeG2-ecodepost" id="ip-exeG2-ecodepost" class="form-control" readonly :value="item.apv_ecode">
+                            <input type="text" name="ip-exeG2-ecodepost" id="ip-exeG2-ecodepost" class="form-control" readonly :value="item.apv_ecode" :disabled="item.apv_approve_user !== null">
                         </div>
                         <div v-if="item.apv_approve === null" class="col-md-4 form-group">
                             <label for=""><b>วันที่</b></label>
-                            <input type="text" name="ip-exeG2-datetimepost" id="ip-exeG2-datetimepost" class="form-control" readonly :value="datetimenow_prop">
+                            <input type="text" name="ip-exeG2-datetimepost" id="ip-exeG2-datetimepost" class="form-control" readonly :value="datetimenow_prop" :disabled="item.apv_approve_user !== null">
                         </div>
                         <div v-else class="col-md-4 form-group">
                             <label for=""><b>วันที่</b></label>
-                            <input type="text" name="ip-exeG2-datetimepost" id="ip-exeG2-datetimepost" class="form-control" readonly v-model="item.apv_approve_datetime">
+                            <input type="text" name="ip-exeG2-datetimepost" id="ip-exeG2-datetimepost" class="form-control" readonly v-model="item.apv_approve_datetime" :disabled="item.apv_approve_user !== null">
                         </div>
                         <div class="col-md-12 form-group">
-                            <button v-if="item.apv_approve_user === null" type="submit" id="btn-save-exeG2" class="btn btn-primary">บันทึก</button>
+                            <button v-if="item.apv_approve_user === null && item.apv_ecode === userData.ecode" type="submit" :id="'btn-save-exeG2-'+index" class="btn btn-primary">บันทึก</button>
                         </div>
                     </div>
                     </form>
@@ -174,37 +174,37 @@
                     <div class="row form-group">
                         <div class="col-md-12 radio-container">
                             <div class="custom-control custom-radio mb-5">
-                                <input type="radio" :id="'ip-exeG1-app-yes-'+index" name="ip-exeG1-app" class="custom-control-input" value="yes" required v-model="item.apv_approve">
+                                <input type="radio" :id="'ip-exeG1-app-yes-'+index" name="ip-exeG1-app" class="custom-control-input" value="yes" required v-model="item.apv_approve" @click="handleClick($event , item.apv_approve_user)">
                                 <label class="custom-control-label" :for="'ip-exeG1-app-yes-'+index">อนุมัติ</label>
                             </div>
                             <div class="custom-control custom-radio mb-5">
-                                <input type="radio" :id="'ip-exeG1-app-no-'+index" name="ip-exeG1-app" class="custom-control-input" value="no" required v-model="item.apv_approve">
+                                <input type="radio" :id="'ip-exeG1-app-no-'+index" name="ip-exeG1-app" class="custom-control-input" value="no" required v-model="item.apv_approve" @click="handleClick($event , item.apv_approve_user)">
                                 <label class="custom-control-label" :for="'ip-exeG1-app-no-'+index">ไม่อนุมัติ</label>
                             </div>
                         </div>
                         
                         <div class="col-md-12 form-group">
                             <label for=""><b>หมายเหตุ</b></label>
-                            <textarea class="form-control" name="ip-exeG1-memo" id="ip-exeG1-memo" cols="30" rows="10" v-model="item.apv_approve_memo"></textarea>
+                            <textarea class="form-control" name="ip-exeG1-memo" id="ip-exeG1-memo" cols="30" rows="10" v-model="item.apv_approve_memo" :disabled="item.apv_approve_user !== null"></textarea>
                         </div>
                         <div class="col-md-4 form-group">
                             <label for=""><b>ผู้อนุมัติ</b></label>
-                            <input type="text" name="ip-exeG1-userpost" id="ip-exeG1-userpost" class="form-control" readonly :value="item.apv_user">
+                            <input type="text" name="ip-exeG1-userpost" id="ip-exeG1-userpost" class="form-control" readonly :value="item.apv_user" :disabled="item.apv_approve_user !== null">
                         </div>
                         <div class="col-md-4 form-group">
                             <label for=""><b>รหัสพนักงาน</b></label>
-                            <input type="text" name="ip-exeG1-ecodepost" id="ip-exeG1-ecodepost" class="form-control" readonly :value="item.apv_ecode">
+                            <input type="text" name="ip-exeG1-ecodepost" id="ip-exeG1-ecodepost" class="form-control" readonly :value="item.apv_ecode" :disabled="item.apv_approve_user !== null">
                         </div>
-                        <div v-if="item.apv_approve === null" class="col-md-4 form-group">
+                        <div v-if="item.apv_approve_user === null" class="col-md-4 form-group">
                             <label for=""><b>วันที่</b></label>
-                            <input type="text" name="ip-exeG1-datetimepost" id="ip-exeG1-datetimepost" class="form-control" readonly :value="datetimenow_prop">
+                            <input type="text" name="ip-exeG1-datetimepost" id="ip-exeG1-datetimepost" class="form-control" readonly :value="datetimenow_prop" :disabled="item.apv_approve_user !== null">
                         </div>
                         <div v-else class="col-md-4 form-group">
                             <label for=""><b>วันที่</b></label>
-                            <input type="text" name="ip-exeG1-datetimepost" id="ip-exeG1-datetimepost" class="form-control" readonly v-model="item.apv_approve_datetime">
+                            <input type="text" name="ip-exeG1-datetimepost" id="ip-exeG1-datetimepost" class="form-control" readonly v-model="item.apv_approve_datetime" :disabled="item.apv_approve_user !== null">
                         </div>
                         <div class="col-md-12 form-group">
-                            <button v-if="item.apv_approve_user === null" type="submit" id="btn-save-exeG1" class="btn btn-primary">บันทึก</button>
+                            <button v-if="item.apv_approve_user === null && item.apv_ecode === userData.ecode" type="submit" :id="'btn-save-exeG1-'+index" class="btn btn-primary">บันทึก</button>
                         </div>
                     </div>
                     </form>
@@ -472,6 +472,7 @@ export default {
         },
         saveExecutiveG2(index , item)
         {
+            $('#btn-save-exeG2-'+index).prop('disabled' , true);
             const proxy = this;
             const formdata = new FormData();
             formdata.append('formno', proxy.formno);
@@ -487,6 +488,7 @@ export default {
                 }
             }).then(res=>{
                 console.log(res.data);
+                $('#btn-save-exeG2-'+index).prop('disabled' , false);
                 if(res.data.status == "Update Data Success"){
                     Swal.fire({
                         title: 'บันทึกข้อมูลสำเร็จ',
@@ -501,6 +503,7 @@ export default {
         },
         saveExecutiveG1(index , item)
         {
+            $('#btn-save-exeG1-'+index).prop('disabled' , true);
             const proxy = this;
             const formdata = new FormData();
             formdata.append('formno', proxy.formno);
@@ -516,6 +519,7 @@ export default {
                 }
             }).then(res=>{
                 console.log(res.data);
+                $('#btn-save-exeG1-'+index).prop('disabled' , false);
                 if(res.data.status == "Update Data Success"){
                     Swal.fire({
                         title: 'บันทึกข้อมูลสำเร็จ',

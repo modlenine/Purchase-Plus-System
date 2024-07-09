@@ -401,25 +401,38 @@ export default {
                     $('#show_group12').html(html1);
                     $('#show_group13').html(html2);
 
+                    $('#btn-save-mgr').prop('disabled' , true);
                     $('.group1-checkbox').change(function() {
                         if ($('.group1-checkbox:checked').length > 1) {
                             this.checked = false;
                             alert('คุณสามารถเลือกได้เพียง 1 ท่านนกลุ่มนี้');
                         } else if ($('.group1-checkbox:checked').length == 1) {
                             $('.group2-checkbox').prop('disabled', true);
+                            $('#btn-save-mgr').prop('disabled' , false);
                         } else {
                             $('.group2-checkbox').prop('disabled', false);
+                            $('#btn-save-mgr').prop('disabled' , true);
                         }
                     });
 
                     $('.group2-checkbox').change(function() {
-                        if ($('.group2-checkbox:checked').length > 3) {
+                        const checkedCount = $('.group2-checkbox:checked').length;
+                        
+                        if (checkedCount > 3) {
                             this.checked = false;
                             alert('คุณสามารถเลือกได้ไม่เกิน 3 ท่านในกลุ่มนี้');
-                        } else if ($('.group2-checkbox:checked').length > 0) {
-                            $('.group1-checkbox').prop('disabled', true);
                         } else {
-                            $('.group1-checkbox').prop('disabled', false);
+                            if (checkedCount > 0) {
+                                $('.group1-checkbox').prop('disabled', true);
+                            } else {
+                                $('.group1-checkbox').prop('disabled', false);
+                            }
+
+                            if (checkedCount < 3) {
+                                $('#btn-save-mgr').prop('disabled' , true);
+                            }else{
+                                $('#btn-save-mgr').prop('disabled' , false);
+                            }
                         }
                     });
                 }
@@ -449,6 +462,7 @@ export default {
                         `;
                     }
                     $('#show_group0').html(html);
+                    $('#btn-save-mgr').prop('disabled' , true);
                     $('.group0-checkbox').change(function() {
                         if ($('.group0-checkbox:checked').length == 6) {
                             $('#btn-save-mgr').prop('disabled' , false);
@@ -491,6 +505,7 @@ export default {
                 proxy.ctrlG2 = false;
                 proxy.ctrlG1 = false;
                 proxy.ctrlG0 = false;
+                $('#btn-save-mgr').prop('disabled' , false);
             }
         });
 
