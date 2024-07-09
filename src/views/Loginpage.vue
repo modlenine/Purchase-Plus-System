@@ -124,8 +124,9 @@ export default {
 						icon: 'success',
 						showConfirmButton: false,
 						timer:700
+					}).then(function(){
+						location.reload();
 					});
-					location.reload();
 				}else if(res.data.status == "Login failed"){
 					Swal.fire({
 						title: 'Username หรือ Password ไม่ถูกต้อง',

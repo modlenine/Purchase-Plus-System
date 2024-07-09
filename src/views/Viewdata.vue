@@ -9,7 +9,7 @@
                         <div class="card-box pd-20">
                             <div class="row">
                                 <div class="col-md-12">
-                                    <router-link v-if="btncontrol === true" :to="{name:'Editpr' , params:{formno:formno}}" type="button" id="btn-editpr" class="btn btn-warning mr-2"><i class="dw dw-edit-file mr-2"></i>แก้ไข</router-link>
+                                    <router-link v-if="btncontrol === true && btncontrol_edit === true" :to="{name:'Editpr' , params:{formno:formno}}" type="button" id="btn-editpr" class="btn btn-warning mr-2"><i class="dw dw-edit-file mr-2"></i>แก้ไข</router-link>
                                     <button type="button" id="btn-printpr" class="btn btn-warning" @click="openPreviewModal"><i class="dw dw-print mr-2"></i>ปริ้น PR</button>
                                     <PreviewModal :dataprintpr="dataprintpr" ref="previewModal" />
                                 </div>
@@ -122,10 +122,21 @@
                             </div>
                             <hr>
                             <div class="row form-group">
-                                <label for=""><b>ผู้ตรวจสอบข้อมูล</b></label>
-                                <select class="form-control" name="ip-cpr-invesEcode" id="ip-cpr-invesEcode" required v-model="m_invest_ecodefix" disabled>
-                                    <option value="">กรุณาเลือกผู้ตรวจสอบ</option>
-                                </select>
+                                <Showfile
+                                    :files="this.files"
+                                    :url="this.url"
+                                    :showtype="'view'"
+                                    :formno="this.formno"
+                                />
+                            </div>
+                            <hr>
+                            <div class="row form-group">
+                                <div class="col-md-12">
+                                    <label for=""><b>ผู้ตรวจสอบข้อมูล</b></label>
+                                    <select class="form-control" name="ip-cpr-invesEcode" id="ip-cpr-invesEcode" required v-model="m_invest_ecodefix" disabled>
+                                        <option value="">กรุณาเลือกผู้ตรวจสอบ</option>
+                                    </select>
+                                </div>
                             </div>
                             <hr>
                             <div class="row form-group">
@@ -142,8 +153,8 @@
                                     <input type="text" name="ip-cpr-userdatetime" id="ip-cpr-userdatetime" class="form-control" disabled :value="datetimepost">
                                 </div>
                                 <div class="col-md-12 form-group">
-                                    <button v-if="btncontrol === true" type="button" class="btn btn-primary mr-2" @click="sendData"><i class="dw dw-mail mr-2"></i>ส่งข้อมูล</button>
-                                    <button v-if="btncontrol === true" type="button" id="btn-cancelData" class="btn btn-danger mr-2" @click="saveCancel"><i class="dw dw-cancel mr-2"></i>ยกเลิกเอกสาร</button>
+                                    <button v-if="btncontrol === true && btncontrol_send === true" type="button" class="btn btn-primary mr-2" @click="sendData"><i class="dw dw-mail mr-2"></i>ส่งข้อมูล</button>
+                                    <button v-if="btncontrol === true && btncontrol_cancel === true" type="button" id="btn-cancelData" class="btn btn-danger mr-2" @click="saveCancel"><i class="dw dw-cancel mr-2"></i>ยกเลิกเอกสาร</button>
                                 </div>
                             </div>
 
@@ -158,6 +169,11 @@
                         :status="this.status"
                         :datetimenow_prop="this.datetimenow"
                         :dataareaid_prop="this.dataareaid"
+                        :m_approve_invest="this.m_approve_invest"
+                        :m_userpost_invest="this.m_userpost_invest"
+                        :m_ecodepost_invest="this.m_ecodepost_invest"
+                        :m_datetimepost_invest="this.m_datetimepost_invest"
+                        :m_memo_invest="this.m_memo_invest"
                     />
                 </div>
 
@@ -174,6 +190,7 @@
                         :datetimenow_prop="this.datetimenow"
                         :dataareaid_prop="this.dataareaid"
                         :userApp_prop="this.userApp"
+                        :memoMgr="this.memoMgr"
                     />
                 </div>
 
@@ -198,6 +215,7 @@
                         :userpost_pur_prop="this.userpost_pur"
                         :ecodepost_pur_prop="this.ecodepost_pur"
                         :datetime_pur_prop="this.datetime_pur"
+                        :paygroup_prop="this.paygroup"
                     />
                 </div>
 
@@ -229,6 +247,7 @@ import Purpage from '@/views/Purchase.vue'
 import Executivepage from '@/views/Executivepage.vue'
 import Popage from '@/views/Popage.vue'
 import Investigator from '@/views/Investigator.vue'
+import Showfile from '@/components/Showfile.vue'
 // import html2pdf from 'html2pdf.js';
 import PreviewModal from '@/components/PreviewPrModal.vue';
 import {Modal} from 'bootstrap'; // นำเข้าเฉพาะ Modal component จาก Bootstrap
@@ -242,7 +261,8 @@ export default {
         Executivepage,
         PreviewModal,
         Popage,
-        Investigator
+        Investigator,
+        Showfile
     },
     data() {
         return {
@@ -260,6 +280,8 @@ export default {
                 datetimedelivery:'',
                 memo:'',
                 itemData:[],
+                userpostInvest:'',
+                datepostInvest:'',
                 userpostMgr:'',
                 datetimepostMgr:'',
                 formisono:'',
@@ -287,14 +309,24 @@ export default {
             status:'',
             itemData:[],
             btncontrol:false,
+            btncontrol_edit:true,
+            btncontrol_send:false,
+            btncontrol_cancel:true,
             sumprice:0,
             paygroup:'',
             datetimenow:'',
             formisono_po:'',
+            files:[],
 
             // Investigator zone
             showinvespage:false,
             m_invest_ecodefix:'',
+            m_approve_invest:'',
+            m_memo_invest:'',
+            m_userpost_invest:'',
+            m_ecodepost_invest:'',
+            m_datetimepost_invest:'',
+
 
             //mgrzone
             showmgrpage:false,
@@ -302,6 +334,7 @@ export default {
             ecodepostMgr:'',
             datetimepostMgr:'',
             approveMgr:'',
+            memoMgr:'',
             userApp:[],
 
             // purzone
@@ -340,6 +373,7 @@ export default {
                         console.log(res.data);
                         let resultMain = res.data.maindata;
                         let resultDetails = res.data.details;
+                        let resultFiles = res.data.files;
 
                         this.dataareaid = resultMain.m_dataareaid;
                         this.plantype = resultMain.m_plantype;
@@ -363,6 +397,7 @@ export default {
                         this.sumprice = res.data.pricesum;
                         this.paygroup = res.data.paygroup;
                         this.datetimenow = res.data.datetimenow;
+                        this.files = resultFiles;
                         
                         this.getReqplan();
                         this.getCostcenter();
@@ -376,6 +411,12 @@ export default {
 
                         // Investigator zone
                         this.m_invest_ecodefix = resultMain.m_invest_ecodefix;
+                        this.m_approve_invest = resultMain.m_approve_invest;
+                        this.m_userpost_invest = resultMain.m_userpost_invest;
+                        this.m_ecodepost_invest = resultMain.m_ecodepost_invest;
+                        this.m_datetimepost_invest = resultMain.m_datetimepost_invest;
+                        this.m_memo_invest = resultMain.m_memo_invest;
+
 
                         //manager zone
                         this.userpostMgr = resultMain.m_userpost_mgr;
@@ -383,6 +424,7 @@ export default {
                         this.datetimepostMgr = resultMain.m_datetimepost_mgr;
                         this.approveMgr = resultMain.m_approve_mgr;
                         this.userApp = res.data.userApp;
+                        this.memoMgr = resultMain.m_memo_mgr;
 
                         // purchase zone
                         this.approve_pur = resultMain.m_approve_pur;
@@ -593,10 +635,19 @@ export default {
         controlBtn()
         {
             //control with status
-            if(this.status === "User Cancel" || this.status == "New PR" || this.status == "Manager Approved" || this.status == "Manager Not Approve" || this.status == "Executive Group 4 Approved" || this.status == "Executive Group 3 Approved" || this.status == "Executive Group 2 Approved" || this.status == "Executive Group 1 Approved" || this.status == "Purchase Verified" || this.status == "PO confirmed"){
+            if(this.status === "User Cancel" || this.status == "New PR" || this.status == "Investigator Approved" || this.status == "Manager Approved" || this.status == "Manager Not Approve" || this.status == "Executive Group 4 Approved" || this.status == "Executive Group 3 Approved" || this.status == "Executive Group 2 Approved" || this.status == "Executive Group 1 Approved" || this.status == "Executive Group 0 Approved" || this.status == "Purchase Verified" || this.status == "PO confirmed"){
                 this.btncontrol = false;
             }else if(this.status == "Wait Send Data"){
                 if(this.userData.ecode == this.ecodepost || this.userData.ecode == this.ecode){
+                    if(this.userData.DeptCode == "1010" || this.userData.DeptCode == "1013"){
+                        this.btncontrol_send = false;
+                        this.btncontrol = true;
+                    }else{
+                        this.btncontrol_send = true;
+                        this.btncontrol = true;
+                    }
+                }else if(this.userData.DeptCode == "1004" || this.userData.DeptCode == "1002"){
+                    this.btncontrol_send = true;
                     this.btncontrol = true;
                 }
             }else{
@@ -633,6 +684,8 @@ export default {
                         this.dataprintpr.datetimepostMgr = resultMain.m_datetimepost_mgr;
                         this.dataprintpr.formisono = resultMain.m_formisono;
                         this.dataprintpr.datetimedelivery = resultMain.m_date_delivery;
+                        this.dataprintpr.userpostInvest = resultMain.m_userpost_invest;
+                        this.dataprintpr.datepostInvest = resultMain.m_datetimepostinvest;
 
                         this.dataprintpr.itemData = resultDetails;
                         this.dataprintpr.executive = resultExecutive;
@@ -657,10 +710,14 @@ export default {
                     this.showinvespage = true;
                 }
             }else if(this.status == "Investigator Approved"){
+                this.showinvespage = true;
                 if(this.department == this.userData.DeptCode && this.userData.posi > 15){
+                    this.showmgrpage = true;
+                }else if(this.department == "1007" && this.userData.ecode == "M0040"){
                     this.showmgrpage = true;
                 }
             }else if(this.status == "Manager Approved"){
+                this.showinvespage = true;
                 this.showmgrpage = true;
                 if(this.paygroup == "5"){
                     this.showPurPage = true;
@@ -672,28 +729,41 @@ export default {
                     this.showExecutivePage = true;
                 }else if(this.paygroup == "1"){
                     this.showExecutivePage = true;
+                }else if(this.paygroup == "0"){
+                    this.showExecutivePage = true;
                 }
             }else if(this.status == "Executive Group 4 Approved"){
+                this.showinvespage = true;
                 this.showmgrpage = true;
                 this.showExecutivePage = true;
                 this.showPurPage = true;
             }else if(this.status == "Executive Group 3 Approved"){
+                this.showinvespage = true;
                 this.showmgrpage = true;
                 this.showExecutivePage = true;
                 this.showPurPage = true;
             }else if(this.status == "Executive Group 2 Approved"){
+                this.showinvespage = true;
                 this.showmgrpage = true;
                 this.showExecutivePage = true;
                 this.showPurPage = true;
             }else if(this.status == "Executive Group 1 Approved"){
+                this.showinvespage = true;
+                this.showmgrpage = true;
+                this.showExecutivePage = true;
+                this.showPurPage = true;
+            }else if(this.status == "Executive Group 0 Approved"){
+                this.showinvespage = true;
                 this.showmgrpage = true;
                 this.showExecutivePage = true;
                 this.showPurPage = true;
             }else if(this.status == "Purchase Verified"){
+                this.showinvespage = true;
                 this.showmgrpage = true;
                 this.showExecutivePage = true;
                 this.showPurPage = true;
             }else if(this.status == "PO confirmed"){
+                this.showinvespage = true;
                 this.showmgrpage = true;
                 this.showExecutivePage = true;
                 this.showPurPage = true;

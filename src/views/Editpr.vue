@@ -26,19 +26,19 @@
                             </div>
                             <div class="col-md-6 form-group">
                                 <label for=""><b>จำนวน</b></label>
-                                <input type="number" name="ipmd-cpr-itemqty" id="ipmd-cpr-itemqty" class="form-control" v-model="itemqty" required @keyup="calcPrice">
+                                <input type="text" name="ipmd-cpr-itemqty" id="ipmd-cpr-itemqty" class="form-control" v-model="itemqty" required @keyup="calcPrice">
                             </div>
                             <div class="col-md-6 form-gro">
                                 <label for=""><b>ราคาต่อหน่วย</b></label>
-                                <input type="number" name="ipmd-cpr-itemprice" id="ipmd-cpr-itemprice" class="form-control" v-model="itemprice" required @keyup="calcPrice">
+                                <input type="text" name="ipmd-cpr-itemprice" id="ipmd-cpr-itemprice" class="form-control" v-model="itemprice" required @keyup="calcPrice">
                             </div>
                             <div class="col-md-6 form-group">
                                 <label for=""><b>ส่วนลด</b></label>
-                                <input type="number" name="ipmd-cpr-itemdiscount" id="ipmd-cpr-itemdiscount" class="form-control" v-model="itemdiscount" @keyup="calcPrice">
+                                <input type="text" name="ipmd-cpr-itemdiscount" id="ipmd-cpr-itemdiscount" class="form-control" v-model="itemdiscount" @keyup="calcPrice">
                             </div>
                             <div class="col-md-6 form-group">
                                 <label for=""><b>ราคารวม</b></label>
-                                <input type="number" name="ipmd-cpr-itempriceSum" id="ipmd-cpr-itempriceSum" class="form-control" readonly v-model="itempricesum">
+                                <input type="text" name="ipmd-cpr-itempriceSum" id="ipmd-cpr-itempriceSum" class="form-control" readonly v-model="itempricesum">
                             </div>
                             <div class="col-md-12 form-group">
                                 <label for=""><b>หน่วยนับ</b></label>
@@ -85,8 +85,17 @@
                                 </div>
                                 <div class="col-md-4 form-group">
                                     <label for=""><b>หมวดหมู่เอกสาร</b></label>
-                                    <select class="form-control" name="ip-cpr-reqplan" id="ip-cpr-reqplan" v-model="plantype" required @change="getPayGroup">
+                                    <select class="form-control" name="ip-cpr-reqplan" id="ip-cpr-reqplan" v-model="plantype" required>
                                         <option value="">กรุณาเลือกรายการ</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4 form-group">
+                                    <label for=""><b>หมวดหมู่สินค้า</b></label>
+                                    <select class="form-control" name="ip-cpr-itemcategory" id="ip-cpr-itemcategory" v-model="itemcategory" required @change="getPayGroup">
+                                        <option value="">กรุณาเลือกรายการ</option>
+                                        <option value="raw_materials">วัตถุดิบ</option>
+                                        <option value="expenses">ค่าใช้จ่าย</option>
+                                        <option value="assets">ทรัพย์สิน</option>
                                     </select>
                                 </div>
                                 <div class="col-md-4 form-group">
@@ -111,12 +120,12 @@
                                         <option value="">กรุณาเลือกผู้ขอซื้อ</option>
                                     </select>
                                 </div>
-                                <div class="col-md-6 form-group">
+                                <div class="col-md-4 form-group">
                                     <label for=""><b>รหัสผู้ขาย</b></label>
                                     <input type="text" name="ip-cpr-vendid" id="ip-cpr-vendid" class="form-control" v-model="vendid" @keyup="getVendID" @keydown="alertVendidnull" required>
                                     <div id="show_accountnum"></div>
                                 </div>
-                                <div class="col-md-6 form-group">
+                                <div class="col-md-4 form-group">
                                     <label for=""><b>ชื่อผู้ขาย</b></label>
                                     <input type="text" name="ip-cpr-vendname" id="ip-cpr-vendname" class="form-control" readonly v-model="vendname">
                                 </div>
@@ -126,11 +135,11 @@
                                 </div>
                                 <div class="col-md-4 form-group">
                                     <label for=""><b>วันที่ขอซื้อ</b></label>
-                                    <input type="text" name="ip-cpr-reqDatetime" id="ip-cpr-reqDatetime" class="form-control" required>
+                                    <input type="text" name="ip-cpr-reqDatetime" id="ip-cpr-reqDatetime" class="form-control" required v-model="datetimereq">
                                 </div>
                                 <div class="col-md-4 form-group">
                                     <label for=""><b>วันที่ส่งของ</b></label>
-                                    <input type="text" name="ip-cpr-recDatetime" id="ip-cpr-recDatetime" class="form-control" required>
+                                    <input type="text" name="ip-cpr-recDatetime" id="ip-cpr-recDatetime" class="form-control" required v-model="datetimedelivery">
                                 </div>
                                 <div class="col-md-12 form-group">
                                     <label for=""><b>หมายเหตุ</b></label>
@@ -147,6 +156,30 @@
                                     <Itemlist ref="itemlistcom"
                                         :itemdataProp="this.itemData"
                                     />
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row form-group">
+                                <Showfile @loadfulldata="getdata_viewfull"
+                                    :files="this.files"
+                                    :url="this.url"
+                                    :showtype="'edit'"
+                                    :formno="this.formno"
+                                />
+                                <div v-if="showtype== 'edit'" class="col-md-12 form-group">
+                                    <input id="ip-cpre-file" name="ip-cpre-file[]" type="file" class="file" multiple data-show-upload="false" data-show-caption="true" data-show-preview="true" accept=".pdf , .jpg , .png" ref="fileInputEdit">
+                                </div>
+                                <div id="scripts2" v-if="showtype== 'edit'">
+                                    <script type="application/javascript" defer :src="this.baseurl+'assets/fileupload/bs-filestyle.js'"></script>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row form-group">
+                                <div class="col-md-12">
+                                    <label for=""><b>ผู้ตรวจสอบข้อมูล</b></label>
+                                    <select class="form-control" name="ip-cpr-invesEcode" id="ip-cpr-invesEcode" required v-model="m_invest_ecodefix">
+                                        <option value="">กรุณาเลือกผู้ตรวจสอบ</option>
+                                    </select>
                                 </div>
                             </div>
                             <hr>
@@ -185,17 +218,21 @@ import Swal from 'sweetalert2'
 import {Modal} from 'bootstrap'; // นำเข้าเฉพาะ Modal component จาก Bootstrap
 
 import Itemlist from '@/components/Itemlist.vue'
+import Showfile from '@/components/Showfile.vue'
 
 
 export default {
     name:"Editpr",
     components:{
-        Itemlist
+        Itemlist,
+        Showfile
     },
     data() {
         return {
             url:this.getUrl(),
+            baseurl:this.baseUrl(),
             dataareaid:'',
+            itemcategory:'',
             plantype:'',
             costcenter:'',
             department:'',
@@ -208,6 +245,7 @@ export default {
             memo:'',
             payGroupMaxprice:'',
             prno:'',
+            m_invest_ecodefix:'',
 
             itemid:'',
             itemname:'',
@@ -220,6 +258,8 @@ export default {
             itemunit:'',
             itemmemo:'',
             itemData:[],
+            files:[],
+            showtype:'edit',
 
             userData:this.getSessionStorage()
         }
@@ -240,8 +280,10 @@ export default {
                     if(res.data.status == "Select Data Success"){
                         let resultMain = res.data.maindata;
                         let resultDetails = res.data.details;
+                        let resultFiles = res.data.files;
 
                         this.dataareaid = resultMain.m_dataareaid;
+                        this.itemcategory = resultMain.m_itemcategory;
                         this.plantype = resultMain.m_plantype;
                         this.costcenter = resultMain.m_costcenter;
                         this.department = resultMain.m_department;
@@ -257,11 +299,17 @@ export default {
                         this.ecodepost = resultMain.m_ecodepost;
                         this.datetimepost = resultMain.m_datetimepost;
                         this.prno = resultMain.m_prno;
+                        this.files = resultFiles;
                         
                         this.getReqplan();
                         this.getCostcenter();
                         this.getDepartment();
                         this.getUserEcode();
+                        this.getInvestigator();
+                        this.getPayGroup();
+
+                        // Investigator zone
+                        this.m_invest_ecodefix = resultMain.m_invest_ecodefix;
 
                         this.itemData = resultDetails;
                         console.log(this.itemData);
@@ -365,8 +413,23 @@ export default {
                 $('#ip-cpr-ecodereq').html('<option value="">กรุณาเลือกรายการ</option>');
             }
         },
-
-
+        getInvestigator()
+        {
+            axios.get(this.url+'intsys/purchaseplus/purchaseplus_backend/mainapi/getInvestigator').then(res=>{
+                console.log(res.data);
+                if(res.data.status == "Select Data Success"){
+                    let html = '<option value="">กรุณาเลือกผู้ตรวจสอบ</option>';
+                    let result = res.data.result;
+                    for(let key in result){
+                        let selected = this.m_invest_ecodefix == result[key].inve_ecode ? 'selected' : '';
+                        html += `
+                            <option value="${result[key].inve_ecode}" ${selected}>${result[key].inve_fullname}</option>
+                        `;
+                    }
+                    $('#ip-cpr-invesEcode').html(html);
+                }
+            });
+        },
         getVendID()
         {
             if(this.dataareaid != "" && this.vendid != ""){
@@ -515,7 +578,7 @@ export default {
         },
         calcPrice()
         {
-            this.itempricesum = (this.itemqty * this.itemprice) - this.itemdiscount
+            this.itempricesum  = (this.itemqty * this.itemprice) - this.itemdiscount;
         },
         saveInsertItemdata()
         {
@@ -602,6 +665,13 @@ export default {
                     showConfirmButton: true,
                     // timer:1000
                 });
+            }else if(this.m_invest_ecodefix == ""){
+                Swal.fire({
+                    title: 'กรุณาเลือกผู้ตรวจสอบรายการ',
+                    icon: 'warning',
+                    showConfirmButton: true,
+                    // timer:1000
+                });
             }else{
                 let itemsumpriceTotalPlus=0;
                 for(let key in proxy.itemData){
@@ -616,9 +686,11 @@ export default {
                     });
                 }else{
                     const formdata = new FormData();
+                    const files = this.$refs.fileInputEdit.files;
                     let data = {
                         dataareaid:this.dataareaid,
                         plantype:this.plantype,
+                        itemcategory:this.itemcategory,
                         costcenter:this.costcenter,
                         department:this.department,
                         ecode:this.ecode,
@@ -631,10 +703,14 @@ export default {
                         ecodepost:this.userData.ecode,
                         userpost:this.userData.Fname+" "+this.userData.Lname,
                         formno:this.formno,
-                        prno:this.prno
+                        prno:this.prno,
+                        m_invest_ecodefix:this.m_invest_ecodefix,
                     }
                     for(let key in data){
                         formdata.append(key , data[key]);
+                    }
+                    for(let key in files){
+                        formdata.append('ip-cpre-file[]' , files[key]);
                     }
                     formdata.append("itemdata" , JSON.stringify(this.itemData));
                     formdata.append("action" , "saveDataAll_edit");
@@ -665,9 +741,9 @@ export default {
         getPayGroup()
         {
             const proxy = this;
-            if(proxy.plantype != ""){
+            if(proxy.itemcategory != ""){
                 const formdata = new FormData();
-                formdata.append('pay_doctype' , proxy.plantype);
+                formdata.append('pay_doctype' , proxy.itemcategory);
                 axios.post(this.url+'intsys/purchaseplus/purchaseplus_backend/mainapi/getPayGroupMaxMoney' , formdata , {
                     headers:{
                         'Content-Type':'multipart/form-data'
@@ -680,8 +756,7 @@ export default {
                     }
                 });
             }
-        }
-
+        },
     },
     created() {
         this.formValidate();

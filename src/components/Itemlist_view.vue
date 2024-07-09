@@ -56,7 +56,7 @@ export default {
                         <td>${this.itemdataProp[key].itemid}</td>
                         <td>${this.itemdataProp[key].itemname}</td>
                         <td>${this.itemdataProp[key].itemdetail}</td>
-                        <td>${this.itemdataProp[key].itemqty}</td>
+                        <td>${parseFloat(this.itemdataProp[key].itemqty).toLocaleString()}</td>
                         <td>${parseFloat(this.itemdataProp[key].itemprice).toLocaleString()}</td>
                         <td>${parseFloat(this.itemdataProp[key].itemdiscount).toLocaleString()}</td>
                         <td>${parseFloat(this.itemdataProp[key].itempricesum).toLocaleString()}</td>

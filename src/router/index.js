@@ -9,6 +9,7 @@ import Editpr from '@/views/Editpr.vue'
 import Login from '@/views/Loginpage.vue'
 import Editprpurchase from '@/views/Editprpurchase.vue'
 import Printpr from '@/components/Printpr.vue'
+import store from '@/store';
 
 Vue.use(VueRouter)
 
@@ -35,6 +36,18 @@ const routes = [
     component: Createpr,
     metaInfo:{
       title:'หน้าสร้างรายการ PR'
+    },
+    beforeRouteEnter: (to, from, next) => {
+      // ตรวจสอบสถานะการเข้าสู่ระบบ ถ้าเข้าสู่ระบบแล้วให้ redirect ไปที่หน้า createpr
+      store.dispatch('getSessionStorage').then(()=>{
+          const userData = store.getters.get_userdata;
+          if (userData.DeptCode == "1002" || userData.DeptCode == "1004" || userData.DeptCode == "1009" || userData.DeptCode == "1015" || userData.DeptCode == "1010" || userData.DeptCode == "1013") {
+              next(); // ยอมรับการเข้าถึงหน้า login
+          } else {
+              next('/'); // ยอมรับการเข้าถึงหน้า login
+          }
+      });
+      
     }
   },
   {

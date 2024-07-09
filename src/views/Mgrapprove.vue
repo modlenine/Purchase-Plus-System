@@ -155,11 +155,13 @@ export default {
         'paygroup_prop',
         'datetimenow_prop',
         'dataareaid_prop',
-        'userApp_prop'
+        'userApp_prop',
+        'memoMgr'
     ],
     methods: {
         saveMgrApprove()
         {
+            $('#btn-save-mgr').prop('disabled' , true);
             const proxy = this;
             //check data null
             if(this.mgrApproveType == ""){
@@ -208,6 +210,7 @@ export default {
                     }
                 }).then(res=>{
                     console.log(res.data);
+                    $('#btn-save-mgr').prop('disabled' , false);
                     if(res.data.status == "Update Data Success"){
                         Swal.fire({
                             title: 'บันทึกข้อมูลสำเร็จ',
@@ -223,7 +226,7 @@ export default {
         },
         mgrCheckStatus()
         {
-            if(this.status == "New PR"){
+            if(this.status == "Investigator Approved"){
                 this.mgrUserpost = this.userpostMgr;
                 this.mgrEcodepost = this.userData.ecode;
                 this.mgrDatetimepost = this.datetimenow_prop;
@@ -232,6 +235,7 @@ export default {
                 this.mgrUserpost = this.userpostMgr_prop;
                 this.mgrEcodepost = this.ecodepostMgr_prop;
                 this.mgrDatetimepost = this.datetimepostMgr_prop;
+                this.mgrMemo = this.memoMgr;
                 if(this.approveMgr_prop == "yes"){
                     $('#ip-mgr-app-yes').prop('checked' , true);
                 }else if(this.approveMgr_prop == "no"){
@@ -259,12 +263,16 @@ export default {
                     let html = '';
                     for(const key in result){
                         let checked = this.userApp_prop.includes(result[key].app_ecode) ? 'checked' : '';
-                        html +=`
-                            <div class="checkbox custom-control custom-checkbox mb-2">
-                                <input type="checkbox" value="${result[key].app_ecode}" class="custom-control-input single-checkbox" name="g4Check[]" id="g4Check${key}" ${checked} ${onclickfalse}>
-                                <label class="custom-control-label" for="g4Check${key}">${result[key].app_user}</label>
-                            </div>
-                        `;
+                        if(result[key].app_ecode == this.userData.ecode && this.status !== "Manager Approved"){
+                            continue;
+                        }else{
+                            html +=`
+                                <div class="checkbox custom-control custom-checkbox mb-2">
+                                    <input type="checkbox" value="${result[key].app_ecode}" class="custom-control-input single-checkbox" name="g4Check[]" id="g4Check${key}" ${checked} ${onclickfalse}>
+                                    <label class="custom-control-label" for="g4Check${key}">${result[key].app_user}</label>
+                                </div>
+                            `;
+                        }
                     }
                     $('#show_group4').html(html);
                     

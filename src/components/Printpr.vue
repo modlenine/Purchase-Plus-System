@@ -80,11 +80,12 @@
         </div>
         <div class="col-md-4 text-center">
             <span><b>ผู้ตรวจสอบ / Investigate Signature</b></span><br>
-            <span>{{dataprintpr.userpostMgr}}</span><br>
-            <span>{{dataprintpr.datetimepostMgr}}</span>
+            <span>{{dataprintpr.userpostInvest}}</span><br>
+            <span>{{dataprintpr.datepostInvest}}</span>
         </div>
         <div class="col-md-4 text-center">
             <span><b>ผู้มีอำนาจลงนาม / Authorize Signature</b></span><br>
+            <span>{{dataprintpr.userpostMgr}}</span>&nbsp;{{dataprintpr.datetimepostMgr}}
             <div v-for="(item , index) in dataprintpr.executive" :key="index">
                <span>{{item.apv_approve_user}}&nbsp;{{item.apv_approve_datetime}}</span><br>
             </div>

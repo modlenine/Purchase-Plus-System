@@ -144,7 +144,8 @@
         </div>
         <div class="col-md-4 text-center">
             <span>ผู้มำอำนาจลงนาม</span><br>
-            <span>Authorize Signature</span>
+            <span>Authorize Signature</span><br>
+            <span>{{datainvest}}</span>
             <div class="mt-2" v-for="(item , index) in executive" :key="index">
                 <span>{{item.apv_approve_user}}&nbsp;( {{item.apv_approve_datetime}} )</span><br>
             </div>
@@ -159,14 +160,16 @@
 
 <script>
 import axios from 'axios'
-import Swal from 'sweetalert2'
+// import Swal from 'sweetalert2'
 export default {
     name:"Printpo",
     data() {
         return {
             userData:this.getSessionStorage(),
             url:this.getUrl(),
-            details:[]
+            details:[],
+            userSend:'',
+            ecodeSend:'',
         }
     },
    props:[
@@ -176,6 +179,7 @@ export default {
     'datetimereq',
     'executive',
     'formno',
+    'datainvest'
    ],
    methods: {
     getdataDetail()
@@ -201,6 +205,8 @@ export default {
     send_tovender()
     {
         if(this.details && this.podetailItem_prop){
+            this.userSend = this.userData.Fname+' '+this.userData.Lname;
+            this.ecodeSend = this.userData.ecode;
             const formdata = new FormData();
             formdata.append("details" , JSON.stringify(this.details));
             formdata.append("main" , JSON.stringify(this.podetailItem_prop));
@@ -209,37 +215,41 @@ export default {
             formdata.append("userrequest" , this.userrequest);
             formdata.append("datetimereq" , this.datetimereq);
             formdata.append("formno" , this.formno);
+            formdata.append("userSend" , this.userSend);
+            formdata.append("ecodeSend" , this.ecodeSend);
             axios.post(this.url + 'intsys/purchaseplus/purchaseplus_backend/mainapi/send_po', formdata, {
             headers: {
                 'Content-Type': 'multipart/form-data'
             }
             }).then(res => {
-                // const base64Data = res.data;
-                // const binaryString = window.atob(base64Data);
-                // const len = binaryString.length;
-                // const bytes = new Uint8Array(len);
-                // for (let i = 0; i < len; i++) {
-                //     bytes[i] = binaryString.charCodeAt(i);
-                // }
-                // const pdfBlob = new Blob([bytes], { type: 'application/pdf' });
-
-                // // Create URL for the blob
-                // const pdfUrl = URL.createObjectURL(pdfBlob);
-
-                // // Open PDF in a new tab or prompt download
-                // window.open(pdfUrl, '_blank');
-                if(res.data.status == "Send Data Success"){
-                    //code
-                    Swal.fire({
-                        title: 'ส่งข้อมูลสำเร็จ',
-                        icon: 'success',
-                        showConfirmButton: false,
-                        timer:1000
-                    }).then(function(){
-                        //
-                        location.reload();
-                    });
+                const base64Data = res.data;
+                const binaryString = window.atob(base64Data);
+                const len = binaryString.length;
+                const bytes = new Uint8Array(len);
+                for (let i = 0; i < len; i++) {
+                    bytes[i] = binaryString.charCodeAt(i);
                 }
+                const pdfBlob = new Blob([bytes], { type: 'application/pdf' });
+
+                // Create URL for the blob
+                const pdfUrl = URL.createObjectURL(pdfBlob);
+
+                // Open PDF in a new tab or prompt download
+                window.open(pdfUrl, '_blank');
+
+
+                // if(res.data.status == "Send Data Success"){
+                //     //code
+                //     Swal.fire({
+                //         title: 'ส่งข้อมูลสำเร็จ',
+                //         icon: 'success',
+                //         showConfirmButton: false,
+                //         timer:1000
+                //     }).then(function(){
+                //         //
+                //         location.reload();
+                //     });
+                // }
             }).catch(err => {
                 console.error('Error downloading PDF:', err);
             });

@@ -66,8 +66,8 @@ export default {
             purUserpost:'',
             purEcodepost:'',
             purDatetimepost:'',
-            purBtn:true,
-            purBtnEdit:true
+            purBtn:false,
+            purBtnEdit:false
 
         }
     },
@@ -79,11 +79,13 @@ export default {
         'userpost_pur_prop',
         'ecodepost_pur_prop',
         'datetime_pur_prop',
-        'status'
+        'status',
+        'paygroup_prop'
     ],
     methods: {
         savePurchase()
         {
+            $('#btn-save-pur').prop('disabled' , true);
             const proxy = this;
             if(this.purApproveType == ""){
                 Swal.fire({
@@ -100,6 +102,7 @@ export default {
                 formdata.append('m_ecodepost_pur' , $('#ip-pur-ecodepost').val());
                 formdata.append('action' , 'savePurchase');
                 formdata.append('formno' , this.formno_prop);
+                formdata.append('paygroup' , this.paygroup_prop);
 
                 axios.post(this.url+'intsys/purchaseplus/purchaseplus_backend/mainapi/savePurchase' , formdata , {
                     headers:{
@@ -107,6 +110,7 @@ export default {
                     }
                 }).then(res=>{
                     console.log(res.data);
+                    $('#btn-save-pur').prop('disabled' , false);
                     if(res.data.status == "Update Data Success"){
                         Swal.fire({
                             title: 'บันทึกข้อมูลสำเร็จ',
@@ -137,6 +141,10 @@ export default {
                 $('#ip-pur-userpost').val(proxy.userpostPur);
                 $('#ip-pur-ecodepost').val(proxy.userData.ecode);
                 $('#ip-pur-datetimepost').val(proxy.datetimenow_prop);
+                if(this.userData.DeptCode == "1004" || this.userData.DeptCode == "1002"){
+                    this.purBtn = true;
+                    this.purBtnEdit = true;
+                }
             }
         }
     },

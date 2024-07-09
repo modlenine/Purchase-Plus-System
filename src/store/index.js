@@ -8,7 +8,8 @@ export default new Vuex.Store({
   state: {
     count:0,
     url:'',
-    datetimeNow:''
+    datetimeNow:'',
+    userdataState:[],
   },
   mutations: {
     setCount(state , value){
@@ -19,6 +20,9 @@ export default new Vuex.Store({
     },
     setDatetimeNow(state , datetime){
       state.datetimeNow = datetime
+    },
+    setUserData(state , value){
+      state.userdataState = value
     }
   },
   getters:{
@@ -32,6 +36,9 @@ export default new Vuex.Store({
     },
     get_datetimeNow(state){
       return state.datetimeNow;
+    },
+    get_userdata(state){
+      return state.userdataState;
     }
   },
   actions: {
@@ -41,7 +48,11 @@ export default new Vuex.Store({
       axios.get(url).then(res=>{
         context.commit('setDatetimeNow' , res.data);
       });
-    }
+    },
+    getSessionStorage(context){
+      const getUserData = localStorage.getItem("userData");
+      context.commit('setUserData' , JSON.parse(getUserData));
+    },
     
   },
 

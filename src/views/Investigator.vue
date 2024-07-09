@@ -51,6 +51,9 @@
 </template>
 
 <script>
+import $ from 'jquery'
+import Swal from 'sweetalert2'
+import axios from 'axios'
 export default {
     name:"Investigator",
     data() {
@@ -65,8 +68,77 @@ export default {
         btnsaveInves:false,
       }
     },
+    props:[
+        'status',
+        'datetimenow_prop',
+        'formno',
+        'm_approve_invest',
+        'm_userpost_invest',
+        'm_ecodepost_invest',
+        'm_datetimepost_invest',
+        'm_memo_invest'
+    ],
     methods: {
-      
+        checkStatusPur()
+        {
+            const proxy = this;
+            if(proxy.status !== "New PR"){
+                this.invesUserpost = this.m_userpost_invest;
+                this.invesEcodepost = this.m_ecodepost_invest;
+                this.invesDatetimepost = this.m_datetimepost_invest;
+                this.btnsaveInves = false;
+                this.invesApproveType = this.m_approve_invest;
+                this.invesMemo = this.m_memo_invest;
+                $('input[name="ip-inves-app"]').attr('onclick' , 'return false');
+                $('#ip-inves-memo').prop('readonly' , true);
+            }else{
+                this.invesUserpost = this.userData.Fname+' '+this.userData.Lname;
+                this.invesEcodepost = this.userData.ecode;
+                this.invesDatetimepost = this.datetimenow_prop;
+                this.btnsaveInves = true;
+            }
+        },
+        saveInvesApprove()
+        {
+            $('#btn-save-inves').prop('disabled' , true);
+            if(this.invesApproveType == ''){
+                Swal.fire({
+                    title: 'กรุณาเลือกผลการอนุมัติ',
+                    icon: 'warning',
+                    showConfirmButton: true,
+                    // timer:1000
+                });
+            }else{
+                const proxy = this;
+                const formdata = new FormData();
+                formdata.append('invesApproveType' , this.invesApproveType);
+                formdata.append('invesMemo' , this.invesMemo);
+                formdata.append('invesUserpost' , this.invesUserpost);
+                formdata.append('invesEcodepost' , this.invesEcodepost);
+                formdata.append('formno' , this.formno);
+                axios.post(this.url+'intsys/purchaseplus/purchaseplus_backend/mainapi/saveInvesApprove' , formdata , {
+                    heads:{
+                        'Content-Type':'multipart/form-data'
+                    }
+                }).then(res=>{
+                    console.log(res.data);
+                    $('#btn-save-inves').prop('disabled' , false);
+                    if(res.data.status == "Update Data Success"){
+                        Swal.fire({
+                            title: 'กรุณาเลือกผลการอนุมัติ',
+                            icon: 'success',
+                            showConfirmButton: false,
+                            timer:1000
+                        }).then(function(){
+                            proxy.$router.replace({name:'Prlist'});
+                        });
+                    }
+                });
+            }
+        }
+    },
+    mounted() {
+        this.checkStatusPur();
     },
 }
 </script>

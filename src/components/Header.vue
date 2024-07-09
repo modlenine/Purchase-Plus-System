@@ -66,7 +66,7 @@
                                     <span class="micon dw dw-home wdfI1"></span><span class="mtext">หน้าหลัก</span>
                                 </router-link>
                             </li>
-                            <li class="dropdown">
+                            <li v-if="create_btn" class="dropdown">
                                 <router-link to='/createpr' class="dropdown-toggle no-arrow menu">
                                     <span class="micon dw dw-add-file1 wdfI1"></span><span class="mtext">สร้างเอกสาร PR</span>
                                 </router-link>
@@ -117,10 +117,13 @@ export default {
             userImage:'',
             userFullname:'',
             resultUserData:[],
+            create_btn:false,
         }
     },
     created() {
         this.resultUserData = this.userDataProps;
+        this.control_menu();
+        this.$store.dispatch('getSessionStorage');
     },
     mounted() {
     //  const proxy = this;
@@ -148,6 +151,7 @@ export default {
             });
         });
 
+
         // $(document).on('click' , '.header-left' , function(){
         //     $('.left-side-bar').addClass('open');
         //     $('.mobile-menu-overlay').addClass('show');
@@ -171,6 +175,14 @@ export default {
             }
 
         },
+        control_menu()
+        {
+            if(this.resultUserData.DeptCode == "1002" || this.resultUserData.DeptCode == "1004" || this.resultUserData.DeptCode == "1009" || this.resultUserData.DeptCode == "1015" || this.resultUserData.DeptCode == "1013" || this.resultUserData.DeptCode == "1010"){
+                this.create_btn = true;
+            }else{
+                this.create_btn = false;
+            }
+        }
     },
 }
 </script>

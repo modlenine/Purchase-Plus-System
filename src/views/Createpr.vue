@@ -155,10 +155,22 @@
                             </div>
                             <hr>
                             <div class="row form-group">
-                                <label for=""><b>ผู้ตรวจสอบข้อมูล</b></label>
-                                <select class="form-control" name="ip-cpr-invesEcode" id="ip-cpr-invesEcode" required v-model="m_invest_ecodefix">
-                                    <option value="">กรุณาเลือกผู้ตรวจสอบ</option>
-                                </select>
+                                <div class="col-md-12">
+                                    <label for=""><b>เอกสารแนบ</b></label>
+                                    <input id="ip-cpr-file" name="ip-cpr-file[]" type="file" class="file" multiple data-show-upload="false" data-show-caption="true" data-show-preview="true" accept=".pdf , .jpg , .png" ref="fileInput">
+
+                                    <div id="scripts"><script type="application/javascript" defer src="assets/fileupload/bs-filestyle.js"></script></div>
+                                    
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row form-group">
+                                <div class="col-md-12 form-group">
+                                    <label for=""><b>ผู้ตรวจสอบข้อมูล</b></label>
+                                    <select class="form-control" name="ip-cpr-invesEcode" id="ip-cpr-invesEcode" required v-model="m_invest_ecodefix">
+                                        <option value="">กรุณาเลือกผู้ตรวจสอบ</option>
+                                    </select>
+                                </div>
                             </div>
                             <hr>
                             <div class="row form-group">
@@ -619,6 +631,7 @@ export default {
                     });
                 }else{
                     const formdata = new FormData();
+                    const files = this.$refs.fileInput.files;
                     let data = {
                         dataareaid:this.dataareaid,
                         plantype:this.plantype,
@@ -638,6 +651,9 @@ export default {
                     }
                     for(let key in data){
                         formdata.append(key , data[key]);
+                    }
+                    for(let key in files){
+                        formdata.append('ip-cpr-file[]' , files[key]);
                     }
                     formdata.append("itemdata" , JSON.stringify(this.itemData));
                     formdata.append("action" , "saveDataAll");
@@ -681,7 +697,7 @@ export default {
                     }
                 });
             }
-        }
+        },
 
     },
     created() {
@@ -725,7 +741,6 @@ export default {
 
             $('#show_itemidDetail').html('')
        });
-
     },
     computed: {
         docdatetime() {

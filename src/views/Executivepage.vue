@@ -213,6 +213,62 @@
         </div>
     </div>
     <!-- Group 1 -->
+
+    <!-- Group 0 -->
+    <div id="show_executiveGroup0" v-if="showExeGroup0">
+        <div class="row" v-for="(item , index) in exedataGroup0" :key="index">
+            <div class="col-xl-12 mb-30">
+                <div class="card-box height-100-p pd-20">
+                    <div class="row form-group">
+                        <div class="col-md-12 text-center">
+                            <h5 id="executiveText">{{item.apv_posiname}}</h5>
+                        </div>
+                    </div>
+                    <hr>
+
+                    <form autocomplete="off" class="needs-validation" novalidate @submit.prevent="saveExecutiveG0(index , item)">
+                    <div class="row form-group">
+                        <div class="col-md-12 radio-container">
+                            <div class="custom-control custom-radio mb-5">
+                                <input type="radio" :id="'ip-exeG0-app-yes-'+index" name="ip-exeG0-app" class="custom-control-input" value="yes" required v-model="item.apv_approve" @click="handleClick($event , item.apv_approve_user)">
+                                <label class="custom-control-label" :for="'ip-exeG0-app-yes-'+index">อนุมัติ</label>
+                            </div>
+                            <div class="custom-control custom-radio mb-5">
+                                <input type="radio" :id="'ip-exeG0-app-no-'+index" name="ip-exeG0-app" class="custom-control-input" value="no" required v-model="item.apv_approve" @click="handleClick($event , item.apv_approve_user)">
+                                <label class="custom-control-label" :for="'ip-exeG0-app-no-'+index">ไม่อนุมัติ</label>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-12 form-group">
+                            <label for=""><b>หมายเหตุ</b></label>
+                            <textarea class="form-control" name="ip-exeG0-memo" id="ip-exeG0-memo" cols="30" rows="10" v-model="item.apv_approve_memo" :disabled="item.apv_approve_user !== null"></textarea>
+                        </div>
+                        <div class="col-md-4 form-group">
+                            <label for=""><b>ผู้อนุมัติ</b></label>
+                            <input type="text" name="ip-exeG0-userpost" id="ip-exeG0-userpost" class="form-control" readonly :value="item.apv_user" :disabled="item.apv_approve_user !== null">
+                        </div>
+                        <div class="col-md-4 form-group">
+                            <label for=""><b>รหัสพนักงาน</b></label>
+                            <input type="text" name="ip-exeG0-ecodepost" id="ip-exeG0-ecodepost" class="form-control" readonly :value="item.apv_ecode" :disabled="item.apv_approve_user !== null">
+                        </div>
+                        <div v-if="item.apv_approve_user === null" class="col-md-4 form-group">
+                            <label for=""><b>วันที่</b></label>
+                            <input type="text" name="ip-exeG0-datetimepost" id="ip-exeG0-datetimepost" class="form-control" readonly :value="datetimenow_prop" :disabled="item.apv_approve_user !== null">
+                        </div>
+                        <div v-else class="col-md-4 form-group">
+                            <label for=""><b>วันที่</b></label>
+                            <input type="text" name="ip-exeG0-datetimepost" id="ip-exeG0-datetimepost" class="form-control" readonly v-model="item.apv_approve_datetime" :disabled="item.apv_approve_user !== null">
+                        </div>
+                        <div class="col-md-12 form-group">
+                            <button v-if="item.apv_approve_user === null && item.apv_ecode === userData.ecode" type="submit" id="btn-save-exeG0" class="btn btn-primary">บันทึก</button>
+                        </div>
+                    </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Group 0 -->
   </div>
 </template>
 
@@ -231,6 +287,7 @@ export default {
             showExeGroup3:false,
             showExeGroup2:false,
             showExeGroup1:false,
+            showExeGroup0:false,
             exedataGroup4:{
                 appType:'',
                 appUser:'',
@@ -255,7 +312,8 @@ export default {
                 isReadonly:false
             },
             exedataGroup2:[],
-            exedataGroup1:[]
+            exedataGroup1:[],
+            exedataGroup0:[]
         }
     },
     props:[
@@ -284,7 +342,6 @@ export default {
                         let result = res.data.result;
                         if(proxy.paygroup_prop == "4"){
                             proxy.showExeGroup4 = true;
-                            
                             if(result[0].apv_approve == "yes" || result[0].apv_approve == "no"){
                                 proxy.exedataGroup4.appBtn4 = false;
                                 proxy.exedataGroup4.appUser = result[0].apv_approve_user;
@@ -343,14 +400,17 @@ export default {
                         }else if(proxy.paygroup_prop == "1"){
                             proxy.showExeGroup1 = true;
                             proxy.exedataGroup1 = result;
+                        }else if(proxy.paygroup_prop == "0"){
+                            this.showExeGroup0 = true;
+                            this.exedataGroup0 = result;
                         }
-                        
                     }
                 });
             }
         },
         saveExecutiveG4()
         {
+            $('#btn-save-exeG4').prop('disabled' , true);
             const proxy = this;
             const formdata = new FormData();
             formdata.append('appType' , this.exedataGroup4.appType);
@@ -366,6 +426,7 @@ export default {
                 }
             }).then(res=>{
                 console.log(res.data);
+                $('#btn-save-exeG4').prop('disabled' , false);
                 if(res.data.status == "Update Data Success"){
                     Swal.fire({
                         title: 'บันทึกข้อมูลสำเร็จ',
@@ -380,9 +441,9 @@ export default {
         },
         saveExecutiveG3()
         {
+            $('#btn-save-exeG3').prop('disabled' , true);
             const proxy = this;
             const formdata = new FormData();
-            this.exedataGroup3.appBtn3 = false;
             formdata.append('appType' , this.exedataGroup3.appType);
             formdata.append('appUser' , this.exedataGroup3.appUser);
             formdata.append('appEcode' , this.exedataGroup3.appEcode);
@@ -396,7 +457,7 @@ export default {
                 }
             }).then(res=>{
                 console.log(res.data);
-                this.exedataGroup3.appBtn3 = true;
+                $('#btn-save-exeG3').prop('disabled' , false);
                 if(res.data.status == "Update Data Success"){
                     Swal.fire({
                         title: 'บันทึกข้อมูลสำเร็จ',
@@ -467,12 +528,49 @@ export default {
                 }
             })
         },
+        saveExecutiveG0(index , item)
+        {
+            const proxy = this;
+            const formdata = new FormData();
+            formdata.append('formno', proxy.formno);
+            formdata.append('approval', item.apv_approve);
+            formdata.append('memo', item.apv_approve_memo);
+            formdata.append('userpost', item.apv_user);
+            formdata.append('ecodepost', item.apv_ecode);
+            formdata.append('datetimepost', proxy.datetimenow_prop);
+            formdata.append('action', 'saveExecutiveG0');
+            axios.post(proxy.url + 'intsys/purchaseplus/purchaseplus_backend/mainapi/saveExecutiveG0', formdata, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            }).then(res=>{
+                console.log(res.data);
+                if(res.data.status == "Update Data Success"){
+                    Swal.fire({
+                        title: 'บันทึกข้อมูลสำเร็จ',
+                        icon: 'success',
+                        showConfirmButton: false,
+                        timer:1000
+                    }).then(function(){
+                        proxy.$router.replace({name:'Prlist'});
+                    });
+                }
+            })
+        },
         executiveCheckStatus()
         {
             if(this.status == "Executive Group 4 Approved"){
                 $("input[name='ip-exeG4-app']").attr('onclick' , 'return false');
             }else if(this.status == "Executive Group 3 Approved"){
                 $('#ip-exeG3-memo').prop('readonly' , true);
+            }
+        },
+        handleClick(event , userApp)
+        {
+            if(userApp !== null){
+                event.preventDefault();
+            }else{
+                return true;
             }
         }
     },
@@ -487,7 +585,13 @@ export default {
         
     },
     watch:{
-
+        datetimenow_prop: {
+            handler() {
+                this.getExecutiveData();
+            },
+            immediate: true,
+            deep: true
+        }
     }
 }
 </script>

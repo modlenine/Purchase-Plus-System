@@ -284,6 +284,16 @@ a{
 }
 
 
+#tbl_machineplan{
+    width:100% !important;
+}
+.newBtn{
+	position:absolute;
+	top:5px;
+	left:5px;
+}
+
+
   @media (min-width:1440px){
 
   }
@@ -297,7 +307,11 @@ a{
   }
 
   @media (min-width:320px) and (max-width:767px) {
-
+	.newBtn{
+		top:40px !important;
+		left:5px !important;
+		font-size:12px !important;
+	}
   }
 
 
@@ -395,6 +409,35 @@ a{
     background-image: linear-gradient(160deg, #90d6fe -50%, #ffffff 100%) !important;
 }
 
+.file-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* กำหนดขนาดคอลัมน์และจำนวนของคอลัมน์ */
+    grid-gap: 30px; /* ระยะห่างระหว่างแถวและคอลัมน์ */
+}
+
+.files-item {
+    width: 100%;
+    height: auto;
+    border:1px solid #9f9f9f !important;
+    padding:20px;
+    text-align: center;
+	position:relative;
+}
+
+.filepdf{
+    font-size:50px;
+}
+
+.fileDel{
+	position:absolute;
+	top:5px;
+	right: 5px;
+}
+
+.swal2-cancel , .swal2-confirm{
+	margin-right:5px;
+}
+
 @media (min-width:1440px){
 	#tbl_prlist{
 		width:1500px !important;
@@ -431,6 +474,13 @@ a{
 		position:relative;
 		top:15px;
 		right:0px;
+	}
+
+	.checkbox-container{
+		display: grid;
+		grid:auto auto / auto;
+		grid-gap:3px;
+		padding:3px;
 	}
 }
 /* create page css */

@@ -20,7 +20,7 @@
                             <thead>
                             <tr>
                                 <!-- <th class="td1">Ulid</th> -->
-                                <th class="td1">เลขที่เอกสาร</th>
+                                <th>เลขที่เอกสาร</th>
                                 <th class="td2">เลขที่ PR</th>
                                 <th class="td2">เลขที่ PO</th>
                                 <th class="td2">จำนวนเงิน</th>
@@ -119,12 +119,19 @@ export default {
                     order: [
                         [0, 'desc'],
                     ],
-                    columnDefs: [{
-                            targets: "_all",
-                            orderable: false
-                        },
-                        { "width": "150px", "targets": 0 },
-                        { "width": "100px", "targets": 4 },
+                    columnDefs: [
+                      {
+                        targets: "_all",
+                        orderable: false
+                      },
+                      {
+                        targets: [0 , 1 , 2 , 4 , 5 , 6 , 7 , 9],
+                        width: "50px",
+                      },
+                      {
+                        targets: 3,
+                        width: "100px",
+                      }
                     ],
         });
 
@@ -158,12 +165,5 @@ export default {
 </script>
 
 <style scoped>
-  #tbl_machineplan{
-    width:100% !important;
-  }
-  .newBtn{
-    position:absolute;
-    top:5px;
-    left:5px;
-  }
+
 </style>

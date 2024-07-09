@@ -16,6 +16,7 @@
                         :areaid_prop="this.areaid_prop"
                         :userrequest="this.userrequest"
                         :datetimereq="this.datetimereq"
+                        :datainvest="this.datainvest"
                         :executive="this.executive"
                         :formno="this.formno"
                     />
@@ -84,7 +85,8 @@ export default {
             podetailItem:[],
             userrequest:'',
             executive:[],
-            poindex:0
+            poindex:0,
+            datainvest:''
         }
     },
     components:{
@@ -150,12 +152,15 @@ export default {
                         'Content-Type':'multipart/form-data'
                     }
                 }).then(res=>{
+                    console.log(res.data);
                     if(res.data.status == "Select Data Success"){
                         let result = res.data.result;
                         let approveUser = res.data.approveUser;
+                        let invest = res.data.invest;
                         console.log(result);
                         this.userrequest = result;
                         this.executive = approveUser;
+                        this.datainvest = invest;
                     }
                 });
             }
