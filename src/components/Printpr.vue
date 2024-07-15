@@ -55,9 +55,9 @@
                 <td>{{dataprintpr.datetimedelivery}}</td>
                 <td>{{item.d_itemqty}}</td>
                 <td>{{item.d_itemunit}}</td>
-                <td>{{Number(item.d_itemprice).toLocaleString(undefined,{minimumFractionDigits:2 , maximumFractionDigits:2})}}</td>
-                <td>{{Number(item.d_itemdiscount).toLocaleString(undefined,{minimumFractionDigits:2, maximumFractionDigits:2})}}</td>
-                <td>{{Number(item.d_itempricesum).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}}</td>
+                <td>{{Number(item.d_itemprice).toLocaleString(undefined,{minimumFractionDigits:3 , maximumFractionDigits:3})}}</td>
+                <td>{{Number(item.d_itemdiscount).toLocaleString(undefined,{minimumFractionDigits:3, maximumFractionDigits:3})}}</td>
+                <td>{{Number(item.d_itempricesum).toLocaleString(undefined, { minimumFractionDigits: 3, maximumFractionDigits: 3 })}}</td>
             </tr>
         </tbody>
     </table>
@@ -115,7 +115,7 @@ export default {
         totalSum() {
             return this.dataprintpr.itemData.reduce((sum, item) => {
                 return sum + parseFloat(item.d_itempricesum);
-            }, 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            }, 0).toLocaleString(undefined, { minimumFractionDigits: 3, maximumFractionDigits: 3 });
         }
     }
 }

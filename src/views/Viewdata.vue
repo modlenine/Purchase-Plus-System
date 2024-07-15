@@ -228,6 +228,9 @@
                         :formno="this.formno"
                         :ecode="this.ecode"
                         :datetimereq="this.datetimereq"
+                        :userpostMgr="this.userpostMgr"
+                        :datetimepostMgr="this.datetimepostMgr"
+                        :memo_pur_prop="this.memo_pur"
                     />
                 </div>
 
@@ -699,12 +702,7 @@ export default {
             });
             myModal.show();
         },
-    },
-    created() {
-        this.getdata_viewfull();
-    },
-    watch:{
-        status(){
+        checkstatus(){
             if(this.status == "New PR"){
                 if(this.m_invest_ecodefix == this.userData.ecode){
                     this.showinvespage = true;
@@ -769,6 +767,84 @@ export default {
                 this.showPurPage = true;
                 this.showPoPage = true;
             }
+        },
+    },
+    created() {
+        this.getdata_viewfull();
+    },
+    watch:{
+        // status(){
+        //     if(this.status == "New PR"){
+        //         if(this.m_invest_ecodefix == this.userData.ecode){
+        //             this.showinvespage = true;
+        //         }
+        //     }else if(this.status == "Investigator Approved"){
+        //         this.showinvespage = true;
+        //         if(this.department == this.userData.DeptCode && this.userData.posi > 15){
+        //             this.showmgrpage = true;
+        //         }else if(this.department == "1007" && this.userData.ecode == "M0040"){
+        //             this.showmgrpage = true;
+        //         }
+        //     }else if(this.status == "Manager Approved"){
+        //         this.showinvespage = true;
+        //         this.showmgrpage = true;
+        //         if(this.paygroup == "5"){
+        //             this.showPurPage = true;
+        //         }else if(this.paygroup == "4"){
+        //             this.showExecutivePage = true;
+        //         }else if(this.paygroup == "3"){
+        //             this.showExecutivePage = true;
+        //         }else if(this.paygroup == "2"){
+        //             this.showExecutivePage = true;
+        //         }else if(this.paygroup == "1"){
+        //             this.showExecutivePage = true;
+        //         }else if(this.paygroup == "0"){
+        //             this.showExecutivePage = true;
+        //         }
+        //     }else if(this.status == "Executive Group 4 Approved"){
+        //         this.showinvespage = true;
+        //         this.showmgrpage = true;
+        //         this.showExecutivePage = true;
+        //         this.showPurPage = true;
+        //     }else if(this.status == "Executive Group 3 Approved"){
+        //         this.showinvespage = true;
+        //         this.showmgrpage = true;
+        //         this.showExecutivePage = true;
+        //         this.showPurPage = true;
+        //     }else if(this.status == "Executive Group 2 Approved"){
+        //         this.showinvespage = true;
+        //         this.showmgrpage = true;
+        //         this.showExecutivePage = true;
+        //         this.showPurPage = true;
+        //     }else if(this.status == "Executive Group 1 Approved"){
+        //         this.showinvespage = true;
+        //         this.showmgrpage = true;
+        //         this.showExecutivePage = true;
+        //         this.showPurPage = true;
+        //     }else if(this.status == "Executive Group 0 Approved"){
+        //         this.showinvespage = true;
+        //         this.showmgrpage = true;
+        //         this.showExecutivePage = true;
+        //         this.showPurPage = true;
+        //     }else if(this.status == "Purchase Verified"){
+        //         this.showinvespage = true;
+        //         this.showmgrpage = true;
+        //         this.showExecutivePage = true;
+        //         this.showPurPage = true;
+        //     }else if(this.status == "PO confirmed"){
+        //         this.showinvespage = true;
+        //         this.showmgrpage = true;
+        //         this.showExecutivePage = true;
+        //         this.showPurPage = true;
+        //         this.showPoPage = true;
+        //     }
+        // },
+        status: {
+            handler() {
+                this.checkstatus();
+            },
+            immediate: true,
+            deep: true
         },
         userpermission1(){
             //code

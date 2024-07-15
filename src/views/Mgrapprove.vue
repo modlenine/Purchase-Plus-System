@@ -7,8 +7,8 @@
                     <div class="col-md-12 text-center">
                         <h5>ผู้จัดการอนุมัติ</h5>
                     </div>
-                    <hr>
                 </div>
+                <hr>
 
                 <form id="frm-mgr-approve" autocomplete="off" class="needs-validation" novalidate @submit.prevent="saveMgrApprove">
                 <div class="row form-group">
@@ -367,7 +367,7 @@ export default {
                 console.log(res.data);
                 if(res.data.status == "Select Data Success"){
                     //code
-                    let onclickfalse = this.status == "Manager Approved" ? 'onclick="return false"' : '';
+                    let onclickfalse = this.status !== "Investigator Approved" ? 'onclick="return false"' : '';
                     let result = res.data.result;
                     let html = '';
                     let html1 = '';
@@ -384,14 +384,14 @@ export default {
                         }else if(result[key].app_posiname == "กรรมการผู้จัดการ"){
                             html1 +=`
                                 <div class="checkbox custom-control custom-checkbox mb-2">
-                                    <input type="checkbox" value="${result[key].app_ecode}" class="custom-control-input group1-checkbox" name="g1Check[]" id="g1_2Check${key}" ${checked}>
+                                    <input type="checkbox" value="${result[key].app_ecode}" class="custom-control-input group1-checkbox" name="g1Check[]" id="g1_2Check${key}" ${checked} ${onclickfalse}>
                                     <label class="custom-control-label" for="g1_2Check${key}">${result[key].app_user}</label>
                                 </div>
                             `;
                         }else if(result[key].app_posiname == "รองกรรมการผู้จัดการ"){
                             html2 +=`
                                 <div class="checkbox custom-control custom-checkbox mb-2">
-                                    <input type="checkbox" value="${result[key].app_ecode}" class="custom-control-input group2-checkbox" name="g1Check[]" id="g1_3Check${key}" ${checked}>
+                                    <input type="checkbox" value="${result[key].app_ecode}" class="custom-control-input group2-checkbox" name="g1Check[]" id="g1_3Check${key}" ${checked} ${onclickfalse}>
                                     <label class="custom-control-label" for="g1_3Check${key}">${result[key].app_user}</label>
                                 </div>
                             `;

@@ -75,7 +75,7 @@ export default {
                 <tr>
                     <td colspan="5"><b>ยอดรวมทั้งสิ้น</b></td>
                     <td colspan="3"></td>
-                    <td colspan="3" class="text-right">${parseFloat(calcItempriceSum.toFixed(2)).toLocaleString()} บาท</td>
+                    <td colspan="3" class="text-right">${parseFloat(calcItempriceSum.toFixed(3)).toLocaleString()} บาท</td>
                 </tr>
                 `;
             }

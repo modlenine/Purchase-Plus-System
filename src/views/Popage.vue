@@ -19,6 +19,9 @@
                         :datainvest="this.datainvest"
                         :executive="this.executive"
                         :formno="this.formno"
+                        :userpostMgr="this.userpostMgr"
+                        :datetimepostMgr="this.datetimepostMgr"
+                        :memo_pur_prop="this.memo_pur_prop"
                     />
                 </div>
                 <div class="modal-footer">
@@ -100,6 +103,9 @@ export default {
         'formno',
         'ecode',
         'datetimereq',
+        'userpostMgr',
+        'datetimepostMgr',
+        'memo_pur_prop'
     ],
     methods: {
         getdata_po()
@@ -170,7 +176,23 @@ export default {
         }
     },
     mounted() {
-        this.getdata_po();
+        // this.getdata_po();
+    },
+    watch: {
+        pono: {
+            handler() {
+                this.getdata_po();
+            },
+            immediate: true,
+            deep: true
+        },
+        // details: {
+        //     handler() {
+        //         this.before_sendtovender()
+        //     },
+        //     immediate: true,
+        //     deep: true
+        // }
     },
 }
 </script>
