@@ -4,15 +4,15 @@
     <table id="tbl-itemdataShow" name="tbl-itemdataShow" class="table table-bordered table-striped">
         <thead>
             <tr>
-                <th><b>ลำดับ</b></th>
-                <th><b>รหัสสินค้า</b></th>
-                <th><b>ชื่อสินค้า</b></th>
-                <th><b>รายละเอียด</b></th>
-                <th><b>จำนวน</b></th>
-                <th><b>ราคาต่อหน่วย</b></th>
-                <th><b>ส่วนลด</b></th>
-                <th><b>ราคารวม</b></th>
-                <th><b>หน่วย</b></th>
+                <th class="text-center"><b>ลำดับ</b></th>
+                <th class="text-center"><b>รหัสสินค้า</b></th>
+                <th class="text-center"><b>ชื่อสินค้า</b></th>
+                <th class="text-center"><b>รายละเอียด</b></th>
+                <th class="text-center"><b>จำนวน</b></th>
+                <th class="text-center"><b>ราคาต่อหน่วย</b></th>
+                <th class="text-center"><b>ส่วนลด</b></th>
+                <th class="text-center"><b>ราคารวม</b></th>
+                <th class="text-center"><b>หน่วย</b></th>
             </tr>
         </thead>
         <tbody></tbody>
@@ -52,24 +52,23 @@ export default {
                     calcItempriceSum += parseFloat(this.itemdataProp[key].itempricesum);
                     tableHtml +=`
                     <tr>
-                        <td>${no}</td>
-                        <td>${this.itemdataProp[key].itemid}</td>
-                        <td>${this.itemdataProp[key].itemname}</td>
-                        <td>${this.itemdataProp[key].itemdetail}</td>
-                        <td>${parseFloat(this.itemdataProp[key].itemqty).toLocaleString()}</td>
-                        <td>${parseFloat(this.itemdataProp[key].itemprice).toLocaleString()}</td>
-                        <td>${parseFloat(this.itemdataProp[key].itemdiscount).toLocaleString()}</td>
-                        <td>${parseFloat(this.itemdataProp[key].itempricesum).toLocaleString()}</td>
-                        <td>${this.itemdataProp[key].itemunit}</td>
+                        <td class="text-center tdNoList">${no}</td>
+                        <td class="text-center tdItemidList">${this.itemdataProp[key].itemid}</td>
+                        <td class="text-center">${this.itemdataProp[key].itemname}</td>
+                        <td class="text-center">${this.itemdataProp[key].itemdetail}</td>
+                        <td class="text-right tdQtyList">${parseFloat(this.itemdataProp[key].itemqty).toLocaleString('en-US', { minimumFractionDigits: 3, maximumFractionDigits: 3 })}</td>
+                        <td class="text-right tdPriceList">${parseFloat(this.itemdataProp[key].itemprice).toLocaleString('en-US', { minimumFractionDigits: 3, maximumFractionDigits: 3 })}</td>
+                        <td class="text-right tdDiscList">${parseFloat(this.itemdataProp[key].itemdiscount).toLocaleString()}</td>
+                        <td class="text-right">${parseFloat(this.itemdataProp[key].itempricesum).toLocaleString('en-US', { minimumFractionDigits: 3, maximumFractionDigits: 3 })}</td>
+                        <td class="text-right tdunitList">${this.itemdataProp[key].itemunit}</td>
                     </tr>
                     `;
                 }
                 // let thaiText = this.numberToThaiText(calcItempriceSum);
                 tableHtml +=`
                 <tr>
-                    <td colspan="5"><b>ยอดรวมทั้งสิ้น</b></td>
-                    <td colspan="3"></td>
-                    <td colspan="3" class="text-right">${parseFloat(calcItempriceSum.toFixed(2)).toLocaleString()} บาท</td>
+                    <td colspan="7"><b>ยอดรวมทั้งสิ้น</b></td>
+                    <td colspan="3" class="text-right">${parseFloat(calcItempriceSum.toFixed(3)).toLocaleString('en-US', { minimumFractionDigits: 3, maximumFractionDigits: 3 })} บาท</td>
                 </tr>
                 `;
             }

@@ -57,12 +57,12 @@ export default {
                         <td>${this.itemdataProp[key].itemid}</td>
                         <td>${this.itemdataProp[key].itemname}</td>
                         <td>${this.itemdataProp[key].itemdetail}</td>
-                        <td>${parseFloat(this.itemdataProp[key].itemqty).toLocaleString()}</td>
-                        <td>${parseFloat(this.itemdataProp[key].itemprice).toLocaleString()}</td>
-                        <td>${parseFloat(this.itemdataProp[key].itemdiscount).toLocaleString()}</td>
-                        <td>${parseFloat(this.itemdataProp[key].itempricesum).toLocaleString()}</td>
+                        <td>${parseFloat(this.itemdataProp[key].itemqty).toLocaleString('en-US', { minimumFractionDigits: 3, maximumFractionDigits: 3 })}</td>
+                        <td>${parseFloat(this.itemdataProp[key].itemprice).toLocaleString('en-US', { minimumFractionDigits: 3, maximumFractionDigits: 3 })}</td>
+                        <td>${parseFloat(this.itemdataProp[key].itemdiscount).toLocaleString('en-US', { minimumFractionDigits: 3, maximumFractionDigits: 3 })}</td>
+                        <td>${parseFloat(this.itemdataProp[key].itempricesum).toLocaleString('en-US', { minimumFractionDigits: 3, maximumFractionDigits: 3 })}</td>
                         <td>${this.itemdataProp[key].itemunit}</td>
-                        <td>
+                        <td class="text-right">
                             <i class="fa fa-trash idel itemListDel" aria-hidden="true"
                                 data_key="${key}"
                             ></i>
@@ -75,7 +75,7 @@ export default {
                 <tr>
                     <td colspan="5"><b>ยอดรวมทั้งสิ้น</b></td>
                     <td colspan="3"></td>
-                    <td colspan="3" class="text-right">${parseFloat(calcItempriceSum.toFixed(3)).toLocaleString()} บาท</td>
+                    <td colspan="3" class="text-right">${parseFloat(calcItempriceSum.toFixed(3)).toLocaleString('en-US', { minimumFractionDigits: 3, maximumFractionDigits: 3 })} บาท</td>
                 </tr>
                 `;
             }

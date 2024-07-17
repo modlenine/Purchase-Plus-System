@@ -340,9 +340,6 @@ a{
 	text-align: center;
 }
 
-#tbl-itemdataShow{
-	width:100% !important;
-}
 .table-responsive > .table-bordered{
 	border-color:#ccc;
 }
@@ -438,13 +435,45 @@ a{
 	margin-right:5px;
 }
 
-@media (min-width:1440px){
+.tdunitList{
+	width:100px !important;
+}
+.tdDiscList{
+	width:50px !important;
+}
+.tdPriceList{
+	width:150px !important;
+}
+.tdNoList{
+	width:80px !important;
+}
+.tdItemidList{
+	width:150px !important;
+}
+.tdQtyList{
+	width:150px !important;
+}
+
+#tbl-itemdataShow{
+	width:100% !important;
+}
+
+@media (min-width:1440px) and (max-width:1620px){
 	#tbl_prlist{
 		width:1500px !important;
 	}
+	#tbl-itemdataShow{
+		width:1200px !important;
+	}
 }
 
-@media (min-width:1024px) and (max-width:1439px){
+@media (min-width:1366px) and (max-width:1439px){
+	#tbl-itemdataShow{
+		width:1200px !important;
+	}
+}
+
+@media (min-width:1024px) and (max-width:1365px){
 	#tbl-itemdataShow{
 		width:1200px !important;
 	}

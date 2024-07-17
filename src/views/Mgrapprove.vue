@@ -284,6 +284,7 @@ export default {
         },
         getdataG3()
         {
+            $('#btn-save-mgr').prop('disabled' , true);
             const formdata = new FormData();
             formdata.append("action" , "getdataG3");
             axios.post(this.url+'intsys/purchaseplus/purchaseplus_backend/mainapi/getdataG3' , formdata , {
@@ -309,8 +310,14 @@ export default {
                     $('#show_group3').html(html);
 
                     $('.single-checkbox').change(function() {
-                        $('.single-checkbox').not(this).prop('checked', false);
-                        console.log($(this).val());
+                        if ($('.single-checkbox:checked').length > 1) {
+                            // ยกเลิกการเลือก checkbox อื่นๆ
+                            $('.single-checkbox').not(this).prop('checked', false);
+                        }else if($('.single-checkbox:checked').length == 1){
+                            $('#btn-save-mgr').prop('disabled' , false);
+                        }else{
+                            $('#btn-save-mgr').prop('disabled' , true);
+                        }
                     });
                 }
             });

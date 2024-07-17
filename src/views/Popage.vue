@@ -22,6 +22,8 @@
                         :userpostMgr="this.userpostMgr"
                         :datetimepostMgr="this.datetimepostMgr"
                         :memo_pur_prop="this.memo_pur_prop"
+                        :userpost_pur="this.userpost_pur"
+                        :datetime_pur="this.datetime_pur"
                     />
                 </div>
                 <div class="modal-footer">
@@ -105,7 +107,9 @@ export default {
         'datetimereq',
         'userpostMgr',
         'datetimepostMgr',
-        'memo_pur_prop'
+        'memo_pur_prop',
+        'userpost_pur',
+        'datetime_pur'
     ],
     methods: {
         getdata_po()

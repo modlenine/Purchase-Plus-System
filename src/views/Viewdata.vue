@@ -231,6 +231,8 @@
                         :userpostMgr="this.userpostMgr"
                         :datetimepostMgr="this.datetimepostMgr"
                         :memo_pur_prop="this.memo_pur"
+                        :userpost_pur="this.userpost_pur"
+                        :datetime_pur="this.datetime_pur"
                     />
                 </div>
 

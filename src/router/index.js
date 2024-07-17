@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Home from '@/views/Home.vue'
+// import Home from '@/views/Home.vue'
 import Prlist from '@/views/Prlist.vue'
 import Createpr from '@/views/Createpr.vue'
 import Viewdata from '@/views/Viewdata.vue'
@@ -16,8 +16,8 @@ Vue.use(VueRouter)
 const routes = [
   {
     path: '/',
-    name: 'Home',
-    component: Home,
+    name: 'Prlist',
+    component: Prlist,
     metaInfo:{
       title:'หน้าหลักของโปรแกรม'
     }

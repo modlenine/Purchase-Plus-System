@@ -181,7 +181,9 @@ export default {
     'datainvest',
     'userpostMgr',
     'datetimepostMgr',
-    'memo_pur_prop'
+    'memo_pur_prop',
+    'userpost_pur',
+    'datetime_pur'
    ],
    methods: {
     getdataDetail()
