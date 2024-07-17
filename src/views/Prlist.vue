@@ -23,6 +23,7 @@
                                 <th>เลขที่เอกสาร</th>
                                 <th class="td2">เลขที่ PR</th>
                                 <th class="td2">เลขที่ PO</th>
+                                <th class="thItemid">รหัสสินค้า</th>
                                 <th class="td2">จำนวนเงิน</th>
                                 <th class="td2">แผนกที่ร้องขอ</th>
                                 <th class="td3">ผู้ร้องขอ</th>
@@ -125,12 +126,23 @@ export default {
                         orderable: false
                       },
                       {
-                        targets: [0 , 1 , 2 , 4 , 5 , 7],
-                        width: "50px",
+                        targets: [0 , 1 , 2 , 4 , 7,10],
+                        width: "60px",
                       },
                       {
-                        targets: [3 , 6 , 9 ],
+                        targets: [9],
                         width: "100px",
+                      },
+                      {
+                        targets: [3],
+                        width: "200px",
+                        // createdCell: function (td) { //td , cellData, rowData, row, col
+                        //     $(td).css('font-size', '10px'); // กำหนดฟอนต์สำหรับคอลัมน์ที่กำหนด
+                        // }
+                      },
+                      {
+                        targets: [5 , 6 , 8],
+                        width: "60px"
                       }
                     ],
         });
@@ -150,7 +162,7 @@ export default {
         });
 
 
-        $('#tbl_prlist1 , #tbl_prlist4 , #tbl_prlist7 , #tbl_prlist10').prop('readonly' , true).css({
+        $('#tbl_prlist1 , #tbl_prlist4 , #tbl_prlist5 , #tbl_prlist7 , #tbl_prlist10').prop('readonly' , true).css({
             'background-color':'#F5F5F5',
             'cursor':'no-drop'
         });
