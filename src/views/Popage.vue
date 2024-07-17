@@ -114,7 +114,7 @@ export default {
     methods: {
         getdata_po()
         {
-            if(this.pono != "" && this.areaid != "" && this.prno != "" && this.department){
+            if(this.pono != "" && this.areaid != "" && this.prno != "" && this.department != ""){
                 const formdata = new FormData();
                 formdata.append('pono' , this.pono);
                 formdata.append('prno' , this.prno);
@@ -183,7 +183,7 @@ export default {
         // this.getdata_po();
     },
     watch: {
-        pono: {
+        pono_prop: {
             handler() {
                 this.getdata_po();
             },
