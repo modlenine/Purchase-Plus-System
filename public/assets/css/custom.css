@@ -357,7 +357,7 @@ a{
 } */
 
 #tbl_prlist{
-	width:1800px !important;
+	width:1900px !important;
 }
 #tbl_prlist th{
 	text-align:center !important;
@@ -463,7 +463,7 @@ a{
 
 @media (min-width:1440px) and (max-width:1620px){
 	#tbl_prlist{
-		width:1800px !important;
+		width:1900px !important;
 	}
 	#tbl-itemdataShow{
 		width:1200px !important;
@@ -481,7 +481,7 @@ a{
 		width:1200px !important;
 	}
 	#tbl_prlist{
-		width:1800px !important;
+		width:1900px !important;
 	}
 	.poCard {
 		width: 80%;

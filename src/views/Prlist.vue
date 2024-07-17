@@ -21,6 +21,7 @@
                             <tr>
                                 <!-- <th class="td1">Ulid</th> -->
                                 <th>เลขที่เอกสาร</th>
+                                <th class="td2">บริษัท</th>
                                 <th class="td2">เลขที่ PR</th>
                                 <th class="td2">เลขที่ PO</th>
                                 <th class="thItemid">รหัสสินค้า</th>
@@ -126,22 +127,26 @@ export default {
                         orderable: false
                       },
                       {
-                        targets: [0 , 1 , 2 , 4 , 7,10],
+                        targets: [0 , 2 , 3 , 5 , 8,11],
                         width: "60px",
                       },
                       {
-                        targets: [9],
+                        targets: [1],
+                        width: "50px",
+                      },
+                      {
+                        targets: [10],
                         width: "100px",
                       },
                       {
-                        targets: [3],
+                        targets: [4],
                         width: "200px",
                         // createdCell: function (td) { //td , cellData, rowData, row, col
                         //     $(td).css('font-size', '10px'); // กำหนดฟอนต์สำหรับคอลัมน์ที่กำหนด
                         // }
                       },
                       {
-                        targets: [5 , 6 , 8],
+                        targets: [6 , 7 , 9],
                         width: "60px"
                       }
                     ],
