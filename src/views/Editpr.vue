@@ -522,10 +522,12 @@ export default {
                         let result = res.data.result;
                         let html = `<ul class="list-group itemIDUl">`;
                         for(let key in result){
+                            let itemName = result[key].itemname.replace(/"/g, '&quot;');
+                            let itemid = result[key].itemid.replace(/"/g, '&quot;');
                             html +=`
                             <li class="list-group-item itemIDLi"
-                                data_itemid="${result[key].itemid}"
-                                data_itemname="${result[key].itemname}"
+                                data_itemid="${itemid}"
+                                data_itemname="${itemName}"
                                 data_unit="${result[key].unitid}"
                                 data_itemgroupid="${result[key].itemgroupid}"
                             >${result[key].itemid} | ${result[key].itemname}</li>
@@ -568,6 +570,13 @@ export default {
             }else if(this.itemprice == 0){
                 Swal.fire({
                     title: 'กรุณาระบุราคาต่อหน่วย',
+                    icon: 'error',
+                    showConfirmButton: true,
+                    // timer:1000
+                });
+            }else if(this.itempricesum === 0){
+                Swal.fire({
+                    title: 'กรุณาตรวจสอบจำนวนและราคาใหม่อีกครั้ง เนื่องจากไม่สามารถคำนวณราคาได้',
                     icon: 'error',
                     showConfirmButton: true,
                     // timer:1000

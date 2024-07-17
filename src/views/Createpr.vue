@@ -498,7 +498,7 @@ export default {
                     showConfirmButton: true,
                     // timer:1000
                 });
-            }else if(this.itemqty == 0){
+            }else if(this.itemqty === 0){
                 Swal.fire({
                     title: 'กรุณาระบุจำนวน',
                     icon: 'error',
@@ -508,6 +508,13 @@ export default {
             }else if(this.itemprice == 0){
                 Swal.fire({
                     title: 'กรุณาระบุราคาต่อหน่วย',
+                    icon: 'error',
+                    showConfirmButton: true,
+                    // timer:1000
+                });
+            }else if(this.itempricesum === 0){
+                Swal.fire({
+                    title: 'กรุณาตรวจสอบจำนวนและราคาใหม่อีกครั้ง เนื่องจากไม่สามารถคำนวณราคาได้',
                     icon: 'error',
                     showConfirmButton: true,
                     // timer:1000
