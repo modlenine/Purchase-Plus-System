@@ -717,6 +717,11 @@ export default {
                     this.showmgrpage = true;
                 }else if(this.department == "1001" && this.userData.ecode == "M0025"){
                     this.showmgrpage = true;
+                }else if(this.department == "1008" && this.userData.ecode == "M0112" ||
+                    this.department == "1014" && this.userData.ecode == "M0112" ||
+                    this.department == "1015" && this.userData.ecode == "M0112"
+                ){
+                    this.showmgrpage = true;
                 }
             }else if(this.status == "Manager Approved"){
                 this.showinvespage = true;
