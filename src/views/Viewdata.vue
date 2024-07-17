@@ -715,6 +715,8 @@ export default {
                     this.showmgrpage = true;
                 }else if(this.department == "1007" && this.userData.ecode == "M0040"){
                     this.showmgrpage = true;
+                }else if(this.department == "1001" && this.userData.ecode == "M0025"){
+                    this.showmgrpage = true;
                 }
             }else if(this.status == "Manager Approved"){
                 this.showinvespage = true;
