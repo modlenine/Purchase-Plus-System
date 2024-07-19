@@ -33,8 +33,11 @@ export default {
                     if(files[key].f_name.split('.').pop() == "pdf" || files[key].f_name.split('.').pop() == "PDF"){
                         filehtml +=`
                         <div class="files-item">
-                            <p><i class="icon-copy dw dw-file2 filepdf"></i></p>
-                            <p><a href="${url+files[key].f_path+files[key].f_name}" target="_blank"><b>${files[key].f_name}</b></a></p>
+                            <p>
+                                <i class="icon-copy dw dw-file2 filepdf"></i></p>
+                            <p>
+                                <a href="${url+files[key].f_path+files[key].f_name}" target="_blank"><b>${files[key].f_name}</b></a>
+                            </p>
                             <i ${disDel} class="fa fa-trash idel fileDel"
                                 data_autoid="${files[key].f_autoid}"
                                 data_path="${files[key].f_path}"

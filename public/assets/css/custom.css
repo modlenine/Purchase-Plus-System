@@ -417,6 +417,7 @@ a{
 
 .files-item {
     width: 100%;
+	max-width: 500px;
     height: auto;
     border:1px solid #9f9f9f !important;
     padding:20px;
