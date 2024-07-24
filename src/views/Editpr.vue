@@ -398,6 +398,7 @@ export default {
                     department:this.department
                 }).then(res=>{
                     if(res.data.status == "Select Data Success"){
+                        $('#ip-cpr-ecodereq').html('');
                         let result = res.data.result;
                         let html = ``;
                         for(let key in result){
