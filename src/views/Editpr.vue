@@ -105,10 +105,6 @@
                                     </select>
                                 </div>
                                 <div class="col-md-4 form-group">
-                                    <label for=""><b>เลขที่ PR</b></label>
-                                    <input type="text" name="ip-cpr-prno" id="ip-cpr-prno" class="form-control" v-model="prno" disabled>
-                                </div>
-                                <div class="col-md-4 form-group">
                                     <label for=""><b>แผนก</b></label>
                                     <select class="form-control" name="ip-cpr-department" id="ip-cpr-department" v-model="department" required @change="getUserEcode">
                                         <option value="">กรุณาเลือกรายการ</option>
@@ -120,14 +116,30 @@
                                         <option value="">กรุณาเลือกผู้ขอซื้อ</option>
                                     </select>
                                 </div>
-                                <div class="col-md-4 form-group">
+                                <div class="col-md-6 form-group">
+                                    <label for=""><b>เลขที่ PR</b></label>
+                                    <input type="text" name="ip-cpr-prno" id="ip-cpr-prno" class="form-control" v-model="prno" disabled>
+                                </div>
+                                <div class="col-md-6 form-group">
+                                    <label for=""><b>เลขที่ PO</b></label>
+                                    <input type="text" name="ip-cpr-pono" id="ip-cpr-pono" class="form-control" disabled>
+                                </div>
+                                <div class="col-md-6 form-group">
                                     <label for=""><b>รหัสผู้ขาย</b></label>
                                     <input type="text" name="ip-cpr-vendid" id="ip-cpr-vendid" class="form-control" v-model="vendid" @keyup="getVendID" @keydown="alertVendidnull" required>
                                     <div id="show_accountnum"></div>
                                 </div>
-                                <div class="col-md-4 form-group">
+                                <div class="col-md-6 form-group">
                                     <label for=""><b>ชื่อผู้ขาย</b></label>
                                     <input type="text" name="ip-cpr-vendname" id="ip-cpr-vendname" class="form-control" readonly v-model="vendname">
+                                </div>
+                                <div class="col-md-6 form-group">
+                                    <label for=""><b>สกุลเงิน</b></label>
+                                    <input type="text" name="ip-cpr-currency" id="ip-cpr-currency" class="form-control" readonly v-model="currency">
+                                </div>
+                                <div class="col-md-6 form-group">
+                                    <label for=""><b>อัตราแลกเปลี่ยน</b></label>
+                                    <input type="text" name="ip-cpr-currency" id="ip-cpr-currency" class="form-control" readonly v-model="currencyrate">
                                 </div>
                                 <div class="col-md-4 form-group">
                                     <label for=""><b>วันที่เอกสาร</b></label>
@@ -155,6 +167,8 @@
                                 <div class="card-body">
                                     <Itemlist ref="itemlistcom"
                                         :itemdataProp="this.itemData"
+                                        :currencyrate="this.currencyrate"
+                                        :currency="this.currency"
                                     />
                                 </div>
                             </div>
@@ -240,6 +254,8 @@ export default {
             vendid:'',
             vendname:'',
             paymtermid:'',
+            currency:'',
+            currencyrate:0,
             datetimereq:'',
             datetimedelivery:'',
             memo:'',
@@ -300,6 +316,8 @@ export default {
                         this.datetimepost = resultMain.m_datetimepost;
                         this.prno = resultMain.m_prno;
                         this.files = resultFiles;
+                        this.currency = resultMain.m_currency;
+                        this.currencyrate = resultMain.m_currencyrate;
                         
                         this.getReqplan();
                         this.getCostcenter();
@@ -449,6 +467,8 @@ export default {
                                 data_accountnum="${result[key].accountnum}"
                                 data_name="${result[key].name}"
                                 data_paymtermid="${result[key].paymtermid}"
+                                data_currency="${result[key].currencycodeiso}"
+                                data_currencyrate="${result[key].exchrate}"
                             >${result[key].accountnum} | ${result[key].name}</li>
                             `;
                         }
@@ -707,6 +727,8 @@ export default {
                         vendid:this.vendid,
                         vendname:this.vendname,
                         paymtermid:this.paymtermid,
+                        currency:this.currency,
+                        currencyrate:parseFloat(this.currencyrate.replace(/,/g, '')),
                         datetimereq:$('#ip-cpr-reqDatetime').val(),
                         datetimedelivery:$('#ip-cpr-recDatetime').val(),
                         memo:this.memo,
@@ -778,11 +800,15 @@ export default {
             const data_accountnum = $(this).attr('data_accountnum');
             const data_name  = $(this).attr('data_name');
             const data_paymtermid = $(this).attr('data_paymtermid');
+            const data_currency = $(this).attr('data_currency');
+            const data_currencyrate = $(this).attr('data_currencyrate');
 
             // console.log(data_accountnum+' '+data_name+' '+data_paymtermid);
             proxy.paymtermid = data_paymtermid;
             proxy.vendid = data_accountnum;
             proxy.vendname = data_name;
+            proxy.currency = data_currency;
+            proxy.currencyrate = parseFloat(data_currencyrate).toLocaleString('en-US', { minimumFractionDigits: 3, maximumFractionDigits: 3 });
             $('#show_accountnum').html('');
        });
 

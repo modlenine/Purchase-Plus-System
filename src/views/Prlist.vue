@@ -167,7 +167,7 @@ export default {
         });
 
 
-        $('#tbl_prlist4 , #tbl_prlist5 , #tbl_prlist7 , #tbl_prlist10').prop('readonly' , true).css({
+        $('#tbl_prlist4 , #tbl_prlist5 , #tbl_prlist10').prop('readonly' , true).css({
             'background-color':'#F5F5F5',
             'cursor':'no-drop'
         });

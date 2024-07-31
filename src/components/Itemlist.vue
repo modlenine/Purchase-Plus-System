@@ -33,7 +33,9 @@ export default {
         }
     },
     props:[
-        'itemdataProp'
+        'itemdataProp',
+        "currency",
+        "currencyrate"
     ],
     methods: {
         getItemdata()
@@ -71,11 +73,27 @@ export default {
                     `;
                 }
                 // let thaiText = this.numberToThaiText(calcItempriceSum);
+                // แปลงเงิน สกุลต่างประเทศเป็นเงินบาท
+                let convertToThaibathText = '';
+                let convertToThaibath = 0;
+                let currencyText = "";
+                let currencyrate = this.currencyrate;
+                currencyrate = parseFloat(currencyrate.replace(/,/g, ''));
+                if(this.currency !== "THB"){
+                    convertToThaibath = (parseFloat(calcItempriceSum) * parseFloat(currencyrate)) / 100;
+                    currencyText = this.currency;
+                    convertToThaibathText = '<br>เป็นเงินไทย '+parseFloat(convertToThaibath).toLocaleString('en-US', { minimumFractionDigits: 3, maximumFractionDigits: 3 })+' บาท';
+                }else{
+                    currencyText = 'บาท';
+                    convertToThaibathText = '';
+                }
+
+
+
                 tableHtml +=`
                 <tr>
-                    <td colspan="5"><b>ยอดรวมทั้งสิ้น</b></td>
-                    <td colspan="3"></td>
-                    <td colspan="3" class="text-right">${parseFloat(calcItempriceSum.toFixed(3)).toLocaleString('en-US', { minimumFractionDigits: 3, maximumFractionDigits: 3 })} บาท</td>
+                    <td colspan="6"><b>ยอดรวมทั้งสิ้น</b></td>
+                    <td colspan="4" class="text-right">${parseFloat(calcItempriceSum.toFixed(3)).toLocaleString('en-US', { minimumFractionDigits: 3, maximumFractionDigits: 3 })} ${currencyText} ${convertToThaibathText}</td>
                 </tr>
                 `;
             }

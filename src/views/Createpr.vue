@@ -5,7 +5,7 @@
             <div class="modal-dialog modal-lg modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h6 class="modal-title" id="myLargeModalLabel">หน้าเพิ่มรายการสินค้า</h6>
+                        <h6 class="modal-title" id="myLargeModalLabel">หน้าเพิ่มรายการสินค้า <b>[ สกุลเงิน {{currency}} ]</b></h6>
                         <button type="button" class="close btn-close-additem" data-dismiss="modal" aria-hidden="true" @click="closeModal">×</button>
                     </div>
                     <form id="frm-insert-item" autocomplete="off" class="needs-validation" novalidate @submit.prevent="insertItemdata">
@@ -109,7 +109,7 @@
                                         <option value="">กรุณาเลือกรายการ</option>
                                     </select>
                                 </div>
-                                <div class="col-md-4 fo">
+                                <div class="col-md-4 form-group">
                                     <label for=""><b>ผู้ขอซื้อ</b></label>
                                     <select class="form-control" name="ip-cpr-ecodereq" id="ip-cpr-ecodereq" v-model="ecode">
                                         <option value="">กรุณาเลือกผู้ขอซื้อ</option>
@@ -123,6 +123,14 @@
                                 <div class="col-md-6 form-group">
                                     <label for=""><b>ชื่อผู้ขาย</b></label>
                                     <input type="text" name="ip-cpr-vendname" id="ip-cpr-vendname" class="form-control" readonly v-model="vendname">
+                                </div>
+                                <div class="col-md-6 form-group">
+                                    <label for=""><b>สกุลเงิน</b></label>
+                                    <input type="text" name="ip-cpr-currency" id="ip-cpr-currency" class="form-control" readonly v-model="currency">
+                                </div>
+                                <div class="col-md-6 form-group">
+                                    <label for=""><b>อัตราแลกเปลี่ยน</b></label>
+                                    <input type="text" name="ip-cpr-currency" id="ip-cpr-currency" class="form-control" readonly v-model="currencyrate">
                                 </div>
                                 <div class="col-md-4 form-group">
                                     <label for=""><b>วันที่เอกสาร</b></label>
@@ -149,7 +157,10 @@
                                 </div>
                                 <div class="card-body">
                                     <Itemlist ref="itemlistcom"
+                                        :key="this.renderkey"
                                         :itemdataProp="this.itemData"
+                                        :currencyrate="this.currencyrate"
+                                        :currency="this.currency"
                                     />
                                 </div>
                             </div>
@@ -227,11 +238,14 @@ export default {
             vendid:'',
             vendname:'',
             paymtermid:'',
+            currency:'',
+            currencyrate:0,
             datetimereq:'',
             datetimedelivery:'',
             memo:'',
             payGroupMaxprice:'',
             m_invest_ecodefix:'',
+            renderkey:0,
 
             itemid:'',
             itemname:'',
@@ -370,6 +384,8 @@ export default {
                                 data_accountnum="${result[key].accountnum}"
                                 data_name="${result[key].name}"
                                 data_paymtermid="${result[key].paymtermid}"
+                                data_currency="${result[key].currencycodeiso}"
+                                data_currencyrate="${result[key].exchrate}"
                             >${result[key].accountnum} | ${result[key].name}</li>
                             `;
                         }
@@ -416,14 +432,7 @@ export default {
             console.log('test');
         },
         openModal() {
-            if(this.dataareaid != ""){
-                $('#frm-insert-item').removeClass('was-validated');
-                const myModal = new Modal(document.getElementById('addItem_modal'), {
-                    keyboard: false,
-                    backdrop: 'static'
-                });
-                myModal.show();
-            }else{
+            if(this.dataareaid == ""){
                 //code
                 Swal.fire({
                     title: 'กรุณาเลือกสังกัดบริษัท',
@@ -431,6 +440,21 @@ export default {
                     showConfirmButton: true,
                     // timer:1000
                 });
+            }else if(this.currency == ""){
+                //code
+                Swal.fire({
+                    title: 'กรุณาตรวจสอบสกุลเงิน',
+                    icon: 'warning',
+                    showConfirmButton: true,
+                    // timer:1000
+                });
+            }else{
+                $('#frm-insert-item').removeClass('was-validated');
+                const myModal = new Modal(document.getElementById('addItem_modal'), {
+                    keyboard: false,
+                    backdrop: 'static'
+                });
+                myModal.show();
             }
         },
         closeModal() {
@@ -651,6 +675,8 @@ export default {
                         vendid:this.vendid,
                         vendname:this.vendname,
                         paymtermid:this.paymtermid,
+                        currency:this.currency,
+                        currencyrate:parseFloat(this.currencyrate.replace(/,/g, '')),
                         datetimereq:$('#ip-cpr-reqDatetime').val(),
                         datetimedelivery:$('#ip-cpr-recDatetime').val(),
                         memo:this.memo,
@@ -707,6 +733,9 @@ export default {
                 });
             }
         },
+        reloadComponent() {
+            this.renderkey += 1; // เพิ่มค่า key เพื่อบังคับให้ Vue.js รีเรนเดอร์คอมโพเนนต์
+        }
 
     },
     created() {
@@ -718,12 +747,22 @@ export default {
             const data_accountnum = $(this).attr('data_accountnum');
             const data_name  = $(this).attr('data_name');
             const data_paymtermid = $(this).attr('data_paymtermid');
+            const data_currency = $(this).attr('data_currency');
+            const data_currencyrate = $(this).attr('data_currencyrate');
 
             // console.log(data_accountnum+' '+data_name+' '+data_paymtermid);
             proxy.paymtermid = data_paymtermid;
             proxy.vendid = data_accountnum;
             proxy.vendname = data_name;
+            proxy.currency = data_currency;
+            proxy.currencyrate = parseFloat(data_currencyrate).toLocaleString('en-US', { minimumFractionDigits: 3, maximumFractionDigits: 3 });
             $('#show_accountnum').html('');
+
+            proxy.reloadComponent();
+            setTimeout(function() {
+                proxy.callgetItemdata();
+            }, 500); // 2000 milliseconds = 2 seconds
+
        });
 
        $('#ip-cpr-reqDatetime').Zebra_DatePicker({

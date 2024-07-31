@@ -65,14 +65,6 @@
                                     </select>
                                 </div>
                                 <div class="col-md-4 form-group">
-                                    <label for=""><b>เลขที่ PR</b></label>
-                                    <input type="text" name="ip-cpr-prno" id="ip-cpr-prno" class="form-control" v-model="prno" disabled>
-                                </div>
-                                <div class="col-md-4 form-group">
-                                    <label for=""><b>เลขที่ PO</b></label>
-                                    <input type="text" name="ip-cpr-pono" id="ip-cpr-pono" class="form-control" v-model="pono" disabled>
-                                </div>
-                                <div class="col-md-4 form-group">
                                     <label for=""><b>แผนก</b></label>
                                     <select class="form-control" name="ip-cpr-department" id="ip-cpr-department" v-model="department" disabled>
                                         <option value="">กรุณาเลือกรายการ</option>
@@ -84,13 +76,29 @@
                                         <option value="">กรุณาเลือกผู้ขอซื้อ</option>
                                     </select>
                                 </div>
-                                <div class="col-md-4 form-group">
+                                <div class="col-md-6 form-group">
+                                    <label for=""><b>เลขที่ PR</b></label>
+                                    <input type="text" name="ip-cpr-prno" id="ip-cpr-prno" class="form-control" v-model="prno" disabled>
+                                </div>
+                                <div class="col-md-6 form-group">
+                                    <label for=""><b>เลขที่ PO</b></label>
+                                    <input type="text" name="ip-cpr-pono" id="ip-cpr-pono" class="form-control" v-model="pono" disabled>
+                                </div>
+                                <div class="col-md-6 form-group">
                                     <label for=""><b>รหัสผู้ขาย</b></label>
                                     <input type="text" name="ip-cpr-vendid" id="ip-cpr-vendid" class="form-control" v-model="vendid" disabled>
                                 </div>
-                                <div class="col-md-4 form-group">
+                                <div class="col-md-6 form-group">
                                     <label for=""><b>ชื่อผู้ขาย</b></label>
                                     <input type="text" name="ip-cpr-vendname" id="ip-cpr-vendname" class="form-control" disabled v-model="vendname">
+                                </div>
+                                <div class="col-md-6 form-group">
+                                    <label for=""><b>สกุลเงิน</b></label>
+                                    <input type="text" name="ip-cpr-currency" id="ip-cpr-currency" class="form-control" readonly v-model="currency">
+                                </div>
+                                <div class="col-md-6 form-group">
+                                    <label for=""><b>อัตราแลกเปลี่ยน</b></label>
+                                    <input type="text" name="ip-cpr-currency" id="ip-cpr-currency" class="form-control" readonly v-model="currencyrate">
                                 </div>
                                 <div class="col-md-4 form-group">
                                     <label for=""><b>วันที่เอกสาร</b></label>
@@ -117,6 +125,8 @@
                                 <div class="card-body">
                                     <Itemlistview ref="itemlistcom"
                                         :itemdataProp="this.itemData"
+                                        :currencyrate="this.currencyrate"
+                                        :currency="this.currency"
                                     />
                                 </div>
                             </div>
@@ -322,6 +332,8 @@ export default {
             datetimenow:'',
             formisono_po:'',
             files:[],
+            currency:'',
+            currencyrate:0,
 
             // Investigator zone
             showinvespage:false,
@@ -403,6 +415,8 @@ export default {
                         this.paygroup = res.data.paygroup;
                         this.datetimenow = res.data.datetimenow;
                         this.files = resultFiles;
+                        this.currency = resultMain.m_currency;
+                        this.currencyrate = parseFloat(resultMain.m_currencyrate).toLocaleString('en-US', { minimumFractionDigits: 3, maximumFractionDigits: 3 });
                         
                         this.getReqplan();
                         this.getCostcenter();
