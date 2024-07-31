@@ -15,7 +15,7 @@
                       </div>
                       <hr>
                     
-
+                      <!-- <Filterprlist/> -->
                         <table id="tbl_prlist" class="table table-striped table-bordered" cellspacing="0">
                             <thead>
                             <tr>
@@ -69,6 +69,14 @@ export default {
     },
     mounted() {
       this.loadPrlist();
+
+      // $(document).on('click' , '#btn-filter-search' , function(){
+      //     let datetype_filter = $('input[name="ip-filter-date"]:checked').val();
+      //     let startdate_filter = $('#ip-filter-startdate').val();
+      //     let enddate_filter = $('#ip-filter-enddate').val();
+      //     let itemid_filter = $('#ip-filter-itemid').val();
+      //     let status_filter = $('#ip-filter-status').val();
+      // });
     },
     methods: {
       loadPrlist()
@@ -167,7 +175,7 @@ export default {
         });
 
 
-        $('#tbl_prlist4 , #tbl_prlist5 , #tbl_prlist10').prop('readonly' , true).css({
+        $('#tbl_prlist5').prop('readonly' , true).css({
             'background-color':'#F5F5F5',
             'cursor':'no-drop'
         });

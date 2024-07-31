@@ -462,6 +462,12 @@ a{
 	width:100% !important;
 }
 
+.filter_date{
+	border:1px #ccc solid;
+	padding:20px 5px 5px 5px;
+	border-radius: 10px;
+}
+
 @media (min-width:1440px) and (max-width:1620px){
 	#tbl_prlist{
 		width:1900px !important;

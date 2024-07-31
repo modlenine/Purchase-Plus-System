@@ -330,7 +330,7 @@ export default {
                         this.m_invest_ecodefix = resultMain.m_invest_ecodefix;
 
                         this.itemData = resultDetails;
-                        console.log(this.itemData);
+                        console.log(resultDetails);
                     }
                 })
             }

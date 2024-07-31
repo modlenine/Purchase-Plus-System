@@ -34,8 +34,8 @@ export default {
     },
     props:[
         'itemdataProp',
-        "currency",
-        "currencyrate"
+        'currency',
+        'currencyrate'
     ],
     methods: {
         getItemdata()
@@ -78,8 +78,8 @@ export default {
                 let convertToThaibath = 0;
                 let currencyText = "";
                 let currencyrate = this.currencyrate;
-                currencyrate = parseFloat(currencyrate.replace(/,/g, ''));
-                if(this.currency !== "THB"){
+                if(this.currency !== "THB" && this.currency !== null){
+                    currencyrate = parseFloat(currencyrate.replace(/,/g, ''));
                     convertToThaibath = (parseFloat(calcItempriceSum) * parseFloat(currencyrate)) / 100;
                     currencyText = this.currency;
                     convertToThaibathText = '<br>เป็นเงินไทย '+parseFloat(convertToThaibath).toLocaleString('en-US', { minimumFractionDigits: 3, maximumFractionDigits: 3 })+' บาท';
