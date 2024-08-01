@@ -15,7 +15,7 @@
                       </div>
                       <hr>
                     
-                      <!-- <Filterprlist/> -->
+                      <Filterprlist/>
                         <table id="tbl_prlist" class="table table-striped table-bordered" cellspacing="0">
                             <thead>
                             <tr>
@@ -47,11 +47,11 @@
 </template>
 
 <script>
-// import axios from 'axios'
+import axios from 'axios'
 import $ from 'jquery'
 
 // import Maindata from '@/components/Maindata.vue'
-// import Filterprlist from '@/components/Filter_prlist.vue'
+import Filterprlist from '@/components/Filter_prlist.vue'
 export default {
     data() {
         return {
@@ -59,36 +59,66 @@ export default {
         }
     },
     components:{
-      // Filterprlist
+      Filterprlist
     },
     computed:{
 
     },
     created() {
-
+      this.getStatus().then(() => {
+        this.loadFilterOnSessionStorage();
+      });
     },
     mounted() {
-      this.loadPrlist();
+      const proxy = this;
+      $(document).on('click' , '#btn-filter-search' , function(){
+          let datetype_filter = $('input[name="ip-filter-date"]:checked').val();
+          let startdate_filter = $('#ip-filter-startdate').val();
+          let enddate_filter = $('#ip-filter-enddate').val();
+          let itemid_filter = $('#ip-filter-itemid').val();
+          let status_filter = $('#ip-filter-status').val();
 
-      // $(document).on('click' , '#btn-filter-search' , function(){
-      //     let datetype_filter = $('input[name="ip-filter-date"]:checked').val();
-      //     let startdate_filter = $('#ip-filter-startdate').val();
-      //     let enddate_filter = $('#ip-filter-enddate').val();
-      //     let itemid_filter = $('#ip-filter-itemid').val();
-      //     let status_filter = $('#ip-filter-status').val();
-      // });
+          let filter_prlist = {
+            "datetype_filter":datetype_filter,
+            "startdate_filter":startdate_filter,
+            "enddate_filter":enddate_filter,
+            "itemid_filter":itemid_filter,
+            "status_filter":status_filter,
+          };
+
+            //create session storage
+            sessionStorage.setItem('filter_prlist' , JSON.stringify(filter_prlist));
+
+            let table = $('#tbl_prlist').DataTable();
+            table.state.clear();
+
+            proxy.loadPrlist();
+      });
+
+      $(document).on('click' , '#btn-filter-resetSearch' , function(){
+          let table = $('#tbl_prlist').DataTable();
+          table.state.clear();
+          $('.col-search-input').val('');
+
+          sessionStorage.removeItem("filter_prlist");
+          // $('input[id="ip-filter-requestDate"]').prop('checked' , true);
+          $('#ip-filter-startdate').val('');
+          $('#ip-filter-enddate').val('');
+          $('#ip-filter-itemid').val('');
+          $('#ip-filter-status').val('');
+          proxy.loadPrlist();
+      });
     },
     methods: {
       loadPrlist()
       {
         const proxy = this;
-          // let filter_formno = $('#s-input-byformno').val();
-          // let filter_status = $('#s-input-bystatus').val();
-          // let filter_category = $('#s-input-bycategory').val();
-          // let filter_customer = $('#s-input-bycustomer').val();
-          // let filter_startDate = $('#s-input-dateStart').val();
-          // let filter_endDate = $('#s-input-dateEnd').val();
-          // let filter_invoice = $('#s-input-byinvoice').val();
+
+          let datetype_filter = $('input[name="ip-filter-date"]:checked').val();
+          let startdate_filter = $('#ip-filter-startdate').val();
+          let enddate_filter = $('#ip-filter-enddate').val();
+          let itemid_filter = $('#ip-filter-itemid').val();
+          let status_filter = $('#ip-filter-status').val();
 
           let thid = 1;
           $('#tbl_prlist thead th').each(function() {
@@ -116,14 +146,12 @@ export default {
                     "ajax": {
                         "url":proxy.url+"intsys/purchaseplus/purchaseplus_backend/mainapi/loadprlist",
                         "type": "POST",
-                        "data":function(){
-                            // d.filter_formno = filter_formno;
-                            // d.filter_status = filter_status;
-                            // d.filter_category = filter_category;
-                            // d.filter_customer = filter_customer;
-                            // d.filter_startDate = filter_startDate;
-                            // d.filter_endDate = filter_endDate;
-                            // d.filter_invoice = filter_invoice;
+                        "data":function(d){
+                            d.datetype_filter = datetype_filter;
+                            d.startdate_filter = startdate_filter;
+                            d.enddate_filter = enddate_filter;
+                            d.itemid_filter = itemid_filter;
+                            d.status_filter = status_filter;
                         }
                     },
                     order: [
@@ -175,10 +203,47 @@ export default {
         });
 
 
-        $('#tbl_prlist5').prop('readonly' , true).css({
-            'background-color':'#F5F5F5',
-            'cursor':'no-drop'
-        });
+        // $('#tbl_prlist5').prop('readonly' , true).css({
+        //     'background-color':'#F5F5F5',
+        //     'cursor':'no-drop'
+        // });
+        
+      },
+      loadFilterOnSessionStorage(){
+          const proxy = this;
+          let filter_prlist = sessionStorage.getItem("filter_prlist");
+
+          if(filter_prlist != null){
+              let datetype_filter = JSON.parse(filter_prlist).datetype_filter;
+              let startdate_filter = JSON.parse(filter_prlist).startdate_filter;
+              let enddate_filter = JSON.parse(filter_prlist).enddate_filter;
+              let itemid_filter = JSON.parse(filter_prlist).itemid_filter;
+              let status_filter = JSON.parse(filter_prlist).status_filter;
+
+              $('input[name="ip-filter-date"]').filter(`[value="${datetype_filter}"]`).prop('checked', true);
+              $('#ip-filter-startdate').val(startdate_filter);
+              $('#ip-filter-enddate').val(enddate_filter);
+              $('#ip-filter-itemid').val(itemid_filter);
+              $('#ip-filter-status').val(status_filter);
+
+          }
+          proxy.loadPrlist();
+      },
+      getStatus()
+      {
+          return axios.get(this.url+'intsys/purchaseplus/purchaseplus_backend/mainapi/getStatus').then(res=>{
+              console.log(res.data);
+              if(res.data.status == "Select Data Success"){
+                  let result = res.data.result;
+                  let html = `
+                      <option value="">กรุณาเลือกรายการ</option>
+                  `;
+                  for(let key in result){
+                      html +=`<option value="${result[key].m_status}">${result[key].m_status}</option>`
+                  }
+                  $('#ip-filter-status').html(html);
+              }
+          });
       }
     },
     

@@ -6,12 +6,12 @@
                 <div class="row mb-2 filter_date">
                     <div class="col-md-4">
                         <div class="custom-control custom-radio">
-                            <input type="radio" id="ip-filter-requestDate" name="ip-filter-date" class="custom-control-input" value="requestDate">
+                            <input type="radio" id="ip-filter-requestDate" name="ip-filter-date" class="custom-control-input" value="requestDate" checked>
                             <label class="custom-control-label" for="ip-filter-requestDate">วันที่ร้องขอ</label>
                         </div>
                         <div class="custom-control custom-radio">
                             <input type="radio" id="ip-filter-deliveryDate" name="ip-filter-date" class="custom-control-input" value="deliveryDate">
-                            <label class="custom-control-label" for="ip-filter-deliveryDate">วันที่ส่งมอบ</label>
+                            <label class="custom-control-label" for="ip-filter-deliveryDate">วันที่ส่งของ</label>
                         </div>
                     </div>
                     <div class="col-md-4 form-group">
@@ -26,7 +26,7 @@
                         <input type="text" name="ip-filter-itemid" id="ip-filter-itemid" class="form-control" placeholder="ค้นหาด้วยรหัสสินค้า">
                     </div>
                     <div class="col-md-3 form-group">
-                        <input type="text" name="ip-filter-status" id="ip-filter-status" class="form-control" placeholder="ค้นหาด้วย สถานะ">
+                        <select name="ip-filter-status" id="ip-filter-status" class="form-control"></select>
                     </div>
                     <div class="col-md-3 form-group">
                         <button type="button" class="btn btn-info btn-block" name="btn-filter-search" id="btn-filter-search"><i class="dw dw-analytics-5 mr-2"></i>ค้นหา</button>
@@ -45,11 +45,18 @@
 
 <script>
 import $ from 'jquery';
+// import axios from 'axios'
 export default {
     data() {
         return {
-            
+            url:this.$store.getters.getUrl
         }
+    },
+    methods: {
+
+    },
+    created() {
+
     },
     mounted() {
         $('#ip-filter-startdate').Zebra_DatePicker({
