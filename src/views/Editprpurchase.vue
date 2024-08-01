@@ -90,14 +90,19 @@
                                     </select>
                                 </div>
                                 <div class="col-md-4 form-group">
+                                    <label for=""><b>หมวดหมู่สินค้า</b></label>
+                                    <select class="form-control" name="ip-cpr-itemcategory" id="ip-cpr-itemcategory" v-model="itemcategory" required @change="getPayGroup">
+                                        <option value="">กรุณาเลือกรายการ</option>
+                                        <option value="raw_materials">วัตถุดิบ</option>
+                                        <option value="expenses">ค่าใช้จ่าย</option>
+                                        <option value="assets">ทรัพย์สิน</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4 form-group">
                                     <label for=""><b>Cost Center</b></label>
                                     <select class="form-control" name="ip-cpr-costcenter" id="ip-cpr-costcenter" v-model="costcenter" required>
                                         <option value="">กรุณาเลือกรายการ</option>
                                     </select>
-                                </div>
-                                <div class="col-md-4 form-group">
-                                    <label for=""><b>เลขที่ PR</b></label>
-                                    <input type="text" name="ip-cpr-prno" id="ip-cpr-prno" class="form-control" v-model="prno" disabled>
                                 </div>
                                 <div class="col-md-4 form-group">
                                     <label for=""><b>แผนก</b></label>
@@ -112,13 +117,29 @@
                                     </select>
                                 </div>
                                 <div class="col-md-6 form-group">
+                                    <label for=""><b>เลขที่ PR</b></label>
+                                    <input type="text" name="ip-cpr-prno" id="ip-cpr-prno" class="form-control" v-model="prno" disabled>
+                                </div>
+                                <div class="col-md-6 form-group">
+                                    <label for=""><b>เลขที่ PO</b></label>
+                                    <input type="text" name="ip-cpr-pono" id="ip-cpr-pono" class="form-control" disabled>
+                                </div>
+                                <div class="col-md-6 form-group">
                                     <label for=""><b>รหัสผู้ขาย</b></label>
-                                    <input type="text" name="ip-cpr-vendid" id="ip-cpr-vendid" class="form-control" v-model="vendid" @keyup="getVendID" @keydown="alertVendidnull" required>
+                                    <input type="text" name="ip-cpr-vendid" id="ip-cpr-vendid" class="form-control" v-model="vendid" @keyup="getVendID" @keydown="alertVendidnull" disabled>
                                     <div id="show_accountnum"></div>
                                 </div>
                                 <div class="col-md-6 form-group">
                                     <label for=""><b>ชื่อผู้ขาย</b></label>
                                     <input type="text" name="ip-cpr-vendname" id="ip-cpr-vendname" class="form-control" readonly v-model="vendname">
+                                </div>
+                                <div class="col-md-6 form-group">
+                                    <label for=""><b>สกุลเงิน</b></label>
+                                    <input type="text" name="ip-cpr-currency" id="ip-cpr-currency" class="form-control" readonly v-model="currency">
+                                </div>
+                                <div class="col-md-6 form-group">
+                                    <label for=""><b>อัตราแลกเปลี่ยน</b></label>
+                                    <input type="text" name="ip-cpr-currency" id="ip-cpr-currency" class="form-control" readonly v-model="currencyrate">
                                 </div>
                                 <div class="col-md-4 form-group">
                                     <label for=""><b>วันที่เอกสาร</b></label>
@@ -126,11 +147,11 @@
                                 </div>
                                 <div class="col-md-4 form-group">
                                     <label for=""><b>วันที่ขอซื้อ</b></label>
-                                    <input type="text" name="ip-cpr-reqDatetime" id="ip-cpr-reqDatetime" class="form-control" required>
+                                    <input type="text" name="ip-cpr-reqDatetime" id="ip-cpr-reqDatetime" class="form-control" required v-model="datetimereq">
                                 </div>
                                 <div class="col-md-4 form-group">
                                     <label for=""><b>วันที่ส่งของ</b></label>
-                                    <input type="text" name="ip-cpr-recDatetime" id="ip-cpr-recDatetime" class="form-control" required>
+                                    <input type="text" name="ip-cpr-recDatetime" id="ip-cpr-recDatetime" class="form-control" required v-model="datetimedelivery">
                                 </div>
                                 <div class="col-md-12 form-group">
                                     <label for=""><b>หมายเหตุ</b></label>
@@ -146,7 +167,24 @@
                                 <div class="card-body">
                                     <Itemlist ref="itemlistcom"
                                         :itemdataProp="this.itemData"
+                                        :currencyrate="this.currencyrate"
+                                        :currency="this.currency"
                                     />
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row form-group">
+                                <Showfile @loadfulldata="getdata_viewfull"
+                                    :files="this.files"
+                                    :url="this.url"
+                                    :showtype="'edit'"
+                                    :formno="this.formno"
+                                />
+                                <div v-if="showtype== 'edit'" class="col-md-12 form-group">
+                                    <input id="ip-cpre-file" name="ip-cpre-file[]" type="file" class="file" multiple data-show-upload="false" data-show-caption="true" data-show-preview="true" accept=".pdf , .jpg , .png" ref="fileInputEdit">
+                                </div>
+                                <div id="scripts2" v-if="showtype== 'edit'">
+                                    <script type="application/javascript" defer :src="this.baseurl+'assets/fileupload/bs-filestyle.js'"></script>
                                 </div>
                             </div>
                             <hr>
@@ -185,17 +223,21 @@ import Swal from 'sweetalert2'
 import {Modal} from 'bootstrap'; // นำเข้าเฉพาะ Modal component จาก Bootstrap
 
 import Itemlist from '@/components/Itemlist.vue'
+import Showfile from '@/components/Showfile.vue'
 
 
 export default {
     name:"Editprpurchase",
     components:{
-        Itemlist
+        Itemlist,
+        Showfile
     },
     data() {
         return {
             url:this.getUrl(),
+            baseurl:this.baseUrl(),
             dataareaid:'',
+            itemcategory:'',
             plantype:'',
             costcenter:'',
             department:'',
@@ -203,6 +245,8 @@ export default {
             vendid:'',
             vendname:'',
             paymtermid:'',
+            currency:'',
+            currencyrate:0,
             datetimereq:'',
             datetimedelivery:'',
             memo:'',
@@ -220,6 +264,8 @@ export default {
             itemunit:'',
             itemmemo:'',
             itemData:[],
+            files:[],
+            showtype:'edit',
 
             userData:this.getSessionStorage()
         }
@@ -240,8 +286,10 @@ export default {
                     if(res.data.status == "Select Data Success"){
                         let resultMain = res.data.maindata;
                         let resultDetails = res.data.details;
+                        let resultFiles = res.data.files;
 
                         this.dataareaid = resultMain.m_dataareaid;
+                        this.itemcategory = resultMain.m_itemcategory;
                         this.plantype = resultMain.m_plantype;
                         this.costcenter = resultMain.m_costcenter;
                         this.department = resultMain.m_department;
@@ -257,11 +305,15 @@ export default {
                         this.ecodepost = resultMain.m_ecodepost;
                         this.datetimepost = resultMain.m_datetimepost;
                         this.prno = resultMain.m_prno;
+                        this.files = resultFiles;
+                        this.currency = resultMain.m_currency;
+                        this.currencyrate = resultMain.m_currencyrate;
                         
                         this.getReqplan();
                         this.getCostcenter();
                         this.getDepartment();
                         this.getUserEcode();
+                        this.getPayGroup();
 
                         this.itemData = resultDetails;
                         console.log(this.itemData);
@@ -384,6 +436,8 @@ export default {
                                 data_accountnum="${result[key].accountnum}"
                                 data_name="${result[key].name}"
                                 data_paymtermid="${result[key].paymtermid}"
+                                data_currency="${result[key].currencycodeiso}"
+                                data_currencyrate="${result[key].exchrate}"
                             >${result[key].accountnum} | ${result[key].name}</li>
                             `;
                         }
@@ -614,15 +668,19 @@ export default {
                     });
                 }else{
                     const formdata = new FormData();
+                    const files = this.$refs.fileInputEdit.files;
                     let data = {
                         dataareaid:this.dataareaid,
                         plantype:this.plantype,
+                        itemcategory:this.itemcategory,
                         costcenter:this.costcenter,
                         department:this.department,
                         ecode:this.ecode,
                         vendid:this.vendid,
                         vendname:this.vendname,
                         paymtermid:this.paymtermid,
+                        currency:this.currency,
+                        currencyrate:parseFloat(this.currencyrate.replace(/,/g, '')),
                         datetimereq:$('#ip-cpr-reqDatetime').val(),
                         datetimedelivery:$('#ip-cpr-recDatetime').val(),
                         memo:this.memo,
@@ -633,6 +691,9 @@ export default {
                     }
                     for(let key in data){
                         formdata.append(key , data[key]);
+                    }
+                    for(let key in files){
+                        formdata.append('ip-cpre-file[]' , files[key]);
                     }
                     formdata.append("itemdata" , JSON.stringify(this.itemData));
                     formdata.append("action" , "saveDataAll_edit_purchase");
@@ -689,11 +750,15 @@ export default {
             const data_accountnum = $(this).attr('data_accountnum');
             const data_name  = $(this).attr('data_name');
             const data_paymtermid = $(this).attr('data_paymtermid');
+            const data_currency = $(this).attr('data_currency');
+            const data_currencyrate = $(this).attr('data_currencyrate');
 
             // console.log(data_accountnum+' '+data_name+' '+data_paymtermid);
             proxy.paymtermid = data_paymtermid;
             proxy.vendid = data_accountnum;
             proxy.vendname = data_name;
+            proxy.currency = data_currency;
+            proxy.currencyrate = parseFloat(data_currencyrate).toLocaleString('en-US', { minimumFractionDigits: 3, maximumFractionDigits: 3 });
             $('#show_accountnum').html('');
        });
 
