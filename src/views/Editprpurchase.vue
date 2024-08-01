@@ -669,6 +669,12 @@ export default {
                 }else{
                     const formdata = new FormData();
                     const files = this.$refs.fileInputEdit.files;
+
+                    //check currency
+                    if(this.currencyrate !== null && this.currencyrate !== ""){
+                        this.currencyrate = parseFloat(this.currencyrate.replace(/,/g, ''));
+                    }
+
                     let data = {
                         dataareaid:this.dataareaid,
                         plantype:this.plantype,
@@ -680,7 +686,7 @@ export default {
                         vendname:this.vendname,
                         paymtermid:this.paymtermid,
                         currency:this.currency,
-                        currencyrate:parseFloat(this.currencyrate.replace(/,/g, '')),
+                        currencyrate:this.currencyrate,
                         datetimereq:$('#ip-cpr-reqDatetime').val(),
                         datetimedelivery:$('#ip-cpr-recDatetime').val(),
                         memo:this.memo,
