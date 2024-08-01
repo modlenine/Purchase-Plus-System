@@ -171,7 +171,7 @@ export default {
                         width: "50px",
                       },
                       {
-                        targets: [10],
+                        targets: [10 , 12],
                         width: "100px",
                       },
                       {
