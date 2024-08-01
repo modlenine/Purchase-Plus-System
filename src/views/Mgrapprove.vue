@@ -248,6 +248,7 @@ export default {
         },
         getdataG4()
         {
+            $('#btn-save-mgr').prop('disabled' , true);
             const formdata = new FormData();
             formdata.append("action" , "getdataG4");
             axios.post(this.url+'intsys/purchaseplus/purchaseplus_backend/mainapi/getdataG4' , formdata , {
@@ -278,6 +279,11 @@ export default {
                     
                     $('.single-checkbox').change(function() {
                         $('.single-checkbox').not(this).prop('checked', false);
+                        if($('.single-checkbox:checked').length == 1){
+                            $('#btn-save-mgr').prop('disabled' , false);
+                        }else{
+                            $('#btn-save-mgr').prop('disabled' , true);
+                        }
                     });
                 }
             });
@@ -324,6 +330,7 @@ export default {
         },
         getdataG2()
         {
+            $('#btn-save-mgr').prop('disabled' , true);
             const formdata = new FormData();
             formdata.append("action" , "getdataG2");
             axios.post(this.url+'intsys/purchaseplus/purchaseplus_backend/mainapi/getdataG2' , formdata , {
@@ -357,6 +364,10 @@ export default {
                                 showConfirmButton: true,
                                 // timer:1000
                             });
+                        }else if($('.multi-checkbox:checked').length == 2){
+                            $('#btn-save-mgr').prop('disabled' , false);
+                        }else{
+                            $('#btn-save-mgr').prop('disabled' , true);
                         }
                     });
                 }
