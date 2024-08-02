@@ -236,7 +236,7 @@ export default {
               if(res.data.status == "Select Data Success"){
                   let result = res.data.result;
                   let html = `
-                      <option value="">กรุณาเลือกรายการ</option>
+                      <option value="">ค้นหาด้วยสถานะ</option>
                   `;
                   for(let key in result){
                       html +=`<option value="${result[key].m_status}">${result[key].m_status}</option>`
