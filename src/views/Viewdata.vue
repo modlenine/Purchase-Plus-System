@@ -416,7 +416,12 @@ export default {
                         this.datetimenow = res.data.datetimenow;
                         this.files = resultFiles;
                         this.currency = resultMain.m_currency;
-                        this.currencyrate = parseFloat(resultMain.m_currencyrate).toLocaleString('en-US', { minimumFractionDigits: 3, maximumFractionDigits: 3 });
+
+                        if(resultMain.m_currencyrate !== "" && resultMain.m_currencyrate !== null){
+                            this.currencyrate = parseFloat(resultMain.m_currencyrate).toLocaleString('en-US', { minimumFractionDigits: 3, maximumFractionDigits: 3 });
+                        }else{
+                            this.currencyrate = null;
+                        }
                         
                         this.getReqplan();
                         this.getCostcenter();
