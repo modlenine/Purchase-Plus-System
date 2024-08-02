@@ -67,7 +67,7 @@ export default {
             purEcodepost:'',
             purDatetimepost:'',
             purBtn:false,
-            purBtnEdit:false
+            purBtnEdit:false,
 
         }
     },
@@ -146,7 +146,8 @@ export default {
                     this.purBtnEdit = true;
                 }
             }
-        }
+        },
+    
     },
     computed:{
         userpostPur()
