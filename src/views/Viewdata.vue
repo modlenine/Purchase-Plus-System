@@ -659,7 +659,7 @@ export default {
         controlBtn()
         {
             //control with status
-            if(this.status === "User Cancel" || this.status == "New PR" || this.status == "Investigator Approved" || this.status == "Investigator Not Approve" || this.status == "Manager Approved" || this.status == "Manager Not Approve" || this.status == "Executive Group 4 Approved" || this.status == "Executive Group 3 Approved" || this.status == "Executive Group 2 Approved" || this.status == "Executive Group 1 Approved" || this.status == "Executive Group 0 Approved" || this.status == "Purchase Verified" || this.status == "PO confirmed"){
+            if(this.status === "User Cancel" || this.status == "New PR" || this.status == "Investigator Approved" || this.status == "Investigator Not Approve" || this.status == "Manager Approved" || this.status == "Manager Not Approve" || this.status == "Executive Group 4 Approved" || this.status == "Executive Group 3 Approved" || this.status == "Executive Group 2 Approved" || this.status == "Executive Group 1 Approved" || this.status == "Executive Group 0 Approved" || this.status == "Purchase Verified" || this.status == "Purchase Not Approve" || this.status == "PO confirmed"){
                 this.btncontrol = false;
             }else if(this.status == "Wait Send Data"){
                 if(this.userData.ecode == this.ecodepost || this.userData.ecode == this.ecode){
@@ -789,6 +789,11 @@ export default {
                 this.showExecutivePage = true;
                 this.showPurPage = true;
             }else if(this.status == "Purchase Verified"){
+                this.showinvespage = true;
+                this.showmgrpage = true;
+                this.showExecutivePage = true;
+                this.showPurPage = true;
+            }else if(this.status == "Purchase Not Approve"){
                 this.showinvespage = true;
                 this.showmgrpage = true;
                 this.showExecutivePage = true;

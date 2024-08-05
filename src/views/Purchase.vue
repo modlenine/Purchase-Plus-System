@@ -127,7 +127,7 @@ export default {
         checkStatusPur()
         {
             const proxy = this;
-            if(proxy.status == "Purchase Verified" || proxy.status == "PO confirmed"){
+            if(proxy.status == "Purchase Verified" || proxy.status == "PO confirmed" || proxy.status == "Purchase Not Approve"){
                 proxy.purApproveType = proxy.approve_pur_prop;
                 $('#ip-pur-memo').val(proxy.memo_pur_prop).prop('readonly' , true);
                 $('#ip-pur-userpost').val(proxy.userpost_pur_prop);
