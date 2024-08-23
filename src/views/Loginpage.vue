@@ -114,7 +114,8 @@ export default {
 						'posi':sessionData.posi,
 						'username':sessionData.username,
 						'dateExpire':res.data.dateExpire,
-						'checkDate':res.data.checkDate
+						'checkDate':res.data.checkDate,
+						'loginexpire': new Date().getTime() + 2 * 60 * 60 * 1000 // เพิ่ม loginexpire 2 ชั่วโมงจากปัจจุบัน
 					}
 
 					localStorage.setItem('userData' , JSON.stringify(userData));
