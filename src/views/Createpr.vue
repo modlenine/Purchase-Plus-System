@@ -198,7 +198,7 @@
                                     <input type="text" name="ip-cpr-userdatetime" id="ip-cpr-userdatetime" class="form-control" readonly v-model="docdatetime">
                                 </div>
                                 <div class="col-md-12 form-group">
-                                    <button type="submit" class="btn btn-primary"><i class="dw dw-diskette1 mr-2"></i>บันทึกข้อมูล</button>
+                                    <button type="submit" class="btn btn-primary" id="btn-saveData"><i class="dw dw-diskette1 mr-2"></i>บันทึกข้อมูล</button>
                                 </div>
                             </div>
 
@@ -663,6 +663,7 @@ export default {
                         // timer:1000
                     });
                 }else{
+                    $('#btn-saveData').prop('disabled' , true);
                     const formdata = new FormData();
                     const files = this.$refs.fileInput.files;
                     let data = {
@@ -699,6 +700,7 @@ export default {
                         }
                     }).then(res=>{
                         console.log(res.data);
+                        $('#btn-saveData').prop('disabled' , false);
                         if(res.data.status == "Insert Data Success"){
                             let formno = res.data.formno;
                             Swal.fire({

@@ -27,7 +27,7 @@
         </div>
         <div class="col-md-6 text-right">
             <span class="mr-2"><b>วันที่พิมพ์ : </b>{{dataprintpr.datetimenow}}</span>
-            <span class="mr-2"><b>วันที่ : </b>{{dataprintpr.datetimecreate}}</span>
+            <span class="mr-2"><b>วันที่ : </b>{{dataprintpr.datetimepost}}</span>
             <span><b>แผนก : </b>{{dataprintpr.department}}</span>
         </div>
     </div>

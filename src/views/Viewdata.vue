@@ -290,6 +290,7 @@ export default {
                 prno:'',
                 datetimenow:'',
                 datetimecreate:'',
+                datetimepost:'',
                 department:'',
                 userrequest:'',
                 datetimedelivery:'',
@@ -701,6 +702,7 @@ export default {
                         this.dataprintpr.prno = resultMain.m_prno;
                         this.dataprintpr.datetimenow = res.data.datetimenow;
                         this.dataprintpr.datetimecreate = resultMain.m_datetime_create;
+                        this.dataprintpr.datetimepost = resultMain.m_datetimepost;
                         this.dataprintpr.department = resultMain.m_department;
                         this.dataprintpr.memo = resultMain.m_memo;
                         this.dataprintpr.userrequest = res.data.userRequest;
@@ -740,6 +742,8 @@ export default {
                     this.department == "1014" && this.userData.ecode == "M0112" ||
                     this.department == "1015" && this.userData.ecode == "M0112"
                 ){
+                    this.showmgrpage = true;
+                }else if(this.department == "1012" && this.userData.ecode == "M0025"){
                     this.showmgrpage = true;
                 }
             }else if(this.status == "Investigator Not Approve"){
