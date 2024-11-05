@@ -736,7 +736,7 @@ export default {
                     this.showmgrpage = true;
                 }else if(this.department == "1007" && this.userData.ecode == "M0040"){
                     this.showmgrpage = true;
-                }else if(this.department == "1001" && this.userData.ecode == "M0015"){
+                }else if(this.department == "1001" && this.userData.ecode == "M0963"){//M0963 adirek
                     this.showmgrpage = true;
                 }else if(this.department == "1008" && this.userData.ecode == "M0112" ||
                     this.department == "1014" && this.userData.ecode == "M0112" ||
