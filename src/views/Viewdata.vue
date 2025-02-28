@@ -92,6 +92,10 @@
                                     <label for=""><b>ชื่อผู้ขาย</b></label>
                                     <input type="text" name="ip-cpr-vendname" id="ip-cpr-vendname" class="form-control" disabled v-model="vendname">
                                 </div>
+                                <div class="col-md-12 form-group">
+                                    <label for=""><b>อีเมล</b></label>
+                                    <input type="text" name="ip-cpr-vendemail" id="ip-cpr-vendemail" class="form-control" disabled v-model="vendemail">
+                                </div>
                                 <div class="col-md-6 form-group">
                                     <label for=""><b>สกุลเงิน</b></label>
                                     <input type="text" name="ip-cpr-currency" id="ip-cpr-currency" class="form-control" readonly v-model="currency">
@@ -286,6 +290,7 @@ export default {
                 companyfullname:'',
                 vendid:'',
                 vendname:'',
+                vendemail:'',
                 paymtermid:'',
                 prno:'',
                 datetimenow:'',
@@ -315,6 +320,7 @@ export default {
             ecode:'',
             vendid:'',
             vendname:'',
+            vendemail:'',
             datetimereq:'',
             datetimedelivery:'',
             memo:'',
@@ -392,6 +398,7 @@ export default {
                         let resultMain = res.data.maindata;
                         let resultDetails = res.data.details;
                         let resultFiles = res.data.files;
+                        let vendtable = res.data.vendtable;
 
                         this.dataareaid = resultMain.m_dataareaid;
                         this.plantype = resultMain.m_plantype;
@@ -400,7 +407,8 @@ export default {
                         this.department = resultMain.m_department;
                         this.ecode = resultMain.m_ecode;
                         this.vendid = resultMain.m_vendid;
-                        this.vendname = resultMain.m_vendname;
+                        this.vendname = vendtable.name;
+                        this.vendemail = vendtable.email;
                         this.datetimecreate = resultMain.m_datetime_create;
                         this.datetimereq = resultMain.m_date_req;
                         this.datetimedelivery = resultMain.m_date_delivery;

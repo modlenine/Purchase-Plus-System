@@ -124,6 +124,10 @@
                                     <label for=""><b>ชื่อผู้ขาย</b></label>
                                     <input type="text" name="ip-cpr-vendname" id="ip-cpr-vendname" class="form-control" readonly v-model="vendname">
                                 </div>
+                                <div class="col-md-12 form-group">
+                                    <label for=""><b>อีเมล</b></label>
+                                    <input type="text" name="ip-cpr-vendemail" id="ip-cpr-vendemail" class="form-control" readonly v-model="vendemail">
+                                </div>
                                 <div class="col-md-6 form-group">
                                     <label for=""><b>สกุลเงิน</b></label>
                                     <input type="text" name="ip-cpr-currency" id="ip-cpr-currency" class="form-control" readonly v-model="currency">
@@ -237,6 +241,7 @@ export default {
             ecode:'',
             vendid:'',
             vendname:'',
+            vendemail:'',
             paymtermid:'',
             currency:'',
             currencyrate:0,
@@ -386,6 +391,7 @@ export default {
                                 data_paymtermid="${result[key].paymtermid}"
                                 data_currency="${result[key].currencycodeiso}"
                                 data_currencyrate="${result[key].exchrate}"
+                                data_email="${result[key].email}"
                             >${result[key].accountnum} | ${result[key].name}</li>
                             `;
                         }
@@ -582,6 +588,7 @@ export default {
         },
         callgetItemdata(){
             this.$refs.itemlistcom.getItemdata();
+            //อ้างถึง Component เพื่อที่จะเข้าถึง Method ใน Component ที่อ้างถึง
         },
         saveDataAll()
         {
@@ -675,6 +682,7 @@ export default {
                         ecode:this.ecode,
                         vendid:this.vendid,
                         vendname:this.vendname,
+                        vendemail:this.vendemail,
                         paymtermid:this.paymtermid,
                         currency:this.currency,
                         currencyrate:parseFloat(this.currencyrate.replace(/,/g, '')),
@@ -751,19 +759,22 @@ export default {
             const data_paymtermid = $(this).attr('data_paymtermid');
             const data_currency = $(this).attr('data_currency');
             const data_currencyrate = $(this).attr('data_currencyrate');
+            const data_email = $(this).attr('data_email');
 
             // console.log(data_accountnum+' '+data_name+' '+data_paymtermid);
             proxy.paymtermid = data_paymtermid;
             proxy.vendid = data_accountnum;
             proxy.vendname = data_name;
             proxy.currency = data_currency;
+            proxy.vendemail = data_email;
             proxy.currencyrate = parseFloat(data_currencyrate).toLocaleString('en-US', { minimumFractionDigits: 3, maximumFractionDigits: 3 });
             $('#show_accountnum').html('');
 
             proxy.reloadComponent();
             setTimeout(function() {
                 proxy.callgetItemdata();
-            }, 500); // 2000 milliseconds = 2 seconds
+            }, 500);
+            // 2000 milliseconds = 2 seconds
 
        });
 

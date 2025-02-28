@@ -183,7 +183,8 @@ export default {
     'datetimepostMgr',
     'memo_pur_prop',
     'userpost_pur',
-    'datetime_pur'
+    'datetime_pur',
+    'poemail'
    ],
    methods: {
     getdataDetail()
@@ -225,6 +226,7 @@ export default {
             formdata.append('userpostMgr' , this.userpostMgr);
             formdata.append('datetimepostMgr' , this.mgrDate);
             formdata.append('memo_pur' , this.memo_pur_prop);
+            formdata.append('poemail' , this.poemail);
             axios.post(this.url + 'intsys/purchaseplus/purchaseplus_backend/mainapi/pdf/send_po', formdata, {
             headers: {
                 'Content-Type': 'multipart/form-data'

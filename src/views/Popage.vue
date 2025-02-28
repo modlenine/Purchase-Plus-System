@@ -24,11 +24,21 @@
                         :memo_pur_prop="this.memo_pur_prop"
                         :userpost_pur="this.userpost_pur"
                         :datetime_pur="this.datetime_pur"
+                        :poemail="this.poemail"
                     />
                 </div>
+                <div class="modal-body">
+                    <div class="row form-gro">
+                        <div class="col-md-12 form-group">
+                            <label for=""><b>PO Vendor Email : </b></label>
+                            <input type="tel" name="" id="" class="form-control" v-model="poemail">
+                            <p v-if="poemail == ''" class="textRequest mt-2">กรุณาระบุ Email ที่ต้องการส่ง PO</p>
+                        </div>
+                    </div>
+                </div>
                 <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal" @click="closeShowPoDetail">Close</button>
-                <button v-if="poindex === 0" type="button" class="btn btn-warning" @click="printPo">ส่ง Po</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" @click="closeShowPoDetail">Close</button>
+                    <button v-if="poindex === 0 && poemail != ''" type="button" class="btn btn-warning" @click="printPo">ส่ง Po</button>
                 </div>
             </div>
             </div>
@@ -76,6 +86,7 @@
 import axios from 'axios'
 import {Modal} from 'bootstrap'; // นำเข้าเฉพาะ Modal component จาก Bootstrap
 import Printpo from '@/components/Printpo.vue'
+import Swal from 'sweetalert2'
 export default {
     name:"popage",
     data() {
@@ -91,7 +102,8 @@ export default {
             userrequest:'',
             executive:[],
             poindex:0,
-            datainvest:''
+            datainvest:'',
+            poemail:''
         }
     },
     components:{
@@ -138,6 +150,7 @@ export default {
             this.podetailItem = item;
             this.poindex = index;
             this.getUserRequest();
+            this.poemail = item.email;
             //code
             const myModal = new Modal(document.getElementById('showPoDetail_modal'), {
                 keyboard: false,
@@ -176,7 +189,34 @@ export default {
             }
         },
         printPo() {
-            this.$refs.printpoComponent.send_tovender();
+            let resultCheckEmail = this.validateEmails(this.poemail);
+            if(resultCheckEmail == false){
+                Swal.fire({
+                    title: 'กรุณาตรวจสอบ Email ',
+                    icon: 'error',
+                    showConfirmButton: true,
+                    // timer:1000
+                });
+            }else{
+                this.$refs.printpoComponent.send_tovender();
+            }
+            console.log(resultCheckEmail);
+        },
+        validateEmails(emailString) {
+            // Regular Expression สำหรับตรวจสอบอีเมล
+            const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+            
+            // แยกอีเมลโดยใช้เครื่องหมายจุลภาค (,) และตัดช่องว่างออก
+            const emails = emailString.split(",").map(email => email.trim());
+
+                // ตรวจสอบแต่ละอีเมล
+            for (const email of emails) {
+                if (!emailRegex.test(email)) {
+                    return false; // เจออีเมลผิด ออกจากลูปและคืนค่า false ทันที
+                }
+            }
+
+            return true;
         }
     },
     mounted() {
