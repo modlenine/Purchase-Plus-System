@@ -344,6 +344,13 @@ a{
 	border-color:#ccc;
 }
 
+.ulDiv_emailHis{
+	max-height: 350px;
+	margin-bottom: 10px;
+	overflow:scroll;
+	-webkit-overflow-scrolling: touch;
+}
+
 /* #btn-editpr , #btn-backtoView{
 	position:absolute;
 	top:5px;

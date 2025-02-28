@@ -127,6 +127,7 @@
                                 <div class="col-md-12 form-group">
                                     <label for=""><b>อีเมล</b></label>
                                     <input type="text" name="ip-cpr-vendemail" id="ip-cpr-vendemail" class="form-control" readonly v-model="vendemail">
+                                    <div id="show_alertLastEmail" class="mt-2"></div>
                                 </div>
                                 <div class="col-md-6 form-group">
                                     <label for=""><b>สกุลเงิน</b></label>
@@ -745,6 +746,26 @@ export default {
         },
         reloadComponent() {
             this.renderkey += 1; // เพิ่มค่า key เพื่อบังคับให้ Vue.js รีเรนเดอร์คอมโพเนนต์
+        },
+       getLastVendorEmail(accountnum , dataareaid , data_email)
+        {
+            if(accountnum && dataareaid){
+                const formdata = new FormData();
+                formdata.append('accountnum' , accountnum);
+                formdata.append('dataareaid' , dataareaid);
+               axios.post(this.url+'intsys/purchaseplus/purchaseplus_backend/mainapi/getLastVendorEmail',formdata).then(res=>{
+                    console.log(res.data);
+                    if(res.data.status == "Select Data Success"){
+                        let result = res.data.result;
+                        if(result !== null){
+                            if(data_email !== result.sp_mailto){
+                                document.querySelector("#show_alertLastEmail").innerHTML = `<span class='textRequest'>*Email ของ Vendor รายการล่าสุดไม่ตรงกันกับ Email ในระบบ AX กรุณาตรวจสอบและแก้ไข</span><br>
+                                <span class='textRequest'><b>*รายการอีเมลล่าสุด : </b>${result.sp_mailto}</span>`;
+                            }
+                        }
+                    }
+                });
+            }
         }
 
     },
@@ -775,6 +796,7 @@ export default {
                 proxy.callgetItemdata();
             }, 500);
             // 2000 milliseconds = 2 seconds
+            proxy.getLastVendorEmail(data_accountnum , proxy.dataareaid , data_email);
 
        });
 

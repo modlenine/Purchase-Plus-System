@@ -227,6 +227,7 @@ export default {
             formdata.append('datetimepostMgr' , this.mgrDate);
             formdata.append('memo_pur' , this.memo_pur_prop);
             formdata.append('poemail' , this.poemail);
+            formdata.append('dataareaid' , this.areaid_prop);
             axios.post(this.url + 'intsys/purchaseplus/purchaseplus_backend/mainapi/pdf/send_po', formdata, {
             headers: {
                 'Content-Type': 'multipart/form-data'

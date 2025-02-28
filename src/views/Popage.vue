@@ -38,7 +38,31 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal" @click="closeShowPoDetail">Close</button>
+                    <button type="button" class="btn btn-info" @click="getSendToVendorHistory(podetailItem.purchid , podetailItem.purchorderdocnum , formno)">ประวัติการส่ง Email</button>
                     <button v-if="poindex === 0 && poemail != ''" type="button" class="btn btn-warning" @click="printPo">ส่ง Po</button>
+                </div>
+            </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="showSendEmailHistory_modal" tabindex="-1" role="dialog" aria-labelledby="previewModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-xl" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h5 class="modal-title" id="previewModalLabel">Send Email History</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" @click="closeShowEmailHistory">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row form-group">
+                        <div class="col-md-">
+                            <div class="list-group ulDiv_emailHis"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    
                 </div>
             </div>
             </div>
@@ -217,7 +241,53 @@ export default {
             }
 
             return true;
-        }
+        },
+        getSendToVendorHistory(pono , ponoDocnum , formno)
+        {
+            if(pono && ponoDocnum && formno){
+                const formdata = new FormData();
+                formdata.append("pono" , pono);
+                formdata.append("ponoDocnum" , ponoDocnum);
+                formdata.append("formno" , formno);
+                axios.post(this.url+'intsys/purchaseplus/purchaseplus_backend/mainapi/getSendToVendorHistory' , formdata).then(res=>{
+                    console.log(res);
+                    if(res.data.status == "Select Data Success"){
+                        let result = res.data.result;
+                        let html = result.map(results =>`
+                            <a href="#" class="list-group-item list-group-item-action flex-column align-items-start liDiv_emailHis">
+                                <h5 class="mb-1 h5"><b>เวอร์ชั่น : </b>${ponoDocnum}</h5>
+                                <p class="mb-1 font-14">
+                                    <span><b>ส่งถึง : </b>${results.sp_mailto}</span>
+                                </p>
+                                <small class="text-muted"><b>ผู้ส่ง : </b>${results.sp_userpost}</small>
+                                <small class="text-muted"><b>วันที่ส่ง : </b>${results.sp_datetime}</small>
+                            </a>
+                        `).join('');
+         
+                        document.querySelector(".ulDiv_emailHis").innerHTML = html;
+
+                        const myModal = new Modal(document.getElementById('showSendEmailHistory_modal'), {
+                            keyboard: false,
+                            backdrop: 'static',
+                        });
+                        myModal.show();
+                        this.closeShowPoDetail();
+                    }
+                });
+            }
+        },
+        closeShowEmailHistory()
+        {
+            const myModalEl = document.getElementById('showSendEmailHistory_modal');
+            const modal = Modal.getInstance(myModalEl);
+            modal.hide();
+
+            const myModal = new Modal(document.getElementById('showPoDetail_modal'), {
+                keyboard: false,
+                backdrop: 'static'
+            });
+            myModal.show();
+        },
     },
     mounted() {
         // this.getdata_po();
