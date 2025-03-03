@@ -79,7 +79,7 @@
                 <hr>
                 <div class="row form-group" v-for="(item , index) in podataList" :key="index">
                     <div class="col-md-12 d-flex justify-content-center form-group">
-                        <div class="card card-box poCard" @click="getdata_detailPo(item , index)" :class="{ 'highlight-card': index === 0}">
+                        <div class="card card-box poCard" @click="getdata_detailPo(item , index)"  :class="{ 'highlight-card': index === 0}">
 							<div class="card-body">
 								<h5 class="card-title">เลขที่ PO : {{item.purchid}}</h5>
 								<p class="card-text">เวอร์ชั่น : {{item.purchorderdocnum}} <span class="ml-3" v-if="item.bpc_purchasereqno != ''"><b>เลขที่ PR : </b>{{item.bpc_purchasereqno}}</span></p>
@@ -95,6 +95,13 @@
                                     <div class="col-md-12">
                                         <span><b>Amount Currency : </b>{{Number(item.amount).toLocaleString(undefined , {minimumFractionDigits:2 , maximumFractionDigits:2})}}</span>
                                     </div>
+                                </div>
+                                <!-- ✅ แสดงสถานะที่ดึงจาก API -->
+                                <div class="email-status" v-if="sendEmailStatuses[index]">
+                                    <span>
+                                        {{ sendEmailStatuses[index] }}
+                                    </span>
+                                    <!-- <span v-else>⏳ Checking...</span> -->
                                 </div>
 							</div>
 						</div>
@@ -127,7 +134,8 @@ export default {
             executive:[],
             poindex:0,
             datainvest:'',
-            poemail:''
+            poemail:'',
+            sendEmailStatuses:{}
         }
     },
     components:{
@@ -148,7 +156,7 @@ export default {
         'datetime_pur'
     ],
     methods: {
-        getdata_po()
+        async getdata_po()
         {
             if(this.pono != "" && this.areaid != "" && this.prno != "" && this.department != ""){
                 const formdata = new FormData();
@@ -163,8 +171,12 @@ export default {
                 }).then(res=>{
                     console.log(res.data);
                     if(res.data.status == "Select Data Success"){
-                        let result = res.data.resultPoMain;
-                        this.podataList = result;
+                        this.podataList = res.data.resultPoMain;
+
+                        // ✅ เรียก checkSendEmailHistory สำหรับแต่ละ PO
+                        this.podataList.forEach((item, index) => {
+                            this.checkSendEmailHistory(item.purchid, item.purchorderdocnum, this.formno, index);
+                        });
                     }
                 });
             }
@@ -288,6 +300,30 @@ export default {
             });
             myModal.show();
         },
+        async checkSendEmailHistory(pono , ponoDocnum , formno , index)
+        {
+            if(pono && ponoDocnum && formno){
+                const formdata = new FormData();
+                formdata.append('pono' , pono);
+                formdata.append('ponoDocnum' , ponoDocnum);
+                formdata.append('formno' , formno);
+
+                try {
+                    const res = await axios.post(this.url + 'intsys/purchaseplus/purchaseplus_backend/mainapi/checkSendEmailHistory', formdata);
+                    if (res.data.status === "Select Data Success" && res.data.result > 0) {
+                        this.$set(this.sendEmailStatuses, index, "✅ Sent"); // Vue ตรวจจับการเปลี่ยนแปลง
+                    } else {
+                        // this.$set(this.sendEmailStatuses, index, "❌ Not Sent");
+                        // this.$set(this.sendEmailStatuses, index, "❌ Not Sent");
+                    }
+                } catch (error) {
+                    console.error("❌ Error:", error);
+                    this.$set(this.sendEmailStatuses, index, "⚠️ Error");
+                }
+            }else {
+                this.$set(this.sendEmailStatuses, index, "❌ No Data");
+            }
+        }
     },
     mounted() {
         // this.getdata_po();
@@ -312,5 +348,12 @@ export default {
 </script>
 
 <style>
-
+    .email-status {
+        margin-top: 10px;
+        padding: 5px 10px;
+        border-radius: 5px;
+        background-color: #f0f0f0;
+        font-weight: bold;
+        text-align: center;
+    }
 </style>
