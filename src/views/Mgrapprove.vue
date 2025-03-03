@@ -259,7 +259,8 @@ export default {
                 console.log(res.data);
                 if(res.data.status == "Select Data Success"){
                     //code
-                    let onclickfalse = this.status == "Manager Approved" ? 'onclick="return false"' : '';
+                    let onclickfalse = this.status !== "Investigator Approved" ? 'onclick="return false"' : '';
+
                     let result = res.data.result;
                     let html = '';
                     for(const key in result){
@@ -301,7 +302,7 @@ export default {
                 console.log(res.data);
                 if(res.data.status == "Select Data Success"){
                     //code
-                    let onclickfalse = this.status == "Manager Approved" ? 'onclick="return false"' : '';
+                    let onclickfalse = this.status !== "Investigator Approved" ? 'onclick="return false"' : '';
                     let result = res.data.result;
                     let html = '';
                     for(const key in result){
@@ -341,7 +342,7 @@ export default {
                 console.log(res.data);
                 if(res.data.status == "Select Data Success"){
                     //code
-                    let onclickfalse = this.status == "Manager Approved" ? 'onclick="return false"' : '';
+                    let onclickfalse = this.status !== "Investigator Approved" ? 'onclick="return false"' : '';
                     let result = res.data.result;
                     let html = '';
                     for(const key in result){
@@ -468,13 +469,14 @@ export default {
                 console.log(res.data);
                 if(res.data.status == "Select Data Success"){
                     //code
+                    let onclickfalse = this.status !== "Investigator Approved" ? 'onclick="return false"' : '';
                     let result = res.data.result;
                     let html = '';
                     for(const key in result){
                         let checked = this.userApp_prop.includes(result[key].app_ecode) ? 'checked' : '';
                         html +=`
                             <div class="checkbox custom-control custom-checkbox mb-2">
-                                <input type="checkbox" value="${result[key].app_ecode}" class="custom-control-input group0-checkbox" name="g0Check[]" id="g0Check${key}" ${checked}>
+                                <input type="checkbox" value="${result[key].app_ecode}" class="custom-control-input group0-checkbox" name="g0Check[]" id="g0Check${key}" ${checked} ${onclickfalse}>
                                 <label class="custom-control-label" for="g0Check${key}">${result[key].app_user}</label>
                             </div>
                         `;
