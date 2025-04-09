@@ -10,6 +10,8 @@ import Login from '@/views/Loginpage.vue'
 import Editprpurchase from '@/views/Editprpurchase.vue'
 import Printpr from '@/components/Printpr.vue'
 import store from '@/store';
+import Comparevendorlist from '@/views/Compare_vendor_list.vue'
+import Create_compare_vendor from '@/views/Create_compare_vendor'
 
 Vue.use(VueRouter)
 
@@ -75,12 +77,28 @@ const routes = [
     name: 'PrintPage',
     component: Printpr,
     props: route => ({ message: route.query.message })
+  },
+  {
+    path:'/compare_vendor_list',
+    name:'Comparevendorlist',
+    component:Comparevendorlist
+  },
+  {
+    path:'/create_compare_vendor',
+    name:'Create_compare_vendor',
+    component:Create_compare_vendor
+  },
+  {
+    path: '/compareview/:formno',
+    name: 'Compare_vendor_viewfull',
+    component: () => import('@/views/Compare_vendor_viewfull.vue'),
+    meta: {requiresOwner: true}
+  },
+  {
+    path: '/compareview_edit/:formno',
+    name: 'Compare_vendor_viewfull_edit',
+    component: () => import('@/views/Compare_vendor_viewfull_edit.vue')
   }
-  // {
-  //   path:'/test',
-  //   name:'Test',
-  //   component:Test
-  // }
 
 
   // {
@@ -109,5 +127,7 @@ const router = new VueRouter({
   base: process.env.BASE_URL,
   routes
 })
+
+
 
 export default router

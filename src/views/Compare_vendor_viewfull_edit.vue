@@ -1,0 +1,771 @@
+<template>
+    <div id="create_compare_vendor">
+
+        <!-- Modal: เพิ่มสินค้า -->
+        <div class="modal fade" id="addItem_modal" tabindex="-1" role="dialog" aria-labelledby="addItemLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+                <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">เพิ่มสินค้า</h5>
+                    <button type="button" class="close" @click="closeItemModal">×</button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label><b>รหัสสินค้า</b></label>{{ dataareaid }}
+                        <input
+                            type="text"
+                            class="form-control"
+                            v-model="newItem.itemid"
+                            @input="getItemid"
+                            placeholder="กรอกรหัสในระบบ AX (ถ้าไม่มีในระบบปล่อยว่างไว้)"
+                        />
+                        <!-- รายการค้นหา -->
+                        <ul
+                            class="list-group position-absolute w-100"
+                            v-if="itemSuggestions.length > 0"
+                            style="z-index: 1000; max-height: 200px; overflow-y: auto;"
+                        >
+                            <li
+                                class="list-group-item"
+                                v-for="(item, index) in itemSuggestions"
+                                :key="index"
+                                @click="selectItem(item)"
+                                style="cursor: pointer;"
+                                >
+                                {{ item.itemid }}
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="form-group">
+                        <label><b>ชื่อสินค้า</b></label>
+                        <input type="text" class="form-control" v-model="newItem.itemname" readonly/>
+                    </div>
+                    <div class="form-group">
+                        <label><b>รายละเอียด</b></label>
+                        <textarea class="form-control" v-model="newItem.itemdetail"></textarea>
+                    </div>
+                    <div class="form-group" v-for="(vendor, index) in vendors" :key="index">
+                        <label><b>ผู้ขาย : {{ vendor.name }}</b></label>
+                        <input
+                            type="number"
+                            class="form-control"
+                            v-model="newItem.prices[index]"
+                            placeholder="กรอกราคา"
+                        />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" @click="closeItemModal">ปิด</button>
+                    <button type="button" class="btn btn-primary" @click="saveItem">บันทึกสินค้า</button>
+                </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="main-container">
+            <div class="pd-ltr-20">
+                <div class="row">
+                    <div class="col-xl-12 mb-30">
+                        <div class="card-box height-100-p pd-20">
+                                <div class="row form-group text-center">
+                                    <h3>รายการ Compare Vendor (แก้ไขเอกสาร)</h3>
+                                </div>
+                                <hr>
+                                <div class="row">
+                                    <div class="col-md-6 form-group">
+                                        <label for=""><b>เลือกสังกัดบริษัท</b></label>
+                                        <select name="ip-cpv-areaid" id="ip-cpv-areaid" class="form-control" v-model="dataareaid" disabled>
+                                            <option value="">กรุณาเลือกบริษัท</option>
+                                            <option value="sln">Salee Colour Public Company Limited.</option>
+                                            <option value="poly">Poly Meritasia Co.,Ltd.</option>
+                                            <option value="ca">Composite Asia Co.,Ltd.</option>
+                                            <option value="st">Subterra Co.,Ltd.</option>
+                                            <option value="tbb">The bubbles Co.,Ltd.</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6 form-group">
+                                        <label for=""><b>เลือกจำนวน Vendor ที่ต้องการ Compare</b></label>
+                                        <select
+                                            name="add-vend-number"
+                                            id="add-vend-number"
+                                            class="form-control"
+                                            v-model="vendorCount"
+                                            disabled
+                                        >
+                                            <option value="">กรุณาเลือกรายการ</option>
+                                            <option v-for="n in 9" :key="n" :value="n">{{ n }}</option>
+                                        </select>
+                                    </div>
+                                </div>
+        
+                                <div class="row">
+                                    <div class="col-md-12 mt-3" v-if="vendors.length > 0">
+                                        <div
+                                            class="form-group position-relative"
+                                            v-for="(vendor, index) in vendors"
+                                            :key="'vendor-' + index"
+                                        >
+                                            <label>ผู้ขายรายที่ {{ index + 1 }}</label>
+                                            <input
+                                                type="text"
+                                                class="form-control"
+                                                v-model="vendor.vendor_name"
+                                                :placeholder="`กรอกชื่อ ผู้ขายรายที่ #${index + 1}`"
+                                                disabled
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+        
+                                <hr class="mt-3" v-if="submitted">
+                                    <div class="row mt-3">
+                                        <div class="col-md-4" v-if="submitted">
+                                            <button type="button" class="btn btn-success btn-block" @click="openItemModal">+ เพิ่มสินค้า</button>
+                                        </div>
+                                    </div>
+                                <hr class="mt-3" v-if="submitted">
+                                <!-- แสดงรายการสินค้าใน modal หลัก -->
+                                <div class="row col-md-12 mt-3" v-if="items.length > 0">
+                                    <h5>รายการสินค้า:</h5>
+                                    <table class="table table-bordered">
+                                        <thead>
+                                        <tr>
+                                            <th>ชื่อสินค้า</th>
+                                            <th v-for="(vendor, index) in vendors" :key="'head-' + index" 
+                                            :class="{ 'highlight-vendor': selectedVendorIndex == index }">
+                                                {{ vendor.vendor_name }}
+                                            </th>
+                                            <th>#</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr v-for="(item, i) in items" :key="'row-' + i">
+                                            <td>
+                                                <!-- ✅ ถ้ามี itemid หรือ itemname -->
+                                                <div v-if="item.itemid || item.itemname">
+                                                    <span>{{ item.itemid }}</span> / <span>{{ item.itemname }}</span><br>
+                                                    <small class="text-muted">{{ item.itemdetail }}</small>
+                                                </div>
+        
+                                                <!-- ❗ ถ้าไม่มี itemid และ itemname -->
+                                                <div v-else>
+                                                    <span>{{ item.itemdetail }}</span>
+                                                </div>
+                                            </td>
+                                            <td v-for="(price, j) in item.prices" :key="'price-' + j"
+                                            :class="{ 'highlight-vendor': selectedVendorIndex == j }">
+                                                {{ Number(price).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}
+                                            </td>
+                                            <td>
+                                                <button class="btn btn-danger btn-sm" @click="removeItem(i)">ลบ</button>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <th>รวม</th>
+                                                <th v-for="(total, index) in totalPricesPerVendor" :key="'total-' + index"
+                                                :class="{ 'highlight-vendor': selectedVendorIndex == index }">
+                                                    {{ Number(total).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}
+                                                </th>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                    <hr class="mt-3">
+                                </div>
+    
+                                <!-- Section: เลือก Vendor ที่ต้องการ -->
+                                <div class="row col-md-12 mt-4" v-if="submitted && vendors.length > 0 && items.length > 0">
+                                    <h5>เลือกผู้ขายที่ต้องการ:</h5>
+        
+                                    <div class="d-flex flex-wrap gap-3 mt-2">
+                                        <div class="form-check form-check-inline" v-for="(vendor, index) in vendors" :key="'choose-' + index">
+                                        <input
+                                            class="form-check-input radioChooseVendor"
+                                            type="radio"
+                                            :value="index"
+                                            v-model="selectedVendorIndex"
+                                            :id="'vendor-radio-' + index"
+                                            name="selectedVendor"
+                                        />
+                                        <label class="form-check-label" :for="'vendor-radio-' + index">
+                                            {{ vendor.vendor_name }}
+                                        </label>
+                                        </div>
+                                    </div>
+                                    <div class="mt-3" v-if="selectedVendorIndex !== null">
+                                        <strong>คุณเลือก: </strong>{{ vendors[selectedVendorIndex].vendor_name }}
+                                    </div>
+
+                                    <hr class="mt-3">
+                                </div>
+                                <div class="row form-group">
+                                    <!-- 🔻 เหตุผลในการเลือก -->
+                                    <div class="col-md-12">
+                                        <label for="reason"><b>เหตุผลในการเลือกผู้ขาย</b></label>
+                                        <textarea
+                                        class="form-control"
+                                        id="reason"
+                                        rows="3"
+                                        v-model="vendorSelectionReason"
+                                        placeholder="กรุณาระบุเหตุผลในการเลือกผู้ขายรายนี้ เช่น ราคาเหมาะสม, คุณภาพ, การส่งมอบ ฯลฯ"
+                                        ></textarea>
+                                    </div>
+                                </div>
+                                <!-- 🔻 Dropzone Upload (no form) -->
+                                <div class="form-group mt-3" v-if="selectedVendorIndex !== null">
+                                    <label><b>แนบไฟล์เพิ่มเติม</b></label>
+                                    <div
+                                        ref="uploadArea_edit"
+                                        class="dropzone border rounded p-3"
+                                        id="compareUploadZone_edit"
+                                    ></div>
+                                </div>
+                                <!-- 🔻 Section แสดงภาพ -->
+                                <div v-if="imageFiles.length > 0" class="mt-4">
+                                    <label><b>ไฟล์ แนบ (ภาพ)</b></label>
+                                    <div class="d-flex flex-wrap gap-3">
+                                        <div
+                                        v-for="(img, index) in imageFiles"
+                                        :key="'img-' + index"
+                                        class="border rounded shadow-sm"
+                                        style="width: 200px; overflow: hidden; position: relative;"
+                                        >
+                                        <img
+                                            :src="img.fullPath"
+                                            :alt="img.name"
+                                            class="img-fluid"
+                                            style="width: 100%; height: 200px; object-fit: cover; cursor: pointer;"
+                                            @click="previewImage(img.fullPath)"
+                                        />
+                                        <button class="btn btn-sm btn-danger mt-1 btn-block" @click="confirmDeleteFile(img)">ลบไฟล์</button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- 🔻 Section แสดง PDF -->
+                                <div v-if="pdfFiles.length > 0" class="mt-4">
+
+                                    <label><b>ไฟล์ แนบ (เอกสาร)</b></label>
+                                    <div class="d-flex flex-wrap gap-3">
+                                        <div
+                                        v-for="(pdf, index) in pdfFiles"
+                                        :key="'pdf-' + index"
+                                        class="d-flex flex-column p-2 border rounded shadow-sm"
+                                        style="width: 300px;"
+                                        >
+                                            <embed
+                                                :src="pdf.fullPath"
+                                                type="application/pdf"
+                                                width="100%"
+                                                height="180px"
+                                            />
+                                                <!-- ลิงก์ชื่อไฟล์ -->
+                                            <a
+                                                :href="pdf.fullPath"
+                                                target="_blank"
+                                                class="text-primary mt-2 text-truncate"
+                                                style="max-width: 180px; display: block;"
+                                            >
+                                                {{ pdf.name }}
+                                            </a>
+                                            <button class="btn btn-sm btn-danger mt-1" @click="confirmDeleteFile(pdf)">ลบไฟล์</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row mt-3 form-group" v-if="selectedVendorIndex !== null">
+                                    <div class="col-md-3 form-group-sm">
+                                        <label for=""><b>ลงชื่อเจ้าหน้าที่จัดหา</b></label>
+                                        <input type="text" name="ip-userpost" id="ip-userpos" class="form-control" readonly :value="this.userData.Fname+' '+this.userData.Lname">
+                                    </div>
+                                    <div class="col-md-3 form-group-sm">
+                                        <label for=""><b>แผนก</b></label>
+                                        <input type="text" name="ip-dept" id="ip-dept" class="form-control" readonly :value="this.userData.Dept">
+                                    </div>
+                                    <div class="col-md-3 form-group-sm">
+                                        <label for=""><b>รหัสพนักงาน</b></label>
+                                        <input type="tel" name="ip-ecode" id="ip-ecode" class="form-control" readonly :value="this.userData.ecode">
+                                    </div>
+                                    <div class="col-md-3 form-group-sm">
+                                        <label for=""><b>วันที่ร้องขอ</b></label>
+                                        <input type="text" name="ip-datetimecreate" id="ip-datetimecreate" class="form-control" readonly :value="docdatetime">
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="row" v-if="btnCtrl">
+                                    <div class="col-md-3 form-group">
+                                        <button type="button" class="btn btn-warning btn-block" @click="goBack">ย้อนกลับ</button>
+                                    </div>
+                                    <div class="col-md-3 form-group">
+                                        <button type="button" class="btn btn-primary btn-block" @click="saveVendorCompareEdit" :disabled="isClick">บันทึกการแก้ไข</button>
+                                    </div>
+                                </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+  </template>
+  
+  <script>
+    import {Modal} from 'bootstrap'; // นำเข้าเฉพาะ Modal component จาก Bootstrap
+    import axios from 'axios';
+    import Swal from 'sweetalert2';
+    import Dropzone from 'dropzone'
+    import 'dropzone/dist/dropzone.css'
+  export default {
+    name: "Compare_vendor_viewfull",
+    data() {
+      return {
+        url: this.getUrl(),
+        formno: this.$route.params.formno || '',
+        vendors: [],
+        items: [],
+        selectedVendorIndex: null,
+        vendorSelectionReason: '',
+        userData: this.getSessionStorage(),
+        dataareaid: '',
+        submitted: true,
+        vendorCount:0,
+        accountnum:'',
+        user_create:'',
+        datetime_create:'',
+        dept_create:'',
+        ecode_create:'',
+        last_updated:'',
+        btnCtrl:false,
+        uploadedFiles:[],
+        newItem: {
+            itemid: '',
+            itemname:'',
+            itemgroupid:'',
+            itemdetail:'',
+            itemunit:'',
+            prices: []
+        },
+        itemSuggestions: [], // 💡 ใช้เก็บผลลัพธ์การค้นหา item
+        dropzone: null, // เก็บ dropzone instance
+        vendorSelectionAccountnum:'',
+        vendorSelectionIndex:'',
+        compare_id:'',
+        isClick:false
+      };
+    },
+    mounted() {
+      this.loadCompareData();
+      this.$store.dispatch('setDatetimeNow');
+    },
+    methods: {
+        async getItemid()
+        {
+            if (this.dataareaid && this.newItem.itemid.length > 1) {
+                const formdata = new FormData();
+                formdata.append('dataareaid', this.dataareaid);
+                formdata.append('itemid', this.newItem.itemid);
+
+                try {
+                    const res = await axios.post(this.url + 'intsys/purchaseplus/purchaseplus_backend/compareapi/getItemid', formdata);
+                    if (res.data.status === 'success') {
+                        this.itemSuggestions = res.data.result;
+                        console.log(res.data.result);
+                    } else {
+                        this.itemSuggestions = [];
+                    }
+                } catch (err) {
+                    console.error('Get Item Error:', err);
+                    this.itemSuggestions = [];
+                }
+            } else {
+                this.itemSuggestions = [];
+            }
+        },
+        async loadCompareData() {
+            try {
+                const formdata = new FormData();
+                formdata.append("formno", this.formno);
+
+                const res = await axios.post(this.url + "intsys/purchaseplus/purchaseplus_backend/compareapi/getCompareDetailByFormno", formdata);
+                console.log(res.data);
+                if (res.data.status === "success") {
+                    const { 
+                        vendors, items, 
+                        selectedIndex, 
+                        reason, 
+                        dataareaid , 
+                        accountnum , 
+                        user_create ,
+                        datetime_create,
+                        dept_create,
+                        ecode_create,
+                        last_updated,
+                        compare_status,
+                        compare_id,
+                        files
+                    } = res.data.result;
+                    this.vendors = vendors;
+                    this.items = items;
+                    this.selectedVendorIndex = selectedIndex;
+                    this.vendorSelectionReason = reason;
+                    this.dataareaid = dataareaid;
+                    this.vendorCount = vendors.length;
+                    this.accountnum = accountnum;
+                    this.user_create = user_create;
+                    this.datetime_create = datetime_create;
+                    this.dept_create = dept_create;
+                    this.ecode_create = ecode_create;
+                    this.last_updated = last_updated;
+                    this.compare_id = compare_id;
+                    this.uploadedFiles = files || [];
+                    if(compare_status !== "Cancel") this.btnCtrl = true;
+                } else {
+                    Swal.fire("ไม่พบข้อมูล", "", "error");
+                }
+            } catch (err) {
+                console.error(err);
+                Swal.fire("เกิดข้อผิดพลาดในการโหลดข้อมูล", "", "error");
+            }
+        },
+        async cancelDocument(){
+            try {
+                const formdata = new FormData();
+                    formdata.append('formno' , this.formno);
+                    formdata.append('last_updated' , this.last_updated);
+                    const res = await axios.post(this.url+'intsys/purchaseplus/purchaseplus_backend/compareapi/cancelDocument',formdata);
+                    console.log(res.data);
+                    if(res.data.status == "success"){
+                        Swal.fire("ยกเลิกรายการสำเร็จ", "", "success").then(()=>{
+                            this.$router.push({ name: 'Comparevendorlist' });
+                        });
+                    }else{
+                        Swal.fire("ยกเลิกรายการไม่สำเร็จ", "", "error");
+                    }
+            } catch (error) {
+                console.error(error);
+            }
+        },
+        async confirmCancelDocument() {
+            const result = await Swal.fire({
+                title: 'คุณแน่ใจหรือไม่?',
+                text: 'เมื่อยกเลิกแล้วจะไม่สามารถแก้ไขรายการนี้ได้',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'ยืนยันการยกเลิก',
+                cancelButtonText: 'ยกเลิก'
+            });
+
+            if (result.isConfirmed) {
+                this.cancelDocument(); // เรียก method ที่คุณเขียนไว้
+            }
+        },
+        previewImage(imageUrl) {
+            Swal.fire({
+            imageUrl: imageUrl,
+            imageAlt: 'แนบรูปภาพ',
+            showConfirmButton: false,
+            width: 'auto',
+            padding: '1em',
+            });
+        },
+        goBack() {
+            this.$router.push({ name: 'Compare_vendor_viewfull', params: { formno: this.formno } });
+        },
+
+        //edit Item
+        openItemModal() {
+            // ซ่อน modal แรก
+            const vendorModal = Modal.getInstance(document.getElementById('addVendor_modal'));
+            if (vendorModal) vendorModal.hide();
+
+            // เตรียม modal สินค้า
+            this.newItem = {
+                itemid: '',
+                itemname:'',
+                itemgroupid:'',
+                itemdetail:'',
+                itemunit:'',
+                prices: Array(this.vendors.length).fill('')
+            };
+
+            const itemModal = new Modal(document.getElementById('addItem_modal'), {
+                keyboard: false,
+                backdrop: 'static'
+            });
+            itemModal.show();
+        },
+        closeItemModal() {
+            const modalEl = document.getElementById('addItem_modal');
+            const modal = Modal.getInstance(modalEl);
+            modal.hide();
+
+            // 🧹 ลบ backdrop ด้วย
+            const backdrop = document.querySelector('.modal-backdrop');
+            if (backdrop) {
+                backdrop.remove();
+            }
+
+            // 🧼 ล้าง body class (บางที Bootstrap จะไม่ลบเอง)
+            document.body.classList.remove('modal-open');
+            document.body.style.paddingRight = null;
+        },
+        saveItem() {
+            if (!this.newItem.itemdetail) {
+                Swal.fire('กรุณากรอกรายละเอียดสินค้า', '', 'warning');
+                return;
+            }
+
+            // ตรวจสอบว่าทุกราคาใน newItem.prices มีค่าครบและถูกต้องหรือไม่
+            const isAnyPriceMissing = this.newItem.prices.some(price => price === '' || price === null || isNaN(price));
+
+            if (isAnyPriceMissing) {
+                Swal.fire('กรุณากรอกราคาสินค้าของทุก Vendor ให้ครบ', '', 'warning');
+                return;
+            }
+
+            if(!this.newItem.itemname || this.newItem.itemname.trim() === ""){
+                this.newItem.itemid = "";
+            }
+
+            this.items.push({
+                itemid: this.newItem.itemid,
+                itemname: this.newItem.itemname,
+                itemgroupid: this.newItem.itemgroupid,
+                itemdetail: this.newItem.itemdetail,
+                itemunit: this.newItem.itemunit,
+                prices: [...this.newItem.prices]
+            });
+
+            this.closeItemModal();
+        },
+        removeItem(index) {
+            if (confirm("คุณแน่ใจหรือไม่ว่าต้องการลบรายการนี้?")) {
+                this.items.splice(index, 1);
+
+                // 🔍 ถ้าไม่มี item เหลือเลย → reset ค่า vendor ที่เลือก
+                if (this.items.length === 0) {
+                    this.selectedVendorIndex = null;
+                    this.vendorSelectionReason = '';
+                }
+            }
+        },
+        selectItem(item) {
+            this.newItem.itemid = item.itemid;
+            this.newItem.itemname = item.itemname;
+            this.newItem.itemgroupid = item.itemgroupid;
+            this.newItem.itemunit = item.unitid;
+            this.itemSuggestions = [];
+        },
+        async confirmDeleteFile(file) {
+            const confirm = await Swal.fire({
+                title: "คุณแน่ใจหรือไม่?",
+                text: "เมื่อไฟล์ถูกลบแล้วจะไม่สามารถกู้คืนได้",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "ลบ",
+                cancelButtonText: "ยกเลิก",
+            });
+
+            if (confirm.isConfirmed) {
+                this.deleteFile(file);
+            }
+        },
+        async deleteFile(file) {
+            const formdata = new FormData();
+            formdata.append("filename", file.name);
+            formdata.append("compare_id", file.compare_id); // เพิ่ม compare_id ไว้ใน mounted ด้วยนะครับ
+
+            try {
+                const res = await axios.post(this.url + "intsys/purchaseplus/purchaseplus_backend/compareapi/deleteFile",formdata);
+                if (res.data.status === "success") {
+                    Swal.fire("ลบไฟล์สำเร็จ", "", "success");
+                    this.loadCompareData(); // reload files
+                } else {
+                    Swal.fire("เกิดข้อผิดพลาด", res.data.message || "", "error");
+                }
+            } catch (err) {
+                console.error(err);
+                Swal.fire("เกิดข้อผิดพลาดในการลบไฟล์", "", "error");
+            }
+        },
+        initDropzone() {
+            if (this.dropzone) return; // ป้องกันสร้างซ้ำ
+
+            this.$nextTick(() => {
+                Dropzone.autoDiscover = false;
+                this.dropzone = new Dropzone(this.$refs.uploadArea_edit, {
+                    url: "#", // หรือ URL จริง
+                    paramName: "file",
+                    autoProcessQueue: false,
+                    addRemoveLinks: true,
+                    maxFilesize: 10, // MB
+                    acceptedFiles: ".pdf,.jpg,.jpeg,.png",
+                    dictDefaultMessage: "ลากไฟล์มาวางที่นี่ หรือคลิกเพื่อเลือกไฟล์",
+                    maxRetryAttempts: 3, // จำนวนครั้งสูงสุดในการพยายามเชื่อมต่อใหม่
+                    chunking: true, // เปิดใช้งานการแบ่งไฟล์เป็นชิ้น ๆ
+                    chunkSize: 250000, // ขนาดของแต่ละ chunk (1 MB) 500000 = 500k
+                    parallelUploads: 2, // จำนวนการอัปโหลดพร้อมกัน
+                    createImageThumbnails:true,
+                    thumbnailMethod:"crop",
+                    thumbnailWidth: 120,
+                    thumbnailHeight: 120,
+                });
+            });
+        },
+        // Vue Method: saveVendorCompare()
+        async saveVendorCompareEdit() {
+            this.isClick = true;
+            try {
+                if (!this.selectedVendor || !this.selectedVendor.accountnum) {
+                    Swal.fire('กรุณาเลือกผู้ขายที่ต้องการก่อนบันทึก', '', 'warning');
+                    return;
+                }
+
+                if (this.items.length === 0) {
+                    Swal.fire('กรุณาเพิ่มรายการสินค้าอย่างน้อย 1 รายการ', '', 'warning');
+                    return;
+                }
+
+                if (!this.vendorSelectionReason.trim()) {
+                    Swal.fire('กรุณาระบุเหตุผลในการเลือกผู้ขาย', '', 'warning');
+                    return;
+                }
+
+                const formData = new FormData();
+
+                // ข้อมูลทั่วไป
+                formData.append('dataareaid', this.dataareaid);
+                formData.append('selected_vendor_accountnum', this.vendorSelectionAccountnum);
+                formData.append('selected_vendor_name', this.selectedVendor.name);
+                formData.append('reason', this.vendorSelectionReason);
+                formData.append('selectedVendorIndex' , this.vendorSelectionIndex);
+                formData.append('compare_id' , this.compare_id);
+                formData.append('formno' , this.formno);
+
+                // ข้อมูลผู้ใช้
+                formData.append('user_ecode', this.userData.ecode);
+                formData.append('user_dept', this.userData.Dept);
+                formData.append('user_deptcode' , this.userData.DeptCode);
+                formData.append('user_name', `${this.userData.Fname} ${this.userData.Lname}`);
+                formData.append('datetime', this.docdatetime);
+                formData.append('last_updated' , this.last_updated);
+
+                // สินค้า
+                formData.append('items', JSON.stringify(this.items));
+
+                // แนบไฟล์ (Dropzone)
+                if (this.dropzone && this.dropzone.getAcceptedFiles().length > 0) {
+                    this.dropzone.getAcceptedFiles().forEach((file) => {
+                        formData.append(`attachments[]`, file);
+                    });
+                }
+
+                 // ส่งข้อมูลไปยัง backend
+                const res = await axios.post(this.url + 'intsys/purchaseplus/purchaseplus_backend/compareapi/saveCompareVendorEdit', formData);
+                if (res.data.status === 'success') {
+                    Swal.fire('บันทึกข้อมูลสำเร็จ', '', 'success').then(() => {
+                        this.$router.push({ 
+                            name: 'Comparevendorlist',
+                            params: { reloadKey: Date.now() }
+                        });
+                    });
+                } else {
+                    Swal.fire('เกิดข้อผิดพลาดในการบันทึก', res.data.message || '', 'error');
+                }
+            } catch (error) {
+                console.error(error);
+                Swal.fire('เกิดข้อผิดพลาดในการเชื่อมต่อ', '', 'error');
+            }finally{
+                this.isClick = false;
+            }
+        }
+
+    },
+    computed: {
+        docdatetime() {
+            return this.$store.getters.get_datetimeNow;
+        },
+        totalPricesPerVendor() {
+            const totals = Array(this.vendors.length).fill(0);
+            this.items.forEach(item => {
+                item.prices.forEach((price, index) => {
+                    totals[index] += parseFloat(price) || 0;
+                });
+            });
+            return totals;
+        },
+        selectedVendor() {
+            return this.vendors.find(v => v.accountnum === this.accountnum) || null;
+        },
+        imageFiles() {
+            return this.uploadedFiles
+            .filter(f => {
+                const ext = f.name.split('.').pop().toLowerCase();
+                return ['jpg', 'jpeg', 'png'].includes(ext);
+            })
+            .map(f => ({
+                ...f,
+                fullPath: this.url +'intsys/purchaseplus/purchaseplus_backend/'+ f.path + f.name
+            }));
+        },
+        pdfFiles() {
+            return this.uploadedFiles
+            .filter(f => f.name.split('.').pop().toLowerCase() === 'pdf')
+            .map(f => ({
+                ...f,
+                fullPath: this.url +'intsys/purchaseplus/purchaseplus_backend/'+ f.path + f.name
+            }));
+        }
+    },
+    watch:{
+        selectedVendorIndex(val) {
+            if (val === null || val === undefined) return;
+
+            const vendor = this.vendors[val];
+
+            if (!vendor || !vendor.accountnum) {
+                Swal.fire({
+                    title: 'กรุณาเลือก ผู้ค้าที่ลงทะเบียนแล้วเท่านั้น',
+                    icon: 'warning',
+                    showConfirmButton: true,
+                }).then(() => {
+                    // ✅ ล้าง Dropzone ที่มีอยู่ก่อน
+                    if (this.dropzone) {
+                        this.dropzone.destroy();
+                        this.dropzone = null;
+                    }
+                    this.selectedVendorIndex = null;
+                    this.vendorSelectionAccountnum = '';
+                });
+            } else {
+                // ✅ สร้าง Dropzone เฉพาะตอนเลือก vendor สำเร็จ
+                this.$nextTick(()=>{
+                    this.initDropzone();
+                });
+                this.vendorSelectionAccountnum = vendor.accountnum;
+                this.vendorSelectionIndex = vendor.vendor_index;
+            }
+        },
+    }
+  };
+  </script>
+  
+  <style scoped>
+  .mt-3 {
+    margin-top: 1rem;
+  }
+  .radioChooseVendor {
+    width: 20px;
+    height: 20px;
+    border-color: blue;
+  }
+  .radioChooseVendor:hover {
+    cursor: pointer;
+  }
+    .highlight-vendor {
+        background-color: #12cb3d; /* สีพื้นอ่อนๆ */
+    }
+  </style>
+  

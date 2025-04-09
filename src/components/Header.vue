@@ -66,6 +66,11 @@
                                     <span class="micon dw dw-home wdfI1"></span><span class="mtext">หน้าหลัก</span>
                                 </router-link>
                             </li>
+                            <li class="dropdown">
+                                <router-link to='/compare_vendor_list' class="dropdown-toggle no-arrow menu">
+                                    <span class="micon dw dw-list3 wdfI1"></span><span class="mtext">Compare Vendor</span>
+                                </router-link>
+                            </li>
                             <li v-if="create_btn" class="dropdown">
                                 <router-link to='/createpr' class="dropdown-toggle no-arrow menu">
                                     <span class="micon dw dw-add-file1 wdfI1"></span><span class="mtext">สร้างเอกสาร PR</span>

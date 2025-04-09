@@ -747,7 +747,7 @@ export default {
         reloadComponent() {
             this.renderkey += 1; // เพิ่มค่า key เพื่อบังคับให้ Vue.js รีเรนเดอร์คอมโพเนนต์
         },
-       getLastVendorEmail(accountnum , dataareaid , data_email)
+        getLastVendorEmail(accountnum , dataareaid , data_email)
         {
             if(accountnum && dataareaid){
                 const formdata = new FormData();

@@ -6,60 +6,62 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    count:0,
-    url:'',
-    datetimeNow:'',
-    userdataState:[],
+    count: 0,
+    url: '',
+    datetimeNow: '',
+    userDataState: {},
+    baseurl: ''
   },
   mutations: {
-    setCount(state , value){
+    setCount(state, value) {
       state.count = value
     },
-    setUrl(state , value){
+    setUrl(state, value) {
       state.url = value
     },
-    setDatetimeNow(state , datetime){
+    setDatetimeNow(state, datetime) {
       state.datetimeNow = datetime
     },
-    setUserData(state , value){
-      state.userdataState = value
+    setUserData(state, value) {
+      state.userDataState = value
     }
   },
-  getters:{
-    getCount(state){
+  getters: {
+    getCount(state) {
       return state.count
     },
-    getUrl(state){
-      if(typeof window !== "undefined"){
-        return state.url = window.location.protocol+"//"+window.location.hostname+"/";
+    getUrl(state) {
+      if (typeof window !== "undefined") {
+        return state.url = window.location.protocol + "//" + window.location.hostname + "/";
       }
     },
-    get_datetimeNow(state){
+    get_datetimeNow(state) {
       return state.datetimeNow;
     },
-    get_userdata(state){
-      return state.userdataState;
+    get_userdata(state) {
+      return state.userDataState;
+    },
+    canAccess: (state) => (deptcodecreate) => {
+      return state.userDataState.DeptCode == deptcodecreate;
     }
   },
   actions: {
-    getdata_datetimenow(context)
-    {
+    getdata_datetimenow(context) {
       const url = context.getters.getUrl + 'intsys/purchaseplus/purchaseplus_backend/mainapi/getNowdate';
-      axios.get(url).then(res=>{
-        context.commit('setDatetimeNow' , res.data);
+      axios.get(url).then(res => {
+        context.commit('setDatetimeNow', res.data);
       });
     },
-    getSessionStorage(context){
+    getSessionStorage(context) {
       const getUserData = localStorage.getItem("userData");
-      context.commit('setUserData' , JSON.parse(getUserData));
+      if (getUserData) {
+        context.commit('setUserData', JSON.parse(getUserData));
+      }
     },
-    
+    setDatetimeNow({ commit }) {
+      const now = new Date().toLocaleString();
+      commit('setDatetimeNow', now);
+    }
   },
-
-  
-  modules: {
-  }
-
+  modules: {}
 });
-
-
