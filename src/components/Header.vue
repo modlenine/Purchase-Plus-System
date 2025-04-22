@@ -68,7 +68,7 @@
                             </li>
                             <li class="dropdown">
                                 <router-link to='/compare_vendor_list' class="dropdown-toggle no-arrow menu">
-                                    <span class="micon dw dw-list3 wdfI1"></span><span class="mtext">Compare Vendor</span>
+                                    <span class="micon dw dw-chat-2 wdfI1"></span><span class="mtext">Compare Vendor</span>
                                 </router-link>
                             </li>
                             <li v-if="create_btn" class="dropdown">

@@ -89,10 +89,9 @@ const routes = [
     component:Create_compare_vendor
   },
   {
-    path: '/compareview/:formno',
+    path: '/compareview/:formno/:deptcodecreate',
     name: 'Compare_vendor_viewfull',
     component: () => import('@/views/Compare_vendor_viewfull.vue'),
-    meta: {requiresOwner: true}
   },
   {
     path: '/compareview_edit/:formno',

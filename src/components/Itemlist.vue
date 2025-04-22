@@ -1,151 +1,187 @@
 <template>
   <div id="itemlist">
     <div class="table-responsive">
-    <table id="tbl-itemdataShow" name="tbl-itemdataShow" class="table table-bordered table-striped">
+      <table class="table table-bordered table-striped">
         <thead>
-            <tr>
-                <th><b>ลำดับ</b></th>
-                <th><b>รหัสสินค้า</b></th>
-                <th><b>ชื่อสินค้า</b></th>
-                <th><b>รายละเอียด</b></th>
-                <th><b>จำนวน</b></th>
-                <th><b>ราคาต่อหน่วย</b></th>
-                <th><b>ส่วนลด</b></th>
-                <th><b>ราคารวม</b></th>
-                <th><b>หน่วย</b></th>
-                <th><b>#</b></th>
-            </tr>
+          <tr>
+            <th>ลำดับ</th>
+            <th>รหัสสินค้า</th>
+            <th>ชื่อสินค้า</th>
+            <th>รายละเอียด</th>
+            <th>จำนวน</th>
+            <th>ราคาต่อหน่วย</th>
+            <th>ส่วนลด</th>
+            <th>ราคารวม</th>
+            <th>หน่วย</th>
+            <th>#</th>
+          </tr>
         </thead>
-        <tbody></tbody>
-    </table>
+        <tbody>
+          <tr v-if="itemdata.length === 0">
+            <td colspan="10" class="text-center">ไม่พบข้อมูลสินค้าที่ขอซื้อ</td>
+          </tr>
+          <tr v-for="(item, index) in itemdata" :key="index">
+            <td>{{ index + 1 }}</td>
+            <td>{{ item.itemid }}</td>
+            <td>{{ item.itemname }}</td>
+            <td>{{ item.itemdetail }}</td>
+            <!-- ✅ ช่อง จำนวน -->
+            <td>
+              <span v-if="editIndexQty !== index">
+                {{ formatNumber(item.itemqty) }}
+                <i
+                  class="fa fa-pencil ml-2 text-primary"
+                  @click="editIndexQty = index"
+                  style="cursor: pointer"
+                ></i>
+              </span>
+              <input
+                v-else
+                type="number"
+                class="form-control form-control-sm"
+                :value="item.itemqty"
+                @input="updateQty(index, $event.target.value)"
+                @keydown.enter="$event.target.blur()"
+                @blur="editIndexQty = null"
+              />
+            </td>
+
+            <!-- ✅ ช่อง ราคาต่อหน่วย -->
+            <td>
+              <span v-if="editIndexPrice !== index">
+                {{ formatNumber(item.itemprice) }}
+                <i
+                  class="fa fa-pencil ml-2 text-primary"
+                  @click="editIndexPrice = index"
+                  style="cursor: pointer"
+                ></i>
+              </span>
+              <input
+                v-else
+                type="number"
+                class="form-control form-control-sm"
+                :value="item.itemprice"
+                @input="updatePrice(index, $event.target.value)"
+                @keydown.enter="$event.target.blur()"
+                @blur="editIndexPrice = null"
+              />
+            </td>
+            <td>{{ formatNumber(item.itemdiscount) }}</td>
+            <td>
+              {{
+                formatNumber(item.itemqty * item.itemprice - item.itemdiscount)
+              }}
+            </td>
+            <td>{{ item.itemunit }}</td>
+            <td class="text-right">
+              <i
+                class="fa fa-trash idel"
+                @click="deleteItem(index)"
+                style="cursor: pointer"
+              ></i>
+            </td>
+          </tr>
+          <tr v-if="itemdata.length > 0">
+            <td colspan="6"><b>ยอดรวมทั้งสิ้น</b></td>
+            <td colspan="4" class="text-right">
+              {{ formatNumber(totalSum) }} {{ currency }}
+              <span v-if="currency !== 'THB' && currencyrate">
+                <br />เป็นเงินไทย {{ formatNumber(convertedSum) }} บาท
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </div>
 </template>
-
-<script>
-import $ from 'jquery'
-import Swal from 'sweetalert2'
+  
+  <script>
 export default {
-    name:"Itemlist",
-    data() {
-        return {
-
-        }
+  name: "Itemlist",
+  props: {
+    itemdata: {
+      type: Array,
+      required: true,
     },
-    props:[
-        'itemdataProp',
-        'currency',
-        'currencyrate'
-    ],
-    methods: {
-        getItemdata()
-        {   
-            let tableHtml = ``
-            if(this.itemdataProp.length === 0){
-                tableHtml +=`
-                <tr class="trCenter">
-                    <td colspan="11">ไม่พบข้อมูลสินค้าที่ขอซื้อ</td>
-                </tr>
-                `;
-            }else{
-                //code
-                let calcItempriceSum = 0;
-                for(let key in this.itemdataProp){
-                    let no = parseInt(key)+1;
-                    calcItempriceSum += parseFloat(this.itemdataProp[key].itempricesum);
-                    tableHtml +=`
-                    <tr>
-                        <td>${no}</td>
-                        <td>${this.itemdataProp[key].itemid}</td>
-                        <td>${this.itemdataProp[key].itemname}</td>
-                        <td>${this.itemdataProp[key].itemdetail}</td>
-                        <td>${parseFloat(this.itemdataProp[key].itemqty).toLocaleString('en-US', { minimumFractionDigits: 3, maximumFractionDigits: 3 })}</td>
-                        <td>${parseFloat(this.itemdataProp[key].itemprice).toLocaleString('en-US', { minimumFractionDigits: 3, maximumFractionDigits: 3 })}</td>
-                        <td>${parseFloat(this.itemdataProp[key].itemdiscount).toLocaleString('en-US', { minimumFractionDigits: 3, maximumFractionDigits: 3 })}</td>
-                        <td>${parseFloat(this.itemdataProp[key].itempricesum).toLocaleString('en-US', { minimumFractionDigits: 3, maximumFractionDigits: 3 })}</td>
-                        <td>${this.itemdataProp[key].itemunit}</td>
-                        <td class="text-right">
-                            <i class="fa fa-trash idel itemListDel" aria-hidden="true"
-                                data_key="${key}"
-                            ></i>
-                        </td>
-                    </tr>
-                    `;
-                }
-                // let thaiText = this.numberToThaiText(calcItempriceSum);
-                // แปลงเงิน สกุลต่างประเทศเป็นเงินบาท
-                let convertToThaibathText = '';
-                let convertToThaibath = 0;
-                let currencyText = "";
-                let currencyrate = this.currencyrate;
-                if(this.currency !== "THB" && this.currency !== null){
-                    currencyrate = parseFloat(currencyrate.replace(/,/g, ''));
-                    convertToThaibath = (parseFloat(calcItempriceSum) * parseFloat(currencyrate)) / 100;
-                    currencyText = this.currency;
-                    convertToThaibathText = '<br>เป็นเงินไทย '+parseFloat(convertToThaibath).toLocaleString('en-US', { minimumFractionDigits: 3, maximumFractionDigits: 3 })+' บาท';
-                }else{
-                    currencyText = 'บาท';
-                    convertToThaibathText = '';
-                }
-
-
-
-                tableHtml +=`
-                <tr>
-                    <td colspan="6"><b>ยอดรวมทั้งสิ้น</b></td>
-                    <td colspan="4" class="text-right">${parseFloat(calcItempriceSum.toFixed(3)).toLocaleString('en-US', { minimumFractionDigits: 3, maximumFractionDigits: 3 })} ${currencyText} ${convertToThaibathText}</td>
-                </tr>
-                `;
-            }
-            $('#tbl-itemdataShow tbody').html(tableHtml);
-        },
-
+    currency: String,
+    currencyrate: [Number, String],
+  },
+  data() {
+    return {
+      localItemdata: JSON.parse(JSON.stringify(this.itemdata)), // Clone เพื่อ reactive
+      editIndexQty: null,
+      editIndexPrice: null,
+    };
+  },
+  watch: {
+    itemdata: {
+      handler(val) {
+        this.localItemdata = JSON.parse(JSON.stringify(val));
+      },
+      immediate: true,
+      deep: true,
     },
-    created() {
-        this.formValidate();
-    },
-    mounted() {
-        const proxy = this;
-        // this.getItemdata();
-
-
-        $(document).on('click' , '.itemListDel' , function(){
-            Swal.fire({
-            title: 'ต้องการลบข้อมูล ใช่หรือไม่',
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonText: 'ยืนยัน',
-            cancelButtonText: 'ยกเลิก',
-            customClass: {
-                confirmButton: 'btn btn-success',
-                cancelButton: 'btn btn-danger'
-            },
-            buttonsStyling: false
-            }).then((result)=>{
-                if(result.value === true){
-                    const data_key = $(this).attr("data_key");
-                    proxy.itemdataProp.splice(data_key, 1);
-                    proxy.getItemdata();
-                }
-            });
+    editIndex(newVal) {
+      if (newVal !== null) {
+        this.$nextTick(() => {
+          this.$refs.editInput?.focus();
         });
+      }
+    },
+  },
+  methods: {
+    formatNumber(num) {
+      return parseFloat(num).toLocaleString("en-US", {
+        minimumFractionDigits: 3,
+        maximumFractionDigits: 3,
+      });
+    },
+    updateQty(index, newQty) {
+      const updated = [...this.itemdata];
+      updated[index].itemqty = parseFloat(newQty);
+      updated[index].itempricesum =
+        updated[index].itemqty * updated[index].itemprice -
+        updated[index].itemdiscount;
+      this.$emit("update:itemdata", updated);
+    },
 
+    updatePrice(index, newPrice) {
+      const updated = [...this.itemdata];
+      updated[index].itemprice = parseFloat(newPrice);
+      updated[index].itempricesum =
+        updated[index].itemqty * updated[index].itemprice -
+        updated[index].itemdiscount;
+      this.$emit("update:itemdata", updated);
     },
-    watch: {
-        itemdataProp: {
-            handler() {
-                this.getItemdata();
-            },
-            immediate: true,
-            deep: true
-        }
+    deleteItem(index) {
+      const updated = [...this.localItemdata];
+      updated.splice(index, 1);
+      this.$emit("update:itemdata", updated);
     },
-    computed: {
-        
+  },
+  computed: {
+    totalSum() {
+      return this.itemdata.reduce(
+        (sum, item) =>
+          sum +
+          parseFloat(item.itemqty) * parseFloat(item.itemprice) -
+          parseFloat(item.itemdiscount),
+        0
+      );
     },
-}
+    convertedSum() {
+      const rate = parseFloat(this.currencyrate.toString().replace(/,/g, ""));
+      return (this.totalSum * rate) / 100;
+    },
+  },
+};
 </script>
-
-<style>
-
+  
+  <style scoped>
+input.form-control-sm {
+  padding: 0.25rem;
+  font-size: 0.875rem;
+}
 </style>
+  

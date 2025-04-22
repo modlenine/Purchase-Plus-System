@@ -154,14 +154,14 @@ export default {
 
     $(document).on("click", ".select_form_compare", function () {
       const formno = $(this).data("formno");
-      const ecode_create = $(this).data("ecode_create");
-      const deptcode_create = $(this).data("deptcode_create");
+      // const ecode_create = $(this).data("ecode_create");
+      const deptcodecreate = $(this).data("deptcode_create");
       const currentFormno = proxy.$route.params.formno;
 
       if (currentFormno !== formno) {
         proxy.$router.push({
           name: "Compare_vendor_viewfull",
-          params: { formno , ecode_create , deptcode_create},
+          params: { formno , deptcodecreate},
         });
       }
     });

@@ -407,7 +407,7 @@ export default {
       try {
         const formdata = new FormData();
         formdata.append("formno", this.formno);
-
+        formdata.append("deptcode" , this.userData.DeptCode);
         const res = await axios.post(
           this.url +
             "intsys/purchaseplus/purchaseplus_backend/compareapi/getCompareDetailByFormno",
@@ -475,7 +475,9 @@ export default {
             this.btnApp = true;
           }
         } else {
-          Swal.fire("ไม่พบข้อมูล", "", "error");
+          Swal.fire("ไม่พบข้อมูล", "", "error").then(()=>{
+            this.$router.push({ name: "Home" });
+          });
         }
       } catch (err) {
         console.error(err);
@@ -631,7 +633,7 @@ export default {
     },
   },
   created() {
-    if (!this.$store.getters.canAccess(this.$route.params.deptcode_create)) {
+    if (!this.$store.getters.canAccess(this.$route.params.deptcodecreate)) {
       this.$router.push({ name: "Home" }); // หรือหน้าอื่นๆ ที่ต้องการ redirect
     }
     console.log(this.$route.params.deptcode_create);
