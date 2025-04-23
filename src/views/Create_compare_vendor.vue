@@ -138,11 +138,11 @@
 
                         <div class="row mt-3" v-if="vendors.length > 0">
                             <div class="col-md-4 form-group">
-                                <button type="button" class="btn btn-primary btn-block" @click="submitVendors" :disabled="submitted">สร้างรายการ Vendor</button>
+                                <button type="button" class="btn btn-primary btn-block" @click="submitVendors" :disabled="submitted"><i class="dw dw-add-file1 mr-2"></i>สร้างรายการ Vendor</button>
                             </div>
                             <div class="col-md-4 form-group">
                                 <button type="button" class="btn btn-danger btn-block" @click="cancelVendors" :disabled="!cancelCreVendor || items.length > 0">
-                                ยกเลิกรายการ Vendor
+                                <i class="dw dw-delete-3 mr-2"></i>ยกเลิกรายการ Vendor
                                 </button>
                             </div>
                         </div>
@@ -275,10 +275,10 @@
                         <div class="row form-group" v-if="selectedVendorIndex !== null">
                             <div class="col-md-4 form-group-sm"></div>
                             <div class="col-md-4 form-group-sm">
-                                <button @click="cancelAll" type="button" class="btn btn-danger btn-block" id="btn-saveDataCompare">ยกเลิกรายการทั้งหมด</button>
+                                <button @click="cancelAll" type="button" class="btn btn-danger btn-block" id="btn-saveDataCompare"><i class="dw dw-delete-3 mr-2"></i>ยกเลิกรายการทั้งหมด</button>
                             </div>
                             <div class="col-md-4 form-group-sm">
-                                <button type="button" class="btn btn-primary btn-block" id="btn-saveDataCompare" @click="saveVendorCompare" :disabled="isSaving">บันทึกข้อมูล</button>
+                                <button type="button" class="btn btn-primary btn-block" id="btn-saveDataCompare" @click="saveVendorCompare" :disabled="isSaving"><i class="dw dw-diskette2 mr-2"></i>บันทึกข้อมูล</button>
                             </div>
                         </div>
                     </div>

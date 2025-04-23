@@ -215,8 +215,11 @@
                         class="dw dw-add btnAddItem"></i></a>
                   </div>
                   <div class="card-body">
-                    <Itemlist ref="itemlistcom" :itemdata.sync="itemData" :currencyrate="this.currencyrate"
-                      :currency="this.currency" />
+                    <Itemlist ref="itemlistcom" 
+                      :itemdata.sync="itemData" 
+                      :currencyrate="this.currencyrate"
+                      :currency="this.currency" 
+                    />
                   </div>
                 </div>
                 <hr />
@@ -1015,6 +1018,7 @@ export default {
 
       const formdata = new FormData();
       formdata.append("keyword", this.searchCompareText);
+      formdata.append("deptcode_user" , this.userData.DeptCode);
 
       const res = await axios.post(
         this.url +

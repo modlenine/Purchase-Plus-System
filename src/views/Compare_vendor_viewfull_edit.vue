@@ -294,10 +294,10 @@
                                 <hr>
                                 <div class="row" v-if="btnCtrl">
                                     <div class="col-md-3 form-group">
-                                        <button type="button" class="btn btn-warning btn-block" @click="goBack">ย้อนกลับ</button>
+                                        <button type="button" class="btn btn-warning btn-block" @click="goBack"><i class="dw dw-undo1 mr-2"></i>ย้อนกลับ</button>
                                     </div>
                                     <div class="col-md-3 form-group">
-                                        <button type="button" class="btn btn-primary btn-block" @click="saveVendorCompareEdit" :disabled="isClick">บันทึกการแก้ไข</button>
+                                        <button type="button" class="btn btn-primary btn-block" @click="saveVendorCompareEdit" :disabled="isClick"><i class="dw dw-diskette1 mr-2"></i>บันทึกการแก้ไข</button>
                                     </div>
                                 </div>
                         </div>
@@ -385,6 +385,7 @@
             try {
                 const formdata = new FormData();
                 formdata.append("formno", this.formno);
+                formdata.append("deptcode" , this.userData.DeptCode);
 
                 const res = await axios.post(this.url + "intsys/purchaseplus/purchaseplus_backend/compareapi/getCompareDetailByFormno", formdata);
                 console.log(res.data);
@@ -471,7 +472,7 @@
             });
         },
         goBack() {
-            this.$router.push({ name: 'Compare_vendor_viewfull', params: { formno: this.formno } });
+            this.$router.push({ name: 'Compare_vendor_viewfull', params: { formno: this.formno , deptcodecreate: this.userData.DeptCode } });
         },
 
         //edit Item

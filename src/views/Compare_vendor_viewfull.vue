@@ -82,7 +82,7 @@
                           'highlight-vendor': selectedVendorIndex == index,
                         }"
                       >
-                        {{ vendor.vendor_name }}{{ index }}
+                        {{ vendor.vendor_name }}
                       </th>
                     </tr>
                   </thead>
@@ -309,7 +309,7 @@
                     class="btn btn-danger btn-block"
                     @click="confirmCancelDocument"
                     :disabled="isClick"
-                  >
+                  ><i class="dw dw-trash1 mr-2"></i>
                     ยกเลิก
                   </button>
                 </div>
@@ -319,7 +319,7 @@
                     class="btn btn-warning btn-block"
                     @click="goToEditPage"
                     :disabled="isClick"
-                  >
+                  ><i class="dw dw-edit-file mr-2"></i>
                     แก้ไข
                   </button>
                 </div>
@@ -329,7 +329,7 @@
                     class="btn btn-primary btn-block"
                     @click="sendDataToManager"
                     :disabled="isClick"
-                  >
+                  ><i class="dw dw-paper-plane1 mr-2"></i>
                     ส่งข้อมูล
                   </button>
                 </div>
@@ -476,7 +476,7 @@ export default {
           }
         } else {
           Swal.fire("ไม่พบข้อมูล", "", "error").then(()=>{
-            this.$router.push({ name: "Home" });
+            this.$router.push({ name: "Home" }); // หรือหน้าอื่นๆ ที่ต้องการ redirect
           });
         }
       } catch (err) {

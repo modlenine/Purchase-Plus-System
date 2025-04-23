@@ -43,7 +43,11 @@ export default new Vuex.Store({
     },
     canAccess: (state) => (deptcodecreate) => {
       return state.userDataState.DeptCode == deptcodecreate;
+    },
+    canAccessPurchase: (state) => (allowedDepts = []) => {
+      return allowedDepts.includes(state.userDataState.DeptCode);
     }
+    
   },
   actions: {
     getdata_datetimenow(context) {
