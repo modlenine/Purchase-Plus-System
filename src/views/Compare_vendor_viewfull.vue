@@ -14,13 +14,8 @@
               <div class="row">
                 <div class="col-md-6 form-group">
                   <label for=""><b>เลือกสังกัดบริษัท</b></label>
-                  <select
-                    name="ip-cpv-areaid"
-                    id="ip-cpv-areaid"
-                    class="form-control"
-                    v-model="dataareaid"
-                    :disabled="submitted"
-                  >
+                  <select name="ip-cpv-areaid" id="ip-cpv-areaid" class="form-control" v-model="dataareaid"
+                    :disabled="submitted">
                     <option value="">กรุณาเลือกบริษัท</option>
                     <option value="sln">
                       Salee Colour Public Company Limited.
@@ -32,16 +27,9 @@
                   </select>
                 </div>
                 <div class="col-md-6 form-group">
-                  <label for=""
-                    ><b>เลือกจำนวน Vendor ที่ต้องการ Compare</b></label
-                  >
-                  <select
-                    name="add-vend-number"
-                    id="add-vend-number"
-                    class="form-control"
-                    v-model="vendorCount"
-                    :disabled="submitted"
-                  >
+                  <label for=""><b>เลือกจำนวน Vendor ที่ต้องการ Compare</b></label>
+                  <select name="add-vend-number" id="add-vend-number" class="form-control" v-model="vendorCount"
+                    :disabled="submitted">
                     <option value="">กรุณาเลือกรายการ</option>
                     <option v-for="n in 9" :key="n" :value="n">{{ n }}</option>
                   </select>
@@ -50,19 +38,10 @@
 
               <div class="row">
                 <div class="col-md-12 mt-3" v-if="vendors.length > 0">
-                  <div
-                    class="form-group position-relative"
-                    v-for="(vendor, index) in vendors"
-                    :key="index"
-                  >
+                  <div class="form-group position-relative" v-for="(vendor, index) in vendors" :key="index">
                     <label>ผู้ขายรายที่ {{ index + 1 }}</label>
-                    <input
-                      type="text"
-                      class="form-control"
-                      :placeholder="`กรอกชื่อ ผู้ขายรายที่ #${index + 1}`"
-                      :disabled="submitted"
-                      :value="vendor.vendor_name"
-                    />
+                    <input type="text" class="form-control" :placeholder="`กรอกชื่อ ผู้ขายรายที่ #${index + 1}`"
+                      :disabled="submitted" :value="vendor.vendor_name" />
                   </div>
                 </div>
               </div>
@@ -75,13 +54,9 @@
                   <thead>
                     <tr>
                       <th>ชื่อสินค้า</th>
-                      <th
-                        v-for="(vendor, index) in vendors"
-                        :key="'head-' + index"
-                        :class="{
-                          'highlight-vendor': selectedVendorIndex == index,
-                        }"
-                      >
+                      <th v-for="(vendor, index) in vendors" :key="'head-' + index" :class="{
+                        'highlight-vendor': selectedVendorIndex == index,
+                      }">
                         {{ vendor.vendor_name }}
                       </th>
                     </tr>
@@ -92,8 +67,7 @@
                         <!-- ✅ ถ้ามี itemid หรือ itemname -->
                         <div v-if="item.itemid || item.itemname">
                           <span>{{ item.itemid }}</span> /
-                          <span>{{ item.itemname }}</span
-                          ><br />
+                          <span>{{ item.itemname }}</span><br />
                           <small class="text-muted">{{
                             item.itemdetail
                           }}</small>
@@ -104,32 +78,27 @@
                           <span>{{ item.itemdetail }}</span>
                         </div>
                       </td>
-                      <td
-                        v-for="(price, j) in item.prices"
-                        :key="'price-' + j"
-                        :class="{
-                          'highlight-vendor': selectedVendorIndex == j,
-                        }"
-                      >
-                        {{
-                          Number(price).toLocaleString(undefined, {
-                            minimumFractionDigits: 2,
-                            maximumFractionDigits: 2,
-                          })
-                        }}
+                      <td v-for="(price, j) in item.prices" :key="'price-' + j" :class="{
+                        'highlight-vendor': selectedVendorIndex == j,
+                      }">
+                        <span v-if="item.no_quoted[j]">ไม่ได้เสนอราคา</span>
+                        <span v-else>
+                          {{
+                            Number(price).toLocaleString(undefined, {
+                              minimumFractionDigits: 2,
+                              maximumFractionDigits: 2,
+                            })
+                          }}
+                        </span>
                       </td>
                     </tr>
                   </tbody>
                   <tfoot>
                     <tr>
                       <th>รวม</th>
-                      <th
-                        v-for="(total, index) in totalPricesPerVendor"
-                        :key="'total-' + index"
-                        :class="{
-                          'highlight-vendor': selectedVendorIndex == index,
-                        }"
-                      >
+                      <th v-for="(total, index) in totalPricesPerVendor" :key="'total-' + index" :class="{
+                        'highlight-vendor': selectedVendorIndex == index,
+                      }">
                         {{
                           Number(total).toLocaleString(undefined, {
                             minimumFractionDigits: 2,
@@ -144,31 +113,14 @@
               </div>
 
               <!-- Section: เลือก Vendor ที่ต้องการ -->
-              <div
-                class="row col-md-12 mt-4"
-                v-if="submitted && vendors.length > 0 && items.length > 0"
-              >
+              <div class="row col-md-12 mt-4" v-if="submitted && vendors.length > 0 && items.length > 0">
                 <h5>เลือกผู้ขายที่ต้องการ:</h5>
 
                 <div class="d-flex flex-wrap gap-3 mt-2">
-                  <div
-                    class="form-check form-check-inline"
-                    v-for="(vendor, index) in vendors"
-                    :key="'choose-' + index"
-                  >
-                    <input
-                      class="form-check-input radioChooseVendor"
-                      type="radio"
-                      :value="vendor.accountnum"
-                      v-model="accountnum"
-                      :id="'vendor-radio-' + index"
-                      name="selectedVendor"
-                      disabled
-                    />
-                    <label
-                      class="form-check-label"
-                      :for="'vendor-radio-' + index"
-                    >
+                  <div class="form-check form-check-inline" v-for="(vendor, index) in vendors" :key="'choose-' + index">
+                    <input class="form-check-input radioChooseVendor" type="radio" :value="index"
+                      v-model="selectedVendorIndex" :id="'vendor-radio-' + index" name="selectedVendor" disabled />
+                    <label class="form-check-label" :for="'vendor-radio-' + index">
                       {{ vendor.vendor_name }}
                     </label>
                   </div>
@@ -183,43 +135,27 @@
                 <!-- 🔻 เหตุผลในการเลือก -->
                 <div class="col-md-12">
                   <label for="reason"><b>เหตุผลในการเลือกผู้ขาย</b></label>
-                  <textarea
-                    class="form-control"
-                    id="reason"
-                    rows="3"
-                    v-model="vendorSelectionReason"
+                  <textarea class="form-control" id="reason" rows="3" v-model="vendorSelectionReason"
                     placeholder="กรุณาระบุเหตุผลในการเลือกผู้ขายรายนี้ เช่น ราคาเหมาะสม, คุณภาพ, การส่งมอบ ฯลฯ"
-                    disabled
-                  ></textarea>
+                    disabled></textarea>
                 </div>
               </div>
               <!-- 🔻 Section แสดงภาพ -->
               <div v-if="imageFiles.length > 0" class="mt-4">
                 <label><b>ไฟล์ แนบ (ภาพ)</b></label>
                 <div class="d-flex flex-wrap gap-3">
-                  <div
-                    v-for="(img, index) in imageFiles"
-                    :key="'img-' + index"
-                    class="border rounded shadow-sm"
-                    style="
+                  <div v-for="(img, index) in imageFiles" :key="'img-' + index" class="border rounded shadow-sm" style="
                       width: 200px;
                       height: 200px;
                       overflow: hidden;
                       position: relative;
-                    "
-                  >
-                    <img
-                      :src="img.fullPath"
-                      :alt="img.name"
-                      class="img-fluid"
-                      style="
+                    ">
+                    <img :src="img.fullPath" :alt="img.name" class="img-fluid" style="
                         width: 100%;
                         height: 100%;
                         object-fit: cover;
                         cursor: pointer;
-                      "
-                      @click="previewImage(img.fullPath)"
-                    />
+                      " @click="previewImage(img.fullPath)" />
                   </div>
                 </div>
               </div>
@@ -228,108 +164,54 @@
               <div v-if="pdfFiles.length > 0" class="mt-4">
                 <label><b>ไฟล์ แนบ (เอกสาร)</b></label>
                 <div class="d-flex flex-wrap gap-3">
-                  <div
-                    v-for="(pdf, index) in pdfFiles"
-                    :key="'pdf-' + index"
-                    class="d-flex flex-column p-2 border rounded shadow-sm"
-                    style="width: 300px"
-                  >
-                    <embed
-                      :src="pdf.fullPath"
-                      type="application/pdf"
-                      width="100%"
-                      height="180px"
-                    />
+                  <div v-for="(pdf, index) in pdfFiles" :key="'pdf-' + index"
+                    class="d-flex flex-column p-2 border rounded shadow-sm" style="width: 300px">
+                    <embed :src="pdf.fullPath" type="application/pdf" width="100%" height="180px" />
                     <!-- ลิงก์ชื่อไฟล์ -->
-                    <a
-                      :href="pdf.fullPath"
-                      target="_blank"
-                      class="text-primary mt-2 text-truncate"
-                      style="max-width: 180px; display: block"
-                    >
+                    <a :href="pdf.fullPath" target="_blank" class="text-primary mt-2 text-truncate"
+                      style="max-width: 180px; display: block">
                       {{ pdf.name }}
                     </a>
                   </div>
                 </div>
               </div>
-              <div
-                class="row mt-3 form-group"
-                v-if="selectedVendorIndex !== null"
-              >
+              <div class="row mt-3 form-group" v-if="selectedVendorIndex !== null">
                 <div class="col-md-3 form-group-sm">
                   <label for=""><b>ลงชื่อเจ้าหน้าที่จัดหา</b></label>
-                  <input
-                    type="text"
-                    name="ip-userpost"
-                    id="ip-userpos"
-                    class="form-control"
-                    readonly
-                    :value="user_create"
-                  />
+                  <input type="text" name="ip-userpost" id="ip-userpos" class="form-control" readonly
+                    :value="user_create" />
                 </div>
                 <div class="col-md-3 form-group-sm">
                   <label for=""><b>แผนก</b></label>
-                  <input
-                    type="text"
-                    name="ip-dept"
-                    id="ip-dept"
-                    class="form-control"
-                    readonly
-                    :value="dept_create"
-                  />
+                  <input type="text" name="ip-dept" id="ip-dept" class="form-control" readonly :value="dept_create" />
                 </div>
                 <div class="col-md-3 form-group-sm">
                   <label for=""><b>รหัสพนักงาน</b></label>
-                  <input
-                    type="tel"
-                    name="ip-ecode"
-                    id="ip-ecode"
-                    class="form-control"
-                    readonly
-                    :value="ecode_create"
-                  />
+                  <input type="tel" name="ip-ecode" id="ip-ecode" class="form-control" readonly :value="ecode_create" />
                 </div>
                 <div class="col-md-3 form-group-sm">
                   <label for=""><b>วันที่ร้องขอ</b></label>
-                  <input
-                    type="text"
-                    name="ip-datetimecreate"
-                    id="ip-datetimecreate"
-                    class="form-control"
-                    readonly
-                    :value="datetime_create"
-                  />
+                  <input type="text" name="ip-datetimecreate" id="ip-datetimecreate" class="form-control" readonly
+                    :value="datetime_create" />
                 </div>
               </div>
               <hr />
               <div class="row" v-if="btnCtrl">
                 <div class="col-md-3 form-group">
-                  <button
-                    type="button"
-                    class="btn btn-danger btn-block"
-                    @click="confirmCancelDocument"
-                    :disabled="isClick"
-                  ><i class="dw dw-trash1 mr-2"></i>
+                  <button type="button" class="btn btn-danger btn-block" @click="confirmCancelDocument"
+                    :disabled="isClick"><i class="dw dw-trash1 mr-2"></i>
                     ยกเลิก
                   </button>
                 </div>
                 <div class="col-md-3 form-group">
-                  <button
-                    type="button"
-                    class="btn btn-warning btn-block"
-                    @click="goToEditPage"
-                    :disabled="isClick"
-                  ><i class="dw dw-edit-file mr-2"></i>
+                  <button type="button" class="btn btn-warning btn-block" @click="goToEditPage" :disabled="isClick"><i
+                      class="dw dw-edit-file mr-2"></i>
                     แก้ไข
                   </button>
                 </div>
                 <div class="col-md-3 form-group">
-                  <button
-                    type="button"
-                    class="btn btn-primary btn-block"
-                    @click="sendDataToManager"
-                    :disabled="isClick"
-                  ><i class="dw dw-paper-plane1 mr-2"></i>
+                  <button type="button" class="btn btn-primary btn-block" @click="sendDataToManager"
+                    :disabled="isClick"><i class="dw dw-paper-plane1 mr-2"></i>
                     ส่งข้อมูล
                   </button>
                 </div>
@@ -339,26 +221,16 @@
         </div>
 
         <!-- เพิ่ม Component Manager Confirm -->
-        <Compare_confirm
-          v-if="shouldShowApproval"
-          :userData="userData"
-          :formno="formno"
-          :compare_id="compare_id"
-          :last_updated="last_updated"
-          :btnApp="btnApp"
-          :defaultStatus="approvalStatus"
-          :defaultMemo="approvalMemo"
-          :user_approval="user_approval"
-          :ecode_approval="ecode_approval"
-          :datetime_approval="datetime_approval"
-          :compare_status="compare_status"
-        />
+        <Compare_confirm v-if="shouldShowApproval" :userData="userData" :formno="formno" :compare_id="compare_id"
+          :last_updated="last_updated" :btnApp="btnApp" :defaultStatus="approvalStatus" :defaultMemo="approvalMemo"
+          :user_approval="user_approval" :ecode_approval="ecode_approval" :datetime_approval="datetime_approval"
+          :compare_status="compare_status" />
       </div>
     </div>
   </div>
 </template>
-  
-  <script>
+
+<script>
 import axios from "axios";
 import Swal from "sweetalert2";
 import Compare_confirm from "@/components/Compare_approve.vue";
@@ -407,10 +279,10 @@ export default {
       try {
         const formdata = new FormData();
         formdata.append("formno", this.formno);
-        formdata.append("deptcode" , this.userData.DeptCode);
+        formdata.append("deptcode", this.userData.DeptCode);
         const res = await axios.post(
           this.url +
-            "intsys/purchaseplus/purchaseplus_backend/compareapi/getCompareDetailByFormno",
+          "intsys/purchaseplus/purchaseplus_backend/compareapi/getCompareDetailByFormno",
           formdata
         );
         console.log(res.data);
@@ -475,7 +347,7 @@ export default {
             this.btnApp = true;
           }
         } else {
-          Swal.fire("ไม่พบข้อมูล", "", "error").then(()=>{
+          Swal.fire("ไม่พบข้อมูล", "", "error").then(() => {
             this.$router.push({ name: "Home" }); // หรือหน้าอื่นๆ ที่ต้องการ redirect
           });
         }
@@ -491,7 +363,7 @@ export default {
         formdata.append("last_updated", this.last_updated);
         const res = await axios.post(
           this.url +
-            "intsys/purchaseplus/purchaseplus_backend/compareapi/cancelDocument",
+          "intsys/purchaseplus/purchaseplus_backend/compareapi/cancelDocument",
           formdata
         );
         console.log(res.data);
@@ -546,26 +418,38 @@ export default {
     },
     async sendDataToManager() {
       this.isClick = true;
-      try {
-        const formdata = new FormData();
-        formdata.append("formno", this.formno);
-        formdata.append("compare_id", this.compare_id);
-        const res = await axios.post(
-          this.url +
-            "intsys/purchaseplus/purchaseplus_backend/compareapi/sendDataToManager",
-          formdata
-        );
-        if (res.data.status == "success") {
-          Swal.fire("ส่งข้อมูลสำเร็จ", "", "success").then(() => {
-            this.$router.push({ name: "Comparevendorlist" });
-          });
-          console.log(res.data);
-        }
-      } catch (error) {
-        console.error(error);
-      } finally {
+      if (this.accountnum == "" || this.accountnum == null) {
+        Swal.fire({
+          title: 'กรุณาเลือก ผู้ค้าที่ลงทะเบียนแล้วเท่านั้น',
+          icon: 'warning',
+          showConfirmButton: true,
+        });
         this.isClick = false;
+        return;
       }
+
+      console.log('check ลำดับการทำงาน');
+
+      // try {
+      //   const formdata = new FormData();
+      //   formdata.append("formno", this.formno);
+      //   formdata.append("compare_id", this.compare_id);
+      //   const res = await axios.post(
+      //     this.url +
+      //     "intsys/purchaseplus/purchaseplus_backend/compareapi/sendDataToManager",
+      //     formdata
+      //   );
+      //   if (res.data.status == "success") {
+      //     Swal.fire("ส่งข้อมูลสำเร็จ", "", "success").then(() => {
+      //       this.$router.push({ name: "Comparevendorlist" });
+      //     });
+      //     console.log(res.data);
+      //   }
+      // } catch (error) {
+      //   console.error(error);
+      // } finally {
+      //   this.isClick = false;
+      // }
     },
   },
   computed: {
@@ -579,7 +463,7 @@ export default {
       return totals;
     },
     selectedVendor() {
-      return this.vendors.find((v) => v.accountnum === this.accountnum) || null;
+      return this.vendors.find((v) => v.vendor_index === this.selectedVendorIndex) || null;
     },
     imageFiles() {
       return this.uploadedFiles
@@ -636,30 +520,34 @@ export default {
     if (!this.$store.getters.canAccess(this.$route.params.deptcodecreate)) {
       this.$router.push({ name: "Home" }); // หรือหน้าอื่นๆ ที่ต้องการ redirect
     }
-    console.log(this.$route.params.deptcode_create);
+    console.log(this.$route.params.deptcodecreate);
   },
 };
 </script>
-  
-  <style scoped>
+
+<style scoped>
 .mt-3 {
   margin-top: 1rem;
 }
+
 .radioChooseVendor {
   width: 20px;
   height: 20px;
   border-color: blue;
 }
+
 .radioChooseVendor:hover {
   cursor: pointer;
 }
+
 .highlight-vendor {
-  background-color: #12cb3d; /* สีพื้นอ่อนๆ */
+  background-color: #12cb3d;
+  /* สีพื้นอ่อนๆ */
 }
+
 .statusDoc {
   position: absolute;
   top: 5px;
   right: 0px;
 }
 </style>
-  
