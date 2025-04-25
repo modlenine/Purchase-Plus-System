@@ -339,6 +339,7 @@ export default {
               "Pending Approve",
               "Compare Approved",
               "Compare Not Approve",
+              "Compare Used"
             ].includes(compare_status)
           ) {
             this.btnCtrl = true;
@@ -428,28 +429,26 @@ export default {
         return;
       }
 
-      console.log('check ลำดับการทำงาน');
-
-      // try {
-      //   const formdata = new FormData();
-      //   formdata.append("formno", this.formno);
-      //   formdata.append("compare_id", this.compare_id);
-      //   const res = await axios.post(
-      //     this.url +
-      //     "intsys/purchaseplus/purchaseplus_backend/compareapi/sendDataToManager",
-      //     formdata
-      //   );
-      //   if (res.data.status == "success") {
-      //     Swal.fire("ส่งข้อมูลสำเร็จ", "", "success").then(() => {
-      //       this.$router.push({ name: "Comparevendorlist" });
-      //     });
-      //     console.log(res.data);
-      //   }
-      // } catch (error) {
-      //   console.error(error);
-      // } finally {
-      //   this.isClick = false;
-      // }
+      try {
+        const formdata = new FormData();
+        formdata.append("formno", this.formno);
+        formdata.append("compare_id", this.compare_id);
+        const res = await axios.post(
+          this.url +
+          "intsys/purchaseplus/purchaseplus_backend/compareapi/sendDataToManager",
+          formdata
+        );
+        if (res.data.status == "success") {
+          Swal.fire("ส่งข้อมูลสำเร็จ", "", "success").then(() => {
+            this.$router.push({ name: "Comparevendorlist" });
+          });
+          console.log(res.data);
+        }
+      } catch (error) {
+        console.error(error);
+      } finally {
+        this.isClick = false;
+      }
     },
   },
   computed: {
@@ -498,7 +497,7 @@ export default {
 
       if (!this.isDataLoaded) return false;
 
-      if (status === "Compare Approved" || status === "Compare Not Approve") {
+      if (status === "Compare Approved" || status === "Compare Not Approve" || status === "Compare Used") {
         return true;
       }
 

@@ -195,10 +195,10 @@
                                 </div>
                                 <div class="col-md-12 form-group">
                                     <button v-if="btncontrol === true && btncontrol_send === true" type="button"
-                                        class="btn btn-primary mr-2" @click="sendData"><i
+                                        class="btn btn-primary mr-2" @click="sendData" :disabled="isclickSend"><i
                                             class="dw dw-mail mr-2"></i>ส่งข้อมูล</button>
                                     <button v-if="btncontrol === true && btncontrol_cancel === true" type="button"
-                                        id="btn-cancelData" class="btn btn-danger mr-2" @click="saveCancel"><i
+                                        id="btn-cancelData" class="btn btn-danger mr-2" @click="saveCancel" :disabled="isclickCancel"><i
                                             class="dw dw-cancel mr-2"></i>ยกเลิกเอกสาร</button>
                                 </div>
                             </div>
@@ -371,7 +371,11 @@ export default {
             showPurPage: false,
 
             //Po Comfirmed
-            showPoPage: false
+            showPoPage: false,
+
+            //control btn
+            isclickSend:false,
+            isclickCancel:false
         }
     },
     methods: {
@@ -574,6 +578,7 @@ export default {
         },
         saveCancel() {
             const proxy = this;
+            proxy.isclickCancel = true;
             if (this.formno != "") {
                 Swal.fire({
                     title: 'ต้องการยกเลิกเอกสาร ใช่หรือไม่',
@@ -590,6 +595,7 @@ export default {
                     if (result.value === true) {
                         const formdata = new FormData();
                         formdata.append('formno', this.formno);
+                        formdata.append('compare_formno' , this.compare_formno);
                         formdata.append('action', 'saveCancel');
                         axios.post(this.url + 'intsys/purchaseplus/purchaseplus_backend/mainapi/saveCancel', formdata, {
                             headers: {
@@ -597,6 +603,7 @@ export default {
                             }
                         }).then(res => {
                             console.log(res.data);
+                            proxy.isclickCancel = false;
                             if (res.data.status == "Update Data Success") {
 
                                 Swal.fire({
@@ -615,6 +622,7 @@ export default {
         },
         sendData() {
             const proxy = this;
+            proxy.isclickSend = true;
             Swal.fire({
                 title: 'ต้องการส่งข้อมูล ใช่หรือไม่',
                 text: 'กรุณาตรวจสอบความถูกต้องของข้อมูลให้ครบถ้วน เนื่องจากหลังกดส่งข้อมูลแล้วท่านจะไม่สามารถกลับมาแก้ไขรายละเอียดได้',
@@ -638,6 +646,7 @@ export default {
                         }
                     }).then(res => {
                         console.log(res.data);
+                        proxy.isclickSend = false;
                         if (res.data.status == "Update Data Success") {
                             Swal.fire({
                                 title: 'บันทึกข้อมูลสำเร็จ',

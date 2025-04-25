@@ -116,6 +116,11 @@ export default {
     async saveManagerApprove() {
       let fullname = this.userData.Fname + " " + this.userData.Lname;
       this.isClick = true;
+      if(!this.approvalStatus){
+        Swal.fire('กรุณาเลือกการอนุมัติ', '', 'error');
+        this.isClick = false;
+        return;
+      }
       try {
         const formdata = new FormData();
         formdata.append("formno", this.formno);

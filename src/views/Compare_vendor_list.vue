@@ -23,6 +23,7 @@
                   <tr>
                     <!-- <th class="td1">Ulid</th> -->
                     <th>เลขที่เอกสาร</th>
+                    <th>เลขที่เอกสารใบ PR</th>
                     <th>รายการสินค้า</th>
                     <th>ผู้ขาย</th>
                     <th>ผู้ร้องขอ</th>
@@ -126,10 +127,18 @@ export default {
           {
             data: "formno",
             render: function (data, type, row) {
+
               return `<a href="javascript:void(0)" class="select_form_compare" 
               data-formno="${data}" 
               data-ecode_create="${row.ecode_create}" 
               data-deptcode_create="${row.deptcode_create}"><b>${data}</b></a>`;
+            },
+          },
+          {
+            data: "pu_formno",
+            render: function (data) {
+              const formno = data || "";
+              return `<a href="javascript:void(0)" class="select_form_purchase text-dark" data-formno="${formno}"><b>${formno}</b></a>`;
             },
           },
           { data: "items_all" },
@@ -140,7 +149,32 @@ export default {
           {
             data: "compare_status",
             render: function (data) {
-              return data;
+              // ✅ กำหนดสี badge ตามสถานะ
+              let statusBadge = '';
+              const status = data;
+              switch (status) {
+                case 'Pending Send':
+                  statusBadge = `<span class="badge Pending badgeTxt">Pending Send</span>`;
+                  break;
+                case 'Pending Send (Edit)':
+                  statusBadge = `<span class="badge Pending badgeTxt">Pending Send (Edit)</span>`;
+                  break;
+                case 'Pending Approve':
+                  statusBadge = `<span class="badge Pending badgeTxt">Pending Approve</span>`;
+                  break;
+                case 'Compare Approved':
+                  statusBadge = `<span class="badge badge-success badgeTxt">Compare Approved</span>`;
+                  break;
+                case 'rejected':
+                  statusBadge = `<span class="badge badge-danger badgeTxt">ไม่อนุมัติ</span>`;
+                  break;
+                case 'cancel':
+                  statusBadge = `<span class="badge badge-dark badgeTxt">ยกเลิก</span>`;
+                  break;
+                default:
+                  statusBadge = `<span class="badge badge-info badgeTxt">${data}</span>`;
+              }
+              return statusBadge;
             },
           },
         ],
@@ -150,8 +184,8 @@ export default {
             targets: "_all",
             orderable: false,
           },
-          { targets: [0, 3, 4], width: "80px" },
-          { targets: [1], width: "200px" },
+          { targets: [0, 4, 5], width: "80px" },
+          { targets: [2], width: "200px" },
         ],
       });
 
@@ -164,7 +198,7 @@ export default {
         });
       });
 
-      $("#tbl_comparelist2 , #tbl_comparelist6").prop("readonly", true).css({
+      $("#tbl_comparelist3 , #tbl_comparelist7").prop("readonly", true).css({
         "background-color": "#F5F5F5",
         cursor: "no-drop",
       });
@@ -193,6 +227,14 @@ export default {
         });
       }
     });
+
+    $(document).off('click', '.select_form_purchase').on('click', '.select_form_purchase', (e) => {
+      const formno = $(e.currentTarget).data('formno');
+      if (formno) {
+        const routeUrl = this.$router.resolve({ path: `/viewdata/${formno}` });
+        window.open(routeUrl.href, '_blank');
+      }
+    });
   },
   watch: {
     "$route.params.reloadKey": {
@@ -205,4 +247,4 @@ export default {
 };
 </script>
 
-<style></style>
+<style scoped></style>

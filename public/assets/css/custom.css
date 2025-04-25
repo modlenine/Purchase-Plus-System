@@ -558,5 +558,10 @@ textarea[readonly]:focus {
     padding: 3px;
   }
 }
+
+.badgeTxt{
+  color:#ffffff !important;
+  padding:6px !important;
+}
 /* create page css */
 /* create page css */
