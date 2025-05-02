@@ -40,8 +40,7 @@
                                 <div class="input-group-append ml-2">
                                     <div class="form-check">
                                         <input class="form-check-input noquote" type="checkbox" :id="'noquote-' + index"
-                                            v-model="newItem.no_quoted[index]"
-                                            @change="handleNoQuoteToggle(index)" />
+                                            v-model="newItem.no_quoted[index]" @change="handleNoQuoteToggle(index)" />
                                         <label class="form-check-label" :for="'noquote-' + index">
                                             ไม่เสนอราคา
                                         </label>
@@ -75,10 +74,9 @@
                                         v-model="dataareaid" :disabled="submitted" required>
                                         <option value="">กรุณาเลือกบริษัท</option>
                                         <option value="sln">Salee Colour Public Company Limited.</option>
-                                        <option value="poly">Poly Meritasia Co.,Ltd.</option>
                                         <option value="ca">Composite Asia Co.,Ltd.</option>
-                                        <option value="st">Subterra Co.,Ltd.</option>
-                                        <option value="tbb">The bubbles Co.,Ltd.</option>
+                                        <!-- <option value="st">Subterra Co.,Ltd.</option>
+                                        <option value="tbb">The bubbles Co.,Ltd.</option> -->
                                     </select>
                                 </div>
                                 <div class="col-md-6 form-group">
@@ -157,7 +155,7 @@
                                                 <!-- ✅ ถ้ามี itemid หรือ itemname -->
                                                 <div v-if="item.itemid || item.itemname">
                                                     <span>{{ item.itemid }}</span> / <span>{{ item.itemname
-                                                        }}</span><br>
+                                                    }}</span><br>
                                                     <small class="text-muted">{{ item.itemdetail }}</small>
                                                 </div>
 
@@ -172,7 +170,8 @@
                                                 <span v-else-if="editIndex.i !== i || editIndex.j !== j">
                                                     {{ Number(price).toLocaleString(undefined, {
                                                         minimumFractionDigits:
-                                                    2, maximumFractionDigits: 2 }) }}
+                                                            2, maximumFractionDigits: 2
+                                                    }) }}
                                                     <i class="fa fa-pencil ml-2 text-primary" style="cursor: pointer;"
                                                         @click="editIndex = { i, j }"></i>
                                                 </span>
@@ -626,6 +625,17 @@ export default {
         }
 
     },
+    created() {
+        if (["1002", "1004", "1009", "1015", "1013", "1010"].includes(this.userData.DeptCode)) {
+            // ✅ เงื่อนไขผ่าน ➔ ดำเนินการต่อ
+            console.log('สามารถสร้าง PR ได้');
+        } else {
+            // ❌ เงื่อนไขไม่ผ่าน ➔ Redirect ไป prlist
+            Swal.fire('คุณไม่สามารถสร้างรายการ Compare Vendor ได้ กรุณาติดต่อฝ่ายไอที', '', 'warning');
+            this.$router.push({ name: 'Prlist' }); // ถ้าใช้ vue-router
+        }
+        this.formValidate();
+    },
     mounted() {
         this.$store.dispatch('setDatetimeNow');
         document.addEventListener('click', this.handleClickOutside);
@@ -703,9 +713,9 @@ export default {
     /* สีพื้นอ่อนๆ */
 }
 
-.noquote{
-    width:18px;
-    height:18px;
-    border:1px solid #b4b4b4;
+.noquote {
+    width: 18px;
+    height: 18px;
+    border: 1px solid #b4b4b4;
 }
 </style>

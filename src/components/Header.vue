@@ -66,7 +66,7 @@
                                     <span class="micon dw dw-home wdfI1"></span><span class="mtext">หน้าหลัก</span>
                                 </router-link>
                             </li>
-                            <li class="dropdown">
+                            <li v-if="create_btn" class="dropdown">
                                 <router-link to='/compare_vendor_list' class="dropdown-toggle no-arrow menu">
                                     <span class="micon dw dw-chat-2 wdfI1"></span><span class="mtext">Compare Vendor</span>
                                 </router-link>
@@ -182,11 +182,7 @@ export default {
         },
         control_menu()
         {
-            if(this.resultUserData.DeptCode == "1002" || this.resultUserData.DeptCode == "1004" || this.resultUserData.DeptCode == "1009" || this.resultUserData.DeptCode == "1015" || this.resultUserData.DeptCode == "1013" || this.resultUserData.DeptCode == "1010"){
-                this.create_btn = true;
-            }else{
-                this.create_btn = false;
-            }
+            this.create_btn = ["1002", "1004", "1009", "1015", "1013", "1010"].includes(this.resultUserData.DeptCode);
         }
     },
 }

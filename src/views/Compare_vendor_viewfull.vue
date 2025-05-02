@@ -1,8 +1,36 @@
 <template>
   <div id="create_compare_vendor">
+
+    <!-- Modal: เพิ่มสินค้า -->
+    <div class="modal fade" id="printCompareModal" tabindex="-1" role="dialog" aria-labelledby="addItemLabel"
+      aria-hidden="true">
+      <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Compare Document Preview {{ formno }}</h5>
+            <button type="button" class="close" @click="closePrintPreviewCompareModal">×</button>
+          </div>
+          <div class="modal-body">
+            <iframe id="pdfViewer_compare" width="100%" height="600px" frameborder="0"></iframe>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div class="main-container">
       <div class="pd-ltr-20">
         <div class="row">
+          <div class="col-md-12">
+            <div class="card-box height-100-p pd-20">
+              <div class="row">
+                <div class="col-md-3">
+                  <button type="button" class="btn btn-info btnPrint" @click="printCompareDocument">Print</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row mt-3">
           <div class="col-xl-12 mb-30">
             <div class="card-box height-100-p pd-20">
               <div class="row form-group text-center">
@@ -234,6 +262,7 @@
 import axios from "axios";
 import Swal from "sweetalert2";
 import Compare_confirm from "@/components/Compare_approve.vue";
+import { Modal } from 'bootstrap'; // นำเข้าเฉพาะ Modal component จาก Bootstrap
 export default {
   name: "Compare_vendor_viewfull",
   data() {
@@ -450,6 +479,64 @@ export default {
         this.isClick = false;
       }
     },
+    async printCompareDocument() {
+      try {
+        //code
+        const formdata = new FormData();
+        formdata.append('vendor', JSON.stringify(this.vendors));
+        formdata.append('items', JSON.stringify(this.items));
+        formdata.append('selectedVendorIndex', this.selectedVendorIndex);
+        formdata.append('vendorSelectionReason', this.vendorSelectionReason);
+        formdata.append('dataareaid', this.dataareaid);
+        formdata.append('accountnum', this.accountnum);
+        formdata.append('user_create', this.user_create);
+        formdata.append('datetime_create', this.datetime_create);
+        formdata.append('dept_create', this.dept_create);
+        formdata.append('ecode_create', this.ecode_create);
+        formdata.append('compare_formno', this.formno);
+        formdata.append('compare_status', this.compare_status);
+        formdata.append('approvalStatus', this.approvalStatus);
+        formdata.append('approvalMemo', this.approvalMemo);
+        formdata.append('user_approval', this.user_approval);
+        formdata.append('ecode_approval', this.ecode_approval);
+        formdata.append('datetime_approval', this.datetime_approval);
+        formdata.append('vendorCount', this.vendorCount);
+
+        const res = await axios.post(this.url + "intsys/purchaseplus/purchaseplus_backend/compareapi/pdf/send_compare_preview" , formdata);
+        if (res.data) {
+          const pdfBase64 = res.data;
+          const pdfViewer = document.getElementById('pdfViewer_compare');
+          pdfViewer.src = 'data:application/pdf;base64,' + pdfBase64;
+          this.openPrintPreviewCompareModal();
+        }
+
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    openPrintPreviewCompareModal() {
+
+      const printCompareModal = new Modal(document.getElementById('printCompareModal'), {
+        keyboard: false,
+        backdrop: 'static'
+      });
+      printCompareModal.show();
+    },
+    closePrintPreviewCompareModal() {
+      const modalEl = document.getElementById('printCompareModal');
+      const modal = Modal.getInstance(modalEl);
+      modal.hide();
+
+      // 🧹 ลบ backdrop ด้วย
+      const backdrop = document.querySelector('.modal-backdrop');
+      if (backdrop) {
+        backdrop.remove();
+      }
+
+      // 🧼 ล้าง body class (บางที Bootstrap จะไม่ลบเอง)
+      document.body.classList.remove('modal-open');
+      document.body.style.paddingRight = null;
+    },
   },
   computed: {
     totalPricesPerVendor() {
@@ -549,4 +636,5 @@ export default {
   top: 5px;
   right: 0px;
 }
+
 </style>

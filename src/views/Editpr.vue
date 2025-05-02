@@ -95,7 +95,7 @@
                     <ul v-if="compareSuggestions.length > 0" class="list-group mt-2">
                       <li class="list-group-item" v-for="(item, index) in compareSuggestions" :key="index"
                         @click="selectCompare(item)" style="cursor: pointer">
-                        {{ item.formno }} - {{ item.vendor_name }} ({{
+                        {{ item.formno }} [ {{ item.dataareaid }} ] - {{ item.vendor_name }} ({{
                           item.accountnum
                         }}) - ({{ item.itemdetails }})
                       </li>
@@ -964,10 +964,11 @@ export default {
         return Promise.resolve(); // คืนค่าเปล่าถ้าไม่มีข้อมูล เพื่อป้องกัน error เวลาใช้ await
       }
     },
-    getItemData_Compare(formno) {
+    getItemData_Compare(formno,vendor_index) {
       if (formno) {
         const formdata = new FormData();
         formdata.append('formno', formno);
+        formdata.append('vendor_index', vendor_index);
 
         return axios.post(this.url + "intsys/purchaseplus/purchaseplus_backend/compareapi/getItemData_Compare", formdata)
           .then(res => {
@@ -1045,7 +1046,8 @@ export default {
       await this.getUserEcode(item.deptcode_create);
       this.ecode = item.ecode_create;
       await this.getVendData_Compare(item.accountnum, item.dataareaid);
-      await this.getItemData_Compare(item.formno);
+      await this.getItemData_Compare(item.formno,item.vendor_index);
+      console.log(item.formno + ' '+item.vendor_index);
     },
   },
   created() {

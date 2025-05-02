@@ -79,11 +79,10 @@
                 <div class="row form-group">
                   <div class="col-md-12 form-group">
                     <h4 style="text-align: center">
-                      หน้าสร้างรายการ PR {{ paymtermid }}
+                      หน้าสร้างรายการ PR
                     </h4>
                   </div>
                 </div>
-                {{ department }}
                 <hr />
 
                 <div class="row form-group">
@@ -108,10 +107,10 @@
                       <option value="sln">
                         Salee Colour Public Company Limited.
                       </option>
-                      <option value="poly">Poly Meritasia Co.,Ltd.</option>
+                      <!-- <option value="poly">Poly Meritasia Co.,Ltd.</option> -->
                       <option value="ca">Composite Asia Co.,Ltd.</option>
-                      <option value="st">Subterra Co.,Ltd.</option>
-                      <option value="tbb">The bubbles Co.,Ltd.</option>
+                      <!-- <option value="st">Subterra Co.,Ltd.</option>
+                      <option value="tbb">The bubbles Co.,Ltd.</option> -->
                     </select>
                   </div>
                   <div class="col-md-4 form-group">
@@ -910,10 +909,11 @@ export default {
         return Promise.resolve(); // คืนค่าเปล่าถ้าไม่มีข้อมูล เพื่อป้องกัน error เวลาใช้ await
       }
     },
-    getItemData_Compare(formno) {
-      if (formno) {
+    getItemData_Compare(formno, vendor_index) {
+      if (formno && vendor_index) {
         const formdata = new FormData();
         formdata.append('formno', formno);
+        formdata.append('vendor_index', vendor_index);
 
         return axios.post(this.url + "intsys/purchaseplus/purchaseplus_backend/compareapi/getItemData_Compare", formdata)
           .then(res => {
@@ -964,7 +964,7 @@ export default {
 
       const formdata = new FormData();
       formdata.append("keyword", this.searchCompareText);
-      formdata.append("deptcode_user" , this.userData.DeptCode);
+      formdata.append("deptcode_user", this.userData.DeptCode);
 
       const res = await axios.post(
         this.url +
@@ -991,10 +991,18 @@ export default {
       await this.getUserEcode(item.deptcode_create);
       this.ecode = item.ecode_create;
       await this.getVendData_Compare(item.accountnum, item.dataareaid);
-      await this.getItemData_Compare(item.formno);
+      await this.getItemData_Compare(item.formno, item.vendor_index);
     },
   },
   created() {
+    if (["1002", "1004", "1009", "1015", "1013", "1010"].includes(this.userData.DeptCode)) {
+      // ✅ เงื่อนไขผ่าน ➔ ดำเนินการต่อ
+      console.log('สามารถสร้าง PR ได้');
+    } else {
+      // ❌ เงื่อนไขไม่ผ่าน ➔ Redirect ไป prlist
+      Swal.fire('คุณไม่สามารถสร้างรายการ PR ได้ กรุณาติดต่อฝ่ายไอที', '', 'warning');
+      this.$router.push({ name: 'Prlist' }); // ถ้าใช้ vue-router
+    }
     this.formValidate();
   },
   mounted() {

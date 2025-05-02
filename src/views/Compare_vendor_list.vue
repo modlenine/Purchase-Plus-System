@@ -136,12 +136,21 @@ export default {
           },
           {
             data: "pu_formno",
-            render: function (data) {
+            render: function (data ,type , row) {
               const formno = data || "";
-              return `<a href="javascript:void(0)" class="select_form_purchase text-dark" data-formno="${formno}"><b>${formno}</b></a>`;
+              const prno = row.pr_number || "";
+              return `<a href="javascript:void(0)" class="select_form_purchase text-dark" data-formno="${formno}"><b>${prno}</b></a>`;
             },
           },
-          { data: "items_all" },
+          {
+            data: "items_all",
+            render: function (data) {
+              if (data && data.length > 40) {
+                return data.substring(0, 40) + '..';
+              }
+              return data;
+            }
+          },
           { data: "vendorname" },
           { data: "ecode_create" },
           { data: "deptcode_create" },
@@ -154,19 +163,19 @@ export default {
               const status = data;
               switch (status) {
                 case 'Pending Send':
-                  statusBadge = `<span class="badge Pending badgeTxt">Pending Send</span>`;
+                  statusBadge = `<span class="badge badge-secondary badgeTxt">Pending Send</span>`;
                   break;
                 case 'Pending Send (Edit)':
-                  statusBadge = `<span class="badge Pending badgeTxt">Pending Send (Edit)</span>`;
+                  statusBadge = `<span class="badge badge-secondary badgeTxt">Pending Send (Edit)</span>`;
                   break;
                 case 'Pending Approve':
-                  statusBadge = `<span class="badge Pending badgeTxt">Pending Approve</span>`;
+                  statusBadge = `<span class="badge badge-secondary badgeTxt">Pending Approve</span>`;
                   break;
                 case 'Compare Approved':
                   statusBadge = `<span class="badge badge-success badgeTxt">Compare Approved</span>`;
                   break;
-                case 'rejected':
-                  statusBadge = `<span class="badge badge-danger badgeTxt">ไม่อนุมัติ</span>`;
+                case 'Compare Not Approve':
+                  statusBadge = `<span class="badge badge-danger badgeTxt">Compare Not Approve</span>`;
                   break;
                 case 'cancel':
                   statusBadge = `<span class="badge badge-dark badgeTxt">ยกเลิก</span>`;

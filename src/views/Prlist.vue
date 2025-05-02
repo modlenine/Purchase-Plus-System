@@ -10,7 +10,7 @@
               <div class="row form-group">
                 <div class="col-md-12 form-group">
                   <h4 style="text-align:center;">หน้าแสดงรายการ PR</h4>
-                  <router-link to="/createpr" type="button" class="btn btn-primary newBtn"><i
+                  <router-link v-if="create_btn" to="/createpr" type="button" class="btn btn-primary newBtn"><i
                       class="dw dw-add-file1 mr-2"></i>สร้างรายการ</router-link>
                 </div>
               </div>
@@ -57,14 +57,12 @@ import Filterprlist from '@/components/Filter_prlist.vue'
 export default {
   data() {
     return {
-      url: this.$store.getters.getUrl
+      url: this.$store.getters.getUrl,
+      userData: this.getSessionStorage(),
     }
   },
   components: {
     Filterprlist
-  },
-  computed: {
-
   },
   created() {
     this.getStatus().then(() => {
@@ -255,6 +253,11 @@ export default {
       });
     }
   },
+  computed: {
+    create_btn() {
+      return ["1002", "1004", "1009", "1015", "1013", "1010"].includes(this.userData.DeptCode);
+    }
+  }
 
 }
 

@@ -667,15 +667,12 @@ export default {
                 this.btncontrol = false;
             } else if (this.status == "Wait Send Data") {
                 if (this.userData.ecode == this.ecodepost || this.userData.ecode == this.ecode) {
-                    if (this.userData.DeptCode == "1010" || this.userData.DeptCode == "1013") {
-                        this.btncontrol_send = false;
-                        this.btncontrol = true;
-                    } else {
-                        this.btncontrol_send = true;
-                        this.btncontrol = true;
-                    }
-                } else if (this.userData.DeptCode == "1004" || this.userData.DeptCode == "1002") {
-                    this.btncontrol_send = true;
+
+                    this.btncontrol_send = ["1004", "1002", "1009", "1014"].includes(this.userData.DeptCode);
+                    this.btncontrol = true;
+
+                } else{
+                    this.btncontrol_send = ["1004", "1002"].includes(this.userData.DeptCode);
                     this.btncontrol = true;
                 }
             } else {
