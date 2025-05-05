@@ -41,8 +41,7 @@
                                 <div class="input-group-append ml-2">
                                     <div class="form-check">
                                         <input class="form-check-input noquote" type="checkbox" :id="'noquote-' + index"
-                                            v-model="newItem.no_quoted[index]"
-                                            @change="handleNoQuoteToggle(index)" />
+                                            v-model="newItem.no_quoted[index]" @change="handleNoQuoteToggle(index)" />
                                         <label class="form-check-label" :for="'noquote-' + index">
                                             ไม่เสนอราคา
                                         </label>
@@ -155,7 +154,7 @@
                                                 <!-- ✅ ถ้ามี itemid หรือ itemname -->
                                                 <div v-if="item.itemid || item.itemname">
                                                     <span>{{ item.itemid }}</span> / <span>{{ item.itemname
-                                                        }}</span><br>
+                                                    }}</span><br>
                                                     <small class="text-muted">{{ item.itemdetail }}</small>
                                                 </div>
 
@@ -328,7 +327,7 @@ export default {
             formno: this.$route.params.formno || '',
             vendors: [
                 // ตัวอย่าง
-                { vendor_name: '', accountnum: '', dataareaid: '', vendor_index: 0, id: 0, isEditing: false },
+                { vendor_name: '', accountnum: '', dataareaid: '', vendor_index: 0, id: 0, isEditing: false, isSelected: false },
             ],
             items: [],
             selectedVendorIndex: null,
@@ -410,12 +409,14 @@ export default {
                 });
             } else {
                 // ✅ ถ้าไม่ตรงกับรายการที่เลือกไว้ → เปิดแก้ไขทันที
-                this.vendors[index].isEditing = true;
+                this.$set(this.vendors[index], 'isEditing', true);
             }
+            console.log('เช็ก Index : ' + index);
+            console.log(this.vendors[index].isEditing);
         },
         saveVendorEdit(index) {
             const vendor = this.vendors[index];
-            vendor.isEditing = false;
+            this.$set(this.vendors[index], 'isEditing', false);
 
             // ถ้ามี vendorSuggestions แสดงอยู่ และไม่ได้เลือกจาก list
             const isMatched = this.vendorSuggestions[index]?.some(s => s.name === vendor.vendor_name);
@@ -436,9 +437,9 @@ export default {
                     this.vendorSelectionIndex = index;
                 });
             }
-
             // ล้าง suggestions
             this.$set(this.vendorSuggestions, index, []);
+            console.log(vendor.isEditing);
         },
         selectVendor(index, suggestion) {
             // ตรวจสอบว่ามีผู้ขายซ้ำกับช่องอื่นหรือไม่
@@ -456,7 +457,7 @@ export default {
                 return; // ❌ หยุดไม่ให้เลือก
             }
 
-            this.vendors[index] = {
+            this.$set(this.vendors, index, {
                 compare_formno: this.formno,
                 compare_id: this.compare_id,
                 vendor_name: suggestion.name,
@@ -464,9 +465,10 @@ export default {
                 dataareaid: suggestion.dataareaid,
                 vendor_index: index,
                 id: this.vendors[index].id,
-                isEditing: true,
-                isSelected: true      // ✅ บอกว่าเลือกจาก list แล้ว
-            };
+                isEditing: false,
+                isSelected: false
+            });
+            console.log(this.vendors[index].isEditing);
             this.$set(this.vendorSuggestions, index, []);
         },
         handleClickOutside(event) {
@@ -555,7 +557,8 @@ export default {
                     this.vendors = vendors.map((v, i) => ({
                         ...v,
                         vendor_index: i,
-                        isEditing: false
+                        isEditing: false,
+                        isSelected: false
                     }));
                     this.items = items;
                     this.selectedVendorIndex = selectedIndex;
@@ -944,9 +947,10 @@ export default {
     background-color: #12cb3d;
     /* สีพื้นอ่อนๆ */
 }
-.noquote{
-    width:18px;
-    height:18px;
-    border:1px solid #b4b4b4;
+
+.noquote {
+    width: 18px;
+    height: 18px;
+    border: 1px solid #b4b4b4;
 }
 </style>

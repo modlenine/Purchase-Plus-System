@@ -177,8 +177,8 @@ export default {
                 case 'Compare Not Approve':
                   statusBadge = `<span class="badge badge-danger badgeTxt">Compare Not Approve</span>`;
                   break;
-                case 'cancel':
-                  statusBadge = `<span class="badge badge-dark badgeTxt">ยกเลิก</span>`;
+                case 'Cancel':
+                  statusBadge = `<span class="badge badge-danger badgeTxt">Cancel</span>`;
                   break;
                 default:
                   statusBadge = `<span class="badge badge-info badgeTxt">${data}</span>`;
