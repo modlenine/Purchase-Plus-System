@@ -84,7 +84,7 @@
                                     <select name="add-vend-number" id="add-vend-number" class="form-control"
                                         v-model="vendorCount" @change="updateVendorArray" :disabled="submitted">
                                         <option value="">กรุณาเลือกรายการ</option>
-                                        <option v-for="n in 8" :key="n" :value="n + 1">{{ n + 1 }}</option>
+                                        <option v-for="n in 9" :key="n" :value="n">{{ n }}</option>
                                     </select>
                                 </div>
                             </div>
