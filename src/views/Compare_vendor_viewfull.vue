@@ -12,6 +12,14 @@
           </div>
           <div class="modal-body">
             <iframe id="pdfViewer_compare" width="100%" height="600px" frameborder="0"></iframe>
+            <div class="row form-group">
+              <div class="col-md-6"></div>
+              <div class="col-md-6 text-right">
+                <button id="downloadBtn" class="btn btn-primary">
+                  <i class="fa fa-download"></i> ดาวน์โหลด PDF
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -502,11 +510,38 @@ export default {
         formdata.append('datetime_approval', this.datetime_approval);
         formdata.append('vendorCount', this.vendorCount);
 
-        const res = await axios.post(this.url + "intsys/purchaseplus/purchaseplus_backend/compareapi/pdf/send_compare_preview" , formdata);
+        const res = await axios.post(this.url + "intsys/purchaseplus/purchaseplus_backend/compareapi/pdf/send_compare_preview", formdata);
+        // if (res.data) {
+        //   const pdfBase64 = res.data;
+        //   const pdfViewer = document.getElementById('pdfViewer_compare');
+        //   pdfViewer.src = 'data:application/pdf;base64,' + pdfBase64;
+        //   this.openPrintPreviewCompareModal();
+        // }
+
         if (res.data) {
           const pdfBase64 = res.data;
+          const byteCharacters = atob(pdfBase64);
+          const byteNumbers = new Array(byteCharacters.length);
+          for (let i = 0; i < byteCharacters.length; i++) {
+            byteNumbers[i] = byteCharacters.charCodeAt(i);
+          }
+          const byteArray = new Uint8Array(byteNumbers);
+          const blob = new Blob([byteArray], { type: 'application/pdf' });
+
+          // 🔸 สร้าง URL สำหรับ preview
+          const blobUrl = URL.createObjectURL(blob);
           const pdfViewer = document.getElementById('pdfViewer_compare');
-          pdfViewer.src = 'data:application/pdf;base64,' + pdfBase64;
+          pdfViewer.src = blobUrl;
+
+          // ✅ ตั้งให้ลิงก์ดาวน์โหลดมีชื่อ
+          const downloadBtn = document.getElementById('downloadBtn');
+          downloadBtn.onclick = () => {
+            const a = document.createElement('a');
+            a.href = blobUrl;
+            a.download = 'Compare-Vendor-'+this.formno+'.pdf'; // 📝 ตั้งชื่อไฟล์ที่ต้องการ
+            a.click();
+          };
+
           this.openPrintPreviewCompareModal();
         }
 
@@ -636,5 +671,4 @@ export default {
   top: 5px;
   right: 0px;
 }
-
 </style>
