@@ -90,7 +90,7 @@
                 <div class="row form-group">
                   <div class="col-md-12 form-group">
                     <label for=""><b>เอกสาร Compare Vendor</b></label>
-                    <input type="text" class="form-control" v-model="searchCompareText" @input="searchCompareVendor"
+                    <input type="text" class="form-control" v-model="searchCompareText" @input="onCompareInputChange"
                       placeholder="กรอกชื่อผู้ขาย, รหัสผู้ขาย , ชื่อสินค้า หรือเลขที่ฟอร์ม" />
                     <ul v-if="compareSuggestions.length > 0" class="list-group mt-2">
                       <li class="list-group-item" v-for="(item, index) in compareSuggestions" :key="index"
@@ -215,11 +215,8 @@
                         class="dw dw-add btnAddItem"></i></a>
                   </div>
                   <div class="card-body">
-                    <Itemlist ref="itemlistcom" 
-                      :itemdata.sync="itemData" 
-                      :currencyrate="this.currencyrate"
-                      :currency="this.currency" 
-                    />
+                    <Itemlist ref="itemlistcom" :itemdata.sync="itemData" :currencyrate="this.currencyrate"
+                      :currency="this.currency" />
                   </div>
                 </div>
                 <hr />
@@ -331,9 +328,13 @@ export default {
       showtype: "edit",
 
       searchCompareText: "",
+      compareformno_used: "",
       compareSuggestions: [],
 
       userData: this.getSessionStorage(),
+
+      compareSelected: false,
+      //เพิ่มการเช็ก การพิมพ์ compare เฉยๆโดยไม่กดเลือก
     };
   },
   methods: {
@@ -362,14 +363,15 @@ export default {
             }
           )
           .then((res) => {
-            // console.log(res.data);
+            console.log(res.data);
             if (res.data.status == "Select Data Success") {
               let resultMain = res.data.maindata;
               let resultDetails = res.data.details;
               let resultFiles = res.data.files;
               let vendtable = res.data.vendtable;
 
-              this.searchCompareText = resultMain.m_compare_formno;
+              this.searchCompareText = resultMain.m_compare_formno || '';
+              this.compareformno_used = resultMain.m_compare_formno || '';
               this.dataareaid = resultMain.m_dataareaid;
               this.itemcategory = resultMain.m_itemcategory;
               this.plantype = resultMain.m_plantype;
@@ -770,7 +772,43 @@ export default {
     saveDataAll_edit() {
       const proxy = this;
       //check input null
-      if (this.dataareaid == "") {
+
+      if (this.compareSuggestions.length > 0) {
+        Swal.fire({
+          title: "กรุณากดเลือกรายการ Compare Vendor",
+          icon: "warning",
+          showConfirmButton: true,
+          // timer:1000
+        });
+      } else if (this.searchCompareText !== "" &&
+        this.searchCompareText !== this.compareformno_used &&
+        this.compareSelected === false) {
+        Swal.fire({
+          title: "กรุณาเลือกเอกสาร Compare จากรายการที่แสดง",
+          icon: "warning",
+          confirmButtonText: "ตกลง"
+        }).then(() => {
+          location.reload();
+        });
+      } else if (this.searchCompareText.trim() === "" && this.compareformno_used.trim() !== "") {
+        Swal.fire({
+          title: 'คุณต้องการยกเลิกรายการ ใช่หรือไม่?',
+          text: 'ระบบพบว่ารายการนี้ได้ผูกข้อมูล Compare เรียบร้อยแล้ว',
+          icon: 'question',
+          showCancelButton: true,
+          confirmButtonText: 'ยืนยัน',
+          cancelButtonText: 'ปิด'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            Swal.fire('กรุณากดยกเลิกเอกสารในหน้าหลัก เท่านั้น', '', 'warning').then(() => {
+              location.reload();
+            });
+          } else {
+            location.reload();
+          }
+        });
+        return;
+      } else if (this.dataareaid == "") {
         Swal.fire({
           title: "กรุณาเลือกสังกัดบริษัท",
           icon: "warning",
@@ -826,6 +864,13 @@ export default {
           showConfirmButton: true,
           // timer:1000
         });
+      } else if (!$("#show_accountnum").is(':empty')) {
+        Swal.fire({
+          title: "กรุณากดเลือกรายการชื่อ Vendor",
+          icon: "warning",
+          showConfirmButton: true,
+          // timer:1000
+        });
       } else {
         let itemsumpriceTotalPlus = 0;
         for (let key in proxy.itemData) {
@@ -841,7 +886,7 @@ export default {
             // timer:1000
           });
         } else {
-          $('#btn-saveDataEdit').prop('disabled' ,true);
+          $('#btn-saveDataEdit').prop('disabled', true);
           const formdata = new FormData();
           const files = this.$refs.fileInputEdit.files;
           //check currency
@@ -893,7 +938,7 @@ export default {
               }
             )
             .then((res) => {
-              $('#btn-saveDataEdit').prop('disabled' ,false);
+              $('#btn-saveDataEdit').prop('disabled', false);
               console.log(res.data);
               if (res.data.status == "Insert Data Success") {
                 let formno = res.data.formno;
@@ -964,53 +1009,44 @@ export default {
         return Promise.resolve(); // คืนค่าเปล่าถ้าไม่มีข้อมูล เพื่อป้องกัน error เวลาใช้ await
       }
     },
-    getItemData_Compare(formno,vendor_index) {
-      if (formno) {
-        const formdata = new FormData();
-        formdata.append('formno', formno);
-        formdata.append('vendor_index', vendor_index);
 
-        return axios.post(this.url + "intsys/purchaseplus/purchaseplus_backend/compareapi/getItemData_Compare", formdata)
-          .then(res => {
-            if (res.data.status === "Select Data Success") {
-              const result = res.data.result;
-
-              // เคลียร์ของเดิมก่อน (ถ้าต้องการรีเซต)
-              this.itemData = [];
-
-              // วนลูปผลลัพธ์ที่ได้ แล้ว push ใส่ itemData ทีละรายการ
-              result.forEach(item => {
-                const data = {
-                  itemid: item.itemid,
-                  itemname: item.itemname,
-                  itemdetail: item.itemdetail,
-                  itemqty: 1, // 🟡 กำหนดจำนวนเบื้องต้น หรือดึงจาก item ถ้ามี
-                  itemprice: parseFloat(item.price),
-                  itemdiscount: 0,
-                  itempricesum: parseFloat(item.price), // คำนวณเบื้องต้น
-                  itemunit: item.itemunit,
-                  itemmemo: '',
-                  itemgroupid: item.itemgroupid,
-                };
-                this.itemData.push(data);
-              });
-
-              console.log("✅ เพิ่มรายการ item จาก Compare สำเร็จ", this.itemData);
-              return Promise.resolve();
-            } else {
-              console.warn("❌ ไม่พบข้อมูล Compare Item");
-              return Promise.reject("No data");
-            }
-          })
-          .catch(error => {
-            console.error("❌ เกิดข้อผิดพลาดในการโหลดข้อมูล Compare:", error);
-            return Promise.reject(error);
-          });
-      } else {
+    async getCompareItemData(formno, vendor_index) {
+      if (!formno) {
         console.warn("⛔ กรุณาระบุ formno ให้ถูกต้อง");
         return Promise.reject("formno is required");
       }
+
+      const formdata = new FormData();
+      formdata.append('formno', formno);
+      formdata.append('vendor_index', vendor_index);
+
+      try {
+        const res = await axios.post(this.url + "intsys/purchaseplus/purchaseplus_backend/compareapi/getItemData_Compare", formdata);
+
+        console.log(res.data.result);
+
+        if (res.data.status !== "Select Data Success") {
+          return Promise.reject("ไม่พบข้อมูล Compare Item");
+        }
+
+        return res.data.result.map(item => ({
+          itemid: item.itemid,
+          itemname: item.itemname,
+          itemdetail: item.itemdetail,
+          itemqty: 1,
+          itemprice: parseFloat(item.price),
+          itemdiscount: 0,
+          itempricesum: parseFloat(item.price),
+          itemunit: item.itemunit,
+          itemmemo: '',
+          itemgroupid: item.itemgroupid,
+        }));
+      } catch (error) {
+        console.error("❌ เกิดข้อผิดพลาดในการโหลดข้อมูล Compare:", error);
+        return Promise.reject(error);
+      }
     },
+
     async searchCompareVendor() {
       if (this.searchCompareText.length < 2) {
         this.compareSuggestions = [];
@@ -1019,7 +1055,7 @@ export default {
 
       const formdata = new FormData();
       formdata.append("keyword", this.searchCompareText);
-      formdata.append("deptcode_user" , this.userData.DeptCode);
+      formdata.append("deptcode_user", this.userData.DeptCode);
 
       const res = await axios.post(
         this.url +
@@ -1037,6 +1073,7 @@ export default {
     },
     async selectCompare(item) {
       this.searchCompareText = item.formno;
+      this.compareSelected = true;
       this.compareSuggestions = [];
       // ทำอะไรต่อ เช่น เก็บค่าหรือไปโหลดข้อมูลอื่น
       this.dataareaid = item.dataareaid;
@@ -1046,9 +1083,57 @@ export default {
       await this.getUserEcode(item.deptcode_create);
       this.ecode = item.ecode_create;
       await this.getVendData_Compare(item.accountnum, item.dataareaid);
-      await this.getItemData_Compare(item.formno,item.vendor_index);
-      console.log(item.formno + ' '+item.vendor_index);
+      // await this.getItemData_Compare(item.formno, item.vendor_index);
+      await this.handleCompareItemLoad(item.formno, item.vendor_index);
+      console.log(item.formno + ' ' + item.vendor_index);
     },
+    onCompareInputChange() {
+      this.compareSelected = false;
+      this.searchCompareVendor();
+    },
+    async handleCompareItemLoad(formno, vendor_index) {
+      try {
+        const newItems = await this.getCompareItemData(formno, vendor_index);
+
+        if (!newItems || newItems.length === 0) {
+          Swal.fire('ไม่พบข้อมูลสินค้า', '', 'warning');
+          return;
+        }
+        console.log(newItems);
+        // ถ้ามีของเดิมอยู่ ➜ ถามก่อน
+        if (this.itemData.length > 0) {
+          const result = await Swal.fire({
+            title: 'คุณต้องการทำอย่างไรกับรายการสินค้าเดิม?',
+            text: 'ระบบพบว่ามีรายการสินค้าอยู่แล้ว',
+            icon: 'question',
+            showCancelButton: true,
+            showDenyButton: true,
+            confirmButtonText: 'เขียนทับ',
+            denyButtonText: 'ต่อท้าย',
+            cancelButtonText: 'ยกเลิก'
+          });
+
+          if (result.isConfirmed) {
+            this.itemData = [...newItems];
+            Swal.fire('เขียนทับสำเร็จ', '', 'success');
+          } else if (result.isDenied) {
+            // แทนที่การใช้ push ด้วยการสร้าง array ใหม่
+            this.itemData = [...this.itemData, ...newItems];
+            Swal.fire('ต่อท้ายข้อมูลสำเร็จ', '', 'success');
+          } else if (result.isDismissed) {
+            Swal.fire('ยกเลิกการนำเข้ารายการสินค้า', '', 'info');
+            location.reload();
+          }
+        } else {
+          // ถ้าไม่มีของเดิมเลย ใส่ได้เลย
+          this.itemData = [...newItems];
+        }
+
+      } catch (err) {
+        Swal.fire('เกิดข้อผิดพลาด', err, 'error');
+      }
+    }
+
   },
   created() {
     this.formValidate();

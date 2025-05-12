@@ -301,6 +301,7 @@ export default {
       user_approval: "",
       ecode_approval: "",
       datetime_approval: "",
+      docnumber:"",
       isDataLoaded: false,
       isClick: false,
     };
@@ -345,6 +346,7 @@ export default {
             user_approval,
             ecode_approval,
             datetime_approval,
+            docnumber,
           } = res.data.result;
           this.vendors = vendors;
           this.items = items;
@@ -367,6 +369,7 @@ export default {
           this.user_approval = user_approval;
           this.ecode_approval = ecode_approval;
           this.datetime_approval = datetime_approval;
+          this.docnumber = docnumber;
 
           this.isDataLoaded = true;
 
@@ -509,6 +512,7 @@ export default {
         formdata.append('ecode_approval', this.ecode_approval);
         formdata.append('datetime_approval', this.datetime_approval);
         formdata.append('vendorCount', this.vendorCount);
+        formdata.append('docnumber' , this.docnumber);
 
         const res = await axios.post(this.url + "intsys/purchaseplus/purchaseplus_backend/compareapi/pdf/send_compare_preview", formdata);
         // if (res.data) {
