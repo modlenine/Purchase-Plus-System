@@ -318,6 +318,7 @@ export default {
         const formdata = new FormData();
         formdata.append("formno", this.formno);
         formdata.append("deptcode", this.userData.DeptCode);
+        formdata.append("ecode" , this.userData.ecode);
         const res = await axios.post(
           this.url +
           "intsys/purchaseplus/purchaseplus_backend/compareapi/getCompareDetailByFormno",
