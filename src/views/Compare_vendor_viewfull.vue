@@ -642,9 +642,9 @@ export default {
     },
   },
   created() {
-    if (!this.$store.getters.canAccess(this.$route.params.deptcodecreate)) {
-      this.$router.push({ name: "Home" }); // หรือหน้าอื่นๆ ที่ต้องการ redirect
-    }
+    // if (!this.$store.getters.canAccess(this.$route.params.deptcodecreate)) {
+    //   this.$router.push({ name: "Home" }); // หรือหน้าอื่นๆ ที่ต้องการ redirect
+    // }
     console.log(this.$route.params.deptcodecreate);
   },
 };

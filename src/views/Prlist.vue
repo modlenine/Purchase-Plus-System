@@ -171,7 +171,7 @@ export default {
             orderable: false
           },
           {
-            targets: [0, 3, 4, 6, 9, 12],
+            targets: [0 , 1, 3, 4, 6, 9, 12],
             width: "60px",
           },
           {

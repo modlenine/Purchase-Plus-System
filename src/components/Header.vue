@@ -83,7 +83,7 @@
                             </li>
                             <li class="dropdown">
                                 <a href="https://www.canva.com/design/DAGl_rFny_c/zVpCuVvy-2wH_8L77h0F-g/view?utm_content=DAGl_rFny_c&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=he2d5bab6c8" target="_blank" class="dropdown-toggle no-arrow menu">
-                                    <span class="micon dw dw-book1 wdfI1"></span><span class="mtext">คู่มือการใช้งาน</span>
+                                    <span class="micon dw dw-book1 wdfI1"></span><span class="mtext">คู่มือการใช้งาน Compare Vendor</span>
                                 </a>
                             </li>
 
@@ -193,6 +193,8 @@ export default {
 }
 </script>
 
-<style>
-
+<style scope>
+		.mtext{
+            white-space:normal !important;
+        }
 </style>
