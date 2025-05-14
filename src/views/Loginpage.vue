@@ -114,8 +114,10 @@ export default {
 						'posi':sessionData.posi,
 						'username':sessionData.username,
 
-						'timeExpire':res.data.timeExpire,
-						'timeNow':res.data.timeNow
+						'loginexpire':res.data.loginexpire,
+						'loginexpire_con':res.data.loginexpire_con,
+						'timeNow':res.data.timeNow,
+						'timeNow_con':res.data.timeNow_con
 					}
 
 					localStorage.setItem('userData' , JSON.stringify(userData));

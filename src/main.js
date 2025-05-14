@@ -256,7 +256,7 @@ Vue.mixin({
   // },
     getSessionStorage(){
       const getUserData = localStorage.getItem("userData");
-      return JSON.parse(getUserData);
+      return getUserData ? JSON.parse(getUserData) : null;
     },
     keynumberOnly(str){
       return /^[0-9,.]*$/.test(str);

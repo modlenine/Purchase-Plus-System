@@ -1,14 +1,12 @@
 <template>
   <div id="app">
     <div v-if="userData !== null">
-      <Header
-        :userDataProps="this.userData"
-      />
+      <Header :userDataProps="this.userData" />
       <router-view></router-view>
     </div>
 
     <div v-else>
-      <Loginpage/>
+      <Loginpage />
     </div>
   </div>
 </template>
@@ -16,85 +14,60 @@
 <script>
 import Header from '@/components/Header.vue'
 import Loginpage from '@/views/Loginpage.vue'
-// import Swal from 'sweetalert2'
 export default {
-  name:"App",
-  components:{
+  name: "App",
+  components: {
     Header,
     Loginpage
   },
   data() {
     return {
-      userData:this.getSessionStorage(),
+      userData: this.getSessionStorage(),
 
-      events:[
-        'click' , 'mousemove' , 'mousedown' , 'scroll' , 'keypress' , 'load'
+      events: [
+        'click', 'mousemove', 'mousedown', 'scroll', 'keypress', 'load'
       ],
-      warningTimer:null,
-		  logoutTimer:null,
-      hasAlerted: false, // เพิ่มตัวแปรเพื่อตรวจสอบการแสดง Swal
+      warningTimer: null,
+      logoutTimer: null,
+      intervalId: null,
 
-
-      baseurl:'',
+      baseurl: '',
     }
   },
   created() {
-    this.checkSessionExpiry(); // เช็ก session ตอนเข้าโปรแกรม
-      // เริ่มจับการเคลื่อนไหวเมื่อหน้าโหลดแล้ว
-    this.setupActivityListeners();
+
   },
   mounted() {
-   
-
+    // เรียก check ทุก 5 วินาที
+    const data = JSON.parse(localStorage.getItem("userData") || null);
+    if (data && data.loginexpire) {
+      this.intervalId = setInterval(() => {
+        this.checkSessionExpiry();
+      }, 5000);
+    }
   },
   beforeUnmount() {
 
   },
-  beforeUpdate(){
+  beforeUpdate() {
 
   },
   beforeDestroy() {
-    // ลบ event listeners เมื่อออกจากหน้าเว็บ
-    this.events.forEach(event => {
-      window.removeEventListener(event, this.resetTimer);
-    });
+
   },
   methods: {
     checkSessionExpiry() {
-      if (this.userData && this.userData.timeExpire) {
-        const currentTime = Math.floor(Date.now() / 1000); // เวลาปัจจุบันเป็น timestamp
-        const timeExpire = this.userData.timeExpire; // เวลาหมดอายุ
-
-        if (timeExpire <= currentTime && !this.hasAlerted) {
-          // ถ้าเวลาหมดอายุแล้ว
-          this.hasAlerted = true; // ตั้งค่าเพื่อป้องกันการแสดงซ้ำ
-          localStorage.removeItem('userData'); // ลบข้อมูลจาก localStorage
-          location.reload();
-          // Swal.fire({
-					// 	title: 'Session หมดอายุกรุณา Login ใหม่อีกครั้ง',
-					// 	icon: 'warning',
-					// 	showConfirmButton: true,
-					// 	timer:2500
-					// }).then(function(){
-          //   location.reload();
-					// });
-        }
+      const data = JSON.parse(localStorage.getItem("userData") || null);
+      const now = Math.floor(Date.now() / 1000);
+      console.log('Check Login Expire Progress');
+      if (!data || now >= data.loginexpire) {
+        clearInterval(this.intervalId); // ✅ หยุด interval
+        localStorage.clear();
+        location.reload();
       }
-    },
-    setupActivityListeners() {
-      // เพิ่ม event listeners เพื่อตรวจสอบการทำกิจกรรมของ user
-      this.events.forEach(event => {
-        window.addEventListener(event, this.resetTimer);
-      });
-    },
-    resetTimer() {
-      // เมื่อมีการเคลื่อนไหว ตรวจสอบ session ใหม่ทุกครั้ง
-      this.checkSessionExpiry();
     },
   },
 }
 </script>
 
-<style>
-
-</style>
+<style></style>
