@@ -95,7 +95,7 @@
                                         :key="index">
                                         <label>ผู้ขายรายที่ {{ index + 1 }}</label>
                                         <input type="text" class="form-control" v-model="vendors[index].name"
-                                            @input="getVendID(vendors[index].name, index)"
+                                            @keyup="getVendID(vendors[index].name, index)"
                                             :placeholder="`กรอกชื่อ ผู้ขายรายที่ #${index + 1}`" :disabled="submitted"
                                             :ref="'vendorInput_' + index" />
                                         <!-- แสดงรายการค้นหา -->
