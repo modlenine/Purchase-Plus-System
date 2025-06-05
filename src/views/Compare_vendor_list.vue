@@ -93,7 +93,7 @@ export default {
         thid++;
       });
       $("#tbl_comparelist").DataTable().destroy();
-      var table = $("#tbl_comparelist").DataTable({
+      let table = $("#tbl_comparelist").DataTable({
         scrollX: true,
         processing: true,
         serverSide: true,
@@ -126,6 +126,7 @@ export default {
         columns: [
           {
             data: "formno",
+            searchable: true,
             render: function (data, type, row) {
 
               return `<a href="javascript:void(0)" class="select_form_compare" 
@@ -135,10 +136,11 @@ export default {
             },
           },
           {
-            data: "pu_formno",
+            data: "pr_number",
+            searchable: true,
             render: function (data ,type , row) {
-              const formno = data || "";
-              const prno = row.pr_number || "";
+              const formno = row.pu_formno || "";
+              const prno = data || "";
               return `<a href="javascript:void(0)" class="select_form_purchase text-dark" data-formno="${formno}"><b>${prno}</b></a>`;
             },
           },
@@ -151,12 +153,13 @@ export default {
               return data;
             }
           },
-          { data: "vendorname" },
-          { data: "ecode_create" },
-          { data: "deptcode_create" },
+          { data: "vendorname" , searchable: true ,},
+          { data: "ecode_create" , searchable: true , },
+          { data: "deptcode_create" , searchable: true ,},
           { data: "datetime_create" },
           {
             data: "compare_status",
+            searchable: true,
             render: function (data) {
               // ✅ กำหนดสี badge ตามสถานะ
               let statusBadge = '';
@@ -197,17 +200,16 @@ export default {
           { targets: [2], width: "200px" },
         ],
       });
-
       table.columns().every(function () {
         var table = this;
-        $("input", this.header()).on("keyup change", function () {
+        $('input', this.header()).on('keyup change', function () {
           if (table.search() !== this.value) {
             table.search(this.value).draw();
           }
         });
       });
 
-      $("#tbl_comparelist3 , #tbl_comparelist7").prop("readonly", true).css({
+      $("#tbl_comparelist3  , #tbl_comparelist7").prop("readonly", true).css({
         "background-color": "#F5F5F5",
         cursor: "no-drop",
       });
