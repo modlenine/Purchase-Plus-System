@@ -745,6 +745,8 @@ export default {
                     this.showmgrpage = true;
                 } else if (this.department == "1012" && this.userData.ecode == "M0025") {
                     this.showmgrpage = true;
+                }else if(this.department == "1011" && this.userData.ecode == "M0015"){
+                    this.showmgrpage = true;
                 }
             } else if (this.status == "Investigator Not Approve") {
                 this.showinvespage = true;
