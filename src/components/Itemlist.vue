@@ -61,7 +61,10 @@
                 type="number"
                 class="form-control form-control-sm"
                 :value="item.itemprice"
-                @input="updatePrice(index, $event.target.value)"
+                step="any"
+                inputmode="decimal"
+                lang="en"
+                @change="updatePrice(index, $event.target.value)"
                 @keydown.enter="$event.target.blur()"
                 @blur="editIndexPrice = null"
               />
