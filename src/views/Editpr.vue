@@ -169,12 +169,21 @@
                   <div class="col-md-6 form-group">
                     <label for=""><b>ชื่อผู้ขาย</b></label>
                     <input type="text" name="ip-cpr-vendname" id="ip-cpr-vendname" class="form-control" readonly
-                      v-model="vendname" />
+                      :value="vendname + (slc_custvendbranchid ? ' (' + slc_custvendbranchid + ')' : '')" />
                   </div>
-                  <div class="col-md-12 form-group">
+                  <div class="col-md-6 form-group">
+                    <label for=""><b>เลขประจำตัวผู้เสียภาษี</b></label>
+                    <input type="text" name="ip-cpr-taxnum" id="ip-cpr-taxnum" class="form-control" readonly
+                      v-model="bpc_whtid" />
+                  </div>
+                  <div class="col-md-6 form-group">
                     <label for=""><b>อีเมล</b></label>
                     <input type="text" name="ip-cpr-vendemail" id="ip-cpr-vendemail" class="form-control" readonly
                       v-model="vendemail" />
+                  </div>
+                  <div class="col-md-12 form-group">
+                    <label for=""><b>ที่อยู่</b></label>
+                    <textarea name="ip-cpr-address" id="ip-cpr-address" class="form-control" disabled v-model="address"></textarea>
                   </div>
                   <div class="col-md-6 form-group">
                     <label for=""><b>สกุลเงิน</b></label>
@@ -312,6 +321,9 @@ export default {
       payGroupMaxprice: "",
       prno: "",
       m_invest_ecodefix: "",
+      bpc_whtid: "",
+      address: "",
+      slc_custvendbranchid: "",
 
       itemid: "",
       itemname: "",
@@ -393,6 +405,9 @@ export default {
               this.files = resultFiles;
               this.currency = resultMain.m_currency;
               this.currencyrate = resultMain.m_currencyrate;
+              this.slc_custvendbranchid = vendtable.slc_custvendbranchid;
+              this.bpc_whtid = vendtable.bpc_whtid;
+              this.address = vendtable.address;
 
               this.getReqplan();
               this.getCostcenter();
@@ -1234,5 +1249,8 @@ export default {
 
 #ip-cpr-memo {
   height: 100px;
+}
+#ip-cpr-address {
+  height: 80px;
 }
 </style>

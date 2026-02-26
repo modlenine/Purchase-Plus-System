@@ -158,13 +158,23 @@
                   <div class="col-md-6 form-group">
                     <label for=""><b>ชื่อผู้ขาย</b></label>
                     <input type="text" name="ip-cpr-vendname" id="ip-cpr-vendname" class="form-control" readonly
-                      v-model="vendname" />
+                      :value="vendname + (slc_custvendbranchid ? ' (' + slc_custvendbranchid + ')' : '')" />
                   </div>
-                  <div class="col-md-12 form-group">
+                  <div class="col-md-6 form-group">
+                    <label for=""><b>เลขประจำตัวผู้เสียภาษี</b></label>
+                    <input type="text" name="ip-cpr-taxnum" id="ip-cpr-taxnum" class="form-control" readonly
+                      v-model="bpc_whtid" />
+                  </div>
+                  <div class="col-md-6 form-group">
                     <label for=""><b>อีเมล</b></label>
                     <input type="text" name="ip-cpr-vendemail" id="ip-cpr-vendemail" class="form-control" readonly
                       v-model="vendemail" />
                     <div id="show_alertLastEmail" class="mt-2"></div>
+                  </div>
+                  <div class="col-md-12 form-group">
+                    <label for=""><b>ที่อยู่</b></label>
+                    <textarea name="ip-cpr-address" id="ip-cpr-address" class="form-control" readonly
+                      v-model="address"></textarea>
                   </div>
                   <div class="col-md-6 form-group">
                     <label for=""><b>สกุลเงิน</b></label>
@@ -312,6 +322,9 @@ export default {
       itemData: [],
       searchCompareText: "",
       compareSuggestions: [],
+      slc_custvendbranchid:"",
+      bpc_whtid:"",
+      address:"",
 
       userData: this.getSessionStorage(),
     };
@@ -479,6 +492,9 @@ export default {
                                 data_currency="${result[key].currencycodeiso}"
                                 data_currencyrate="${result[key].exchrate}"
                                 data_email="${result[key].email}"
+                                data_slc_custvendbranchid="${result[key].slc_custvendbranchid}"
+                                data_bpc_whtid="${result[key].bpc_whtid}"
+                                data_address="${result[key].address}"
                             >${result[key].accountnum} | ${result[key].name}</li>
                             `;
               }
@@ -899,6 +915,9 @@ export default {
               this.vendname = result.name;
               this.currency = result.currency;
               this.vendemail = result.email;
+              this.bpc_whtid = result.bpc_whtid;
+              this.address = result.address;
+              this.slc_custvendbranchid = result.slc_custvendbranchid || '';
               this.currencyrate = parseFloat(result.exchrate).toLocaleString(
                 "en-US",
                 { minimumFractionDigits: 3, maximumFractionDigits: 3 }
@@ -1014,6 +1033,10 @@ export default {
       const data_currency = $(this).attr("data_currency");
       const data_currencyrate = $(this).attr("data_currencyrate");
       const data_email = $(this).attr("data_email");
+      const data_slc_custvendbranchid = $(this).attr("data_slc_custvendbranchid");
+      const data_bpc_whtid = $(this).attr("data_bpc_whtid");
+      const data_address = $(this).attr("data_address");
+      proxy.address = data_address;
 
       // console.log(data_accountnum+' '+data_name+' '+data_paymtermid);
       proxy.paymtermid = data_paymtermid;
@@ -1021,6 +1044,8 @@ export default {
       proxy.vendname = data_name;
       proxy.currency = data_currency;
       proxy.vendemail = data_email;
+      proxy.slc_custvendbranchid = data_slc_custvendbranchid;
+      proxy.bpc_whtid = data_bpc_whtid;
       proxy.currencyrate = parseFloat(data_currencyrate).toLocaleString(
         "en-US",
         { minimumFractionDigits: 3, maximumFractionDigits: 3 }
@@ -1108,5 +1133,9 @@ export default {
 
 #ip-cpr-memo {
   height: 100px;
+}
+
+#ip-cpr-address {
+  height: 80px;
 }
 </style>

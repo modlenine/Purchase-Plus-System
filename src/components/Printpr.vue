@@ -15,7 +15,9 @@
     </div>
     <div class="row form-group">
         <div class="col-md-6 text-left">
-            <span><b>Vender : </b>{{dataprintpr.vendid}}&nbsp;&nbsp;&nbsp;{{dataprintpr.vendname}}</span>
+            <span><b>Vender : </b>{{dataprintpr.vendid}}&nbsp;&nbsp;&nbsp;{{dataprintpr.vendname}}{{ dataprintpr.slc_custvendbranchid ? ' (' + dataprintpr.slc_custvendbranchid + ')' : '' }} </span><br>
+            <span><b>ที่อยู่ : </b>{{dataprintpr.address}}</span><br>
+            <span><b>เลขประจำตัวผู้เสียภาษี : </b>{{dataprintpr.bpc_whtid}}</span>
         </div>
         <div class="col-md-6 text-right">
             <span><b>เลขที่ PR : </b>{{dataprintpr.prno}}</span>

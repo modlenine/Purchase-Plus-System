@@ -113,12 +113,21 @@
                                 <div class="col-md-6 form-group">
                                     <label for=""><b>ชื่อผู้ขาย</b></label>
                                     <input type="text" name="ip-cpr-vendname" id="ip-cpr-vendname" class="form-control"
-                                        disabled v-model="vendname">
+                                        disabled :value="vendname + (slc_custvendbranchid ? ' (' + slc_custvendbranchid + ')' : '')">
                                 </div>
-                                <div class="col-md-12 form-group">
+                                <div class="col-md-6 form-group">
+                                    <label for=""><b>เลขประจำตัวผู้เสียภาษี</b></label>
+                                    <input type="text" name="ip-cpr-bpc_whtid" id="ip-cpr-bpc_whtid" class="form-control"
+                                        disabled v-model="bpc_whtid">
+                                </div>
+                                <div class="col-md-6 form-group">
                                     <label for=""><b>อีเมล</b></label>
                                     <input type="text" name="ip-cpr-vendemail" id="ip-cpr-vendemail"
                                         class="form-control" disabled v-model="vendemail">
+                                </div>
+                                <div class="col-md-12 form-group">
+                                    <label for=""><b>ที่อยู่</b></label>
+                                    <textarea name="ip-cpr-address" id="ip-cpr-address" class="form-control" disabled v-model="address"></textarea>
                                 </div>
                                 <div class="col-md-6 form-group">
                                     <label for=""><b>สกุลเงิน</b></label>
@@ -300,7 +309,10 @@ export default {
                 userpostMgr: '',
                 datetimepostMgr: '',
                 formisono: '',
-                executive: []
+                executive: [],
+                slc_custvendbranchid: '',
+                bpc_whtid: '',
+                address: ''
             },
             userData: this.getSessionStorage(),
             url: this.getUrl(),
@@ -336,6 +348,9 @@ export default {
             files: [],
             currency: '',
             currencyrate: 0,
+            slc_custvendbranchid: '',
+            bpc_whtid: '',
+            address: '',
 
             // Investigator zone
             showinvespage: false,
@@ -423,6 +438,9 @@ export default {
                         this.datetimenow = res.data.datetimenow;
                         this.files = resultFiles;
                         this.currency = resultMain.m_currency;
+                        this.slc_custvendbranchid = vendtable.slc_custvendbranchid;
+                        this.bpc_whtid = vendtable.bpc_whtid;
+                        this.address = vendtable.address;
 
                         if (resultMain.m_currencyrate !== "" && resultMain.m_currencyrate !== null) {
                             this.currencyrate = parseFloat(resultMain.m_currencyrate).toLocaleString('en-US', { minimumFractionDigits: 3, maximumFractionDigits: 3 });
@@ -694,6 +712,11 @@ export default {
                         let resultMain = res.data.maindata;
                         let resultDetails = res.data.detailsdata;
                         let resultExecutive = res.data.approveuser;
+                        let vendtable = res.data.res_vendtable;
+
+                        this.dataprintpr.address = vendtable.address;
+                        this.dataprintpr.bpc_whtid = vendtable.bpc_whtid;
+                        this.dataprintpr.slc_custvendbranchid = vendtable.slc_custvendbranchid;
 
                         this.dataprintpr.companyfullname = resultMain.companyfullname;
                         this.dataprintpr.vendid = resultMain.m_vendid;
@@ -960,5 +983,8 @@ export default {
 .compareDocIcon:hover {
     cursor: pointer;
     transform: scale(1.1);
+}
+#ip-cpr-address {
+  height: 80px;
 }
 </style>
