@@ -24,7 +24,26 @@
             <td>{{ index + 1 }}</td>
             <td>{{ item.itemid }}</td>
             <td>{{ item.itemname }}</td>
-            <td>{{ item.itemdetail }}</td>
+            <!-- ✅ ช่อง รายละเอียด -->
+            <td>
+              <span v-if="editIndexDetail !== index">
+                {{ item.itemdetail }}
+                <i
+                  class="fa fa-pencil ml-2 text-primary"
+                  @click="editIndexDetail = index"
+                  style="cursor: pointer"
+                ></i>
+              </span>
+              <input
+                v-else
+                type="text"
+                class="form-control form-control-sm"
+                :value="item.itemdetail"
+                @input="updateDetail(index, $event.target.value)"
+                @keydown.enter="$event.target.blur()"
+                @blur="editIndexDetail = null"
+              />
+            </td>
             <!-- ✅ ช่อง จำนวน -->
             <td>
               <span v-if="editIndexQty !== index">
@@ -115,6 +134,7 @@ export default {
       localItemdata: JSON.parse(JSON.stringify(this.itemdata)), // Clone เพื่อ reactive
       editIndexQty: null,
       editIndexPrice: null,
+      editIndexDetail: null,
     };
   },
   watch: {
@@ -155,6 +175,11 @@ export default {
       updated[index].itempricesum =
         updated[index].itemqty * updated[index].itemprice -
         updated[index].itemdiscount;
+      this.$emit("update:itemdata", updated);
+    },
+    updateDetail(index, newDetail) {
+      const updated = [...this.itemdata];
+      updated[index].itemdetail = newDetail;
       this.$emit("update:itemdata", updated);
     },
     deleteItem(index) {
