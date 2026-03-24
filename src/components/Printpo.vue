@@ -160,7 +160,7 @@ export default {
         if(this.areaid_prop == "sln"){
             return "0107551000282"+" "+"( สำนักงานใหญ่ )";
         }else if(this.areaid_prop == "ca"){
-            return "0115555007662";
+            return "0115555007662"+" "+"( สำนักงานใหญ่ )";
         }else{
             return "";
         }
