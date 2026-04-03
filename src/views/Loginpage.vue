@@ -94,7 +94,8 @@ export default {
             const form = $('#frm_login')[0];
 			const data = new FormData(form);
 
-			axios.post(this.url+'intsys/purchaseplus/purchaseplus_backend/login/checklogin' , data,{
+			// ใช้ relative path เพื่อให้ผ่าน proxy
+			axios.post('/intsys/purchaseplus/purchaseplus_backend/login/checklogin' , data,{
 				'Content-Type':'multipart/form-data'
 			}).then(res=>{
 				console.log(res.data);

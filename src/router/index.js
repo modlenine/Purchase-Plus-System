@@ -127,13 +127,23 @@ const router = new VueRouter({
   routes
 })
 
-// เช็ค userData ก่อนเปลี่ยนหน้าทุกครั้ง
+// Flag เพื่อ skip การเช็คครั้งแรก (ให้ App.vue created จัดการ)
+let isInitialNavigation = true;
+
+// เช็ค userData ก่อนเปลี่ยนหน้า (กรณี userData หายระหว่างใช้งาน)
 router.beforeEach((to, from, next) => {
+  // Skip การเช็คครั้งแรก เพราะ App.vue created กำลังเช็ค session อยู่
+  if (isInitialNavigation) {
+    isInitialNavigation = false;
+    next();
+    return;
+  }
+  
   const userData = localStorage.getItem('userData');
   
-  // ถ้าไม่มี userData → ส่งไป logout ที่ intranet
+  // ถ้าไม่มี userData และไม่ใช่ page load ครั้งแรก
+  // → ส่งไป logout ที่ intranet
   if (!userData) {
-    // Clear localStorage และ redirect ไป intranet logout
     localStorage.clear();
     window.location.href = '/intranet/login/logoutCheckSession';
     return;

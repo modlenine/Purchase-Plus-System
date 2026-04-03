@@ -3,9 +3,9 @@ module.exports = {
     
     // Dev server config
     devServer: {
-        port: 8081, // Dev port
+        port: 8081, // Dev port (ไม่ชนกับ production:8080)
         proxy: {
-            // Proxy API requests to backend
+            // Proxy backend requests ไปที่ MAMP:8080
             '/intranet': {
                 target: 'http://localhost:8080',
                 changeOrigin: true,
