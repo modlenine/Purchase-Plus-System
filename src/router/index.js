@@ -127,6 +127,19 @@ const router = new VueRouter({
   routes
 })
 
-
+// เช็ค userData ก่อนเปลี่ยนหน้าทุกครั้ง
+router.beforeEach((to, from, next) => {
+  const userData = localStorage.getItem('userData');
+  
+  // ถ้าไม่มี userData → ส่งไป logout ที่ intranet
+  if (!userData) {
+    // Clear localStorage และ redirect ไป intranet logout
+    localStorage.clear();
+    window.location.href = '/intranet/login/logoutCheckSession';
+    return;
+  }
+  
+  next();
+});
 
 export default router

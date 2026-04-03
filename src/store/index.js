@@ -33,7 +33,7 @@ export default new Vuex.Store({
     getUrl(state) {
       if (typeof window !== "undefined") {
         return (state.url =
-          window.location.protocol + "//" + window.location.hostname + "/");
+          window.location.protocol + "//" + window.location.hostname + ":8080/");
       }
     },
     get_datetimeNow(state) {

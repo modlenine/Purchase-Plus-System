@@ -155,8 +155,12 @@ export default {
                 buttonsStyling: false
             }).then((result)=>{
                 if(result.value === true){
+                    // Clear localStorage
                     localStorage.removeItem('userData');
-                    location.reload();
+                    
+                    // Redirect ไปที่ intranet logout controller
+                    // logoutCheckSession() จะทำ sess_destroy() และ redirect ไป login page
+                    window.location.href = '/intranet/login/logoutCheckSession';
                 }
             });
         });
