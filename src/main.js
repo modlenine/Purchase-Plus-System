@@ -31,7 +31,13 @@ Vue.mixin({
   methods: {
     getUrl(){
       if(typeof window !== "undefined"){
-          return window.location.protocol+"//"+window.location.hostname+":8080/";
+        if(process.env.NODE_ENV === 'development'){
+          // Dev: ชี้ตรงไป MAMP port 8080 (bypass proxy ตั้งใจ เพราะใช้ absolute URL)
+          return window.location.protocol + "//" + window.location.hostname + ":8080/";
+        } else {
+          // Production: ใช้ origin เดิม ไม่ hardcode port (port 80/443 ของ ofintranet.saleecolour.net)
+          return window.location.origin + "/";
+        }
       }
     },
     baseUrl(){
